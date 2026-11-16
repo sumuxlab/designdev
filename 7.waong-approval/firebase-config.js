@@ -13,4 +13,11 @@
      appId: "1:1234567890:web:abcdef"
    };
 */
-window.FIREBASE_CONFIG = null;
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAOF6ePRpk1gQmasabP6YbSvuWQE-syijI",
+  authDomain: "waong-approval.firebaseapp.com",
+  projectId: "waong-approval",
+  storageBucket: "waong-approval.firebasestorage.app",
+  messagingSenderId: "983103008367",
+  appId: "1:983103008367:web:c0e298ffb5977ffcb8679a"
+};
