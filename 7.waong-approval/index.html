@@ -10,9 +10,21 @@
 </script>
 <link rel="stylesheet" href="yds/ybm-ds.css">
 <script src="yds/ybm-ds.js" defer></script>
+<script src="firebase-config.js"></script>
 <script>
-/* localhost 나 파일로 열면 예시 데이터로 동작하는 가짜 런타임을 불러온다(dev/mock.js). claude.ai 에서는 불러오지 않는다 */
-if(location.protocol==='file:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))document.write('<script src="dev/mock.js"><\/script>');
+/* 데이터 연결 고르기
+   - firebase-config.js 에 설정이 있으면 Firebase(Google 로그인, Firestore)로 연결한다(GitHub Pages 외부 배포).
+   - 로컬(localhost, 파일)에서는 예시 데이터(dev/mock.js)로 동작한다. 로컬에서 Firebase로 보려면 주소 끝에 ?firebase
+   - claude.ai 아티팩트로 열면 둘 다 불러오지 않고 claude.ai 런타임을 쓴다 */
+(function(){
+  var local=location.protocol==='file:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if(window.FIREBASE_CONFIG&&(!local||/[?&]firebase(=|&|$)/.test(location.search))){
+    var b='https://www.gstatic.com/firebasejs/10.12.2/';
+    document.write('<script src="'+b+'firebase-app-compat.js"><\/script><script src="'+b+'firebase-auth-compat.js"><\/script><script src="'+b+'firebase-firestore-compat.js"><\/script><script src="firebase/adapter.js"><\/script>');
+  }else if(local){
+    document.write('<script src="dev/mock.js"><\/script>');
+  }
+})();
 </script>
 <style>
 /* 서비스 CSS: yds 받은함 표(table-inbox) 템플릿 배치를 따른다. 값은 모두 --ds-* 토큰 */
@@ -114,6 +126,7 @@ body { margin: 0; background: var(--ds-color-bg-layer-default); color: var(--ds-
     <div class="ap-head__tools">
       <span class="ds-badge" data-size="large" id="role">연결 중</span>
       <button type="button" class="ds-btn" data-variant="ghost" data-size="small" id="noticeBtn" hidden><i class="ds-icon ds-icon--bell" aria-hidden="true"></i>알림<span class="ds-badge" data-variant="solid" data-tone="critical" id="noticeCount" hidden></span></button>
+      <button type="button" class="ds-btn" data-variant="ghost" data-size="small" id="logoutBtn" hidden><i class="ds-icon ds-icon--log-out" aria-hidden="true"></i>로그아웃</button>
       <button type="button" class="ds-btn" data-variant="neutralSolid" data-size="small" id="newBtn"><i class="ds-icon ds-icon--plus" aria-hidden="true"></i>새 사용 신청</button>
     </div>
   </header>
@@ -218,7 +231,7 @@ const resubmitted=r=>{const d=S.decs.get(r.id);return d&&d.status==='revise'&&(r
 const isMine=r=>me&&me.id&&r.requesterId===me.id;
 function errText(e){
   const c=e&&e.code;
-  if(c==='invalid_argument') return '저장 권한이 없어요. 페이지 소유자에게 참여자 이상 권한을 요청해 주세요.';
+  if(c==='invalid_argument') return '저장 권한이 없어요. 승인 담당자에게 사용 권한을 요청해 주세요.';
   if(c==='quota_exceeded') return '저장 공간이 가득 찼어요. 오래된 신청을 정리한 뒤 다시 시도해 주세요.';
   if(c==='resource_exhausted') return '요청이 너무 잦아요. 잠시 후 다시 시도해 주세요.';
   return '저장하지 못했어요. 네트워크 상태를 확인하고 다시 시도해 주세요.';
@@ -267,7 +280,7 @@ function empty(title,desc,action){
 
 function renderList(){
   const box=$('#list'); box.replaceChildren();
-  if(S.failed){ box.append(empty('신청 목록을 불러올 수 없어요','claude.ai에 로그인한 상태로 이 페이지를 열어 주세요.')); return; }
+  if(S.failed){ box.append(empty('신청 목록을 불러올 수 없어요','로그인 상태를 확인하고 페이지를 다시 열어 주세요.')); return; }
   if(!S.loaded){ box.append(h('div',{class:'ap-tools'},h('p',{class:'ap-sub'},'신청 목록을 불러오는 중이에요.'))); return; }
   if(!S.reqs.length){
     box.append(empty('아직 등록된 사용 신청이 없어요','와옹이를 쓰는 시안이 생기면 첫 신청을 등록해 보세요. 승인 담당자가 이곳에서 바로 검토해요.',
@@ -406,7 +419,7 @@ function approvePanel(r,d){
     try{
       await db.doc('decisions/'+r.id).set({status,note:text,reviewerId:entry.reviewerId,decidedAt:at,log:[...((d&&d.log)||[]),entry].slice(-30)});
       S.dirty=false; renderAll(true); toast(status==='approved'?'승인했어요':`${LABEL[status]}으로 저장했어요`,status==='approved'?'positive':undefined);
-    }catch(e){ save.disabled=false; msg.replaceChildren(errBox(e&&e.code==='invalid_argument'?'결재 권한이 없어요. 페이지 소유자에게 편집자 권한을 요청해 주세요.':errText(e))); }
+    }catch(e){ save.disabled=false; msg.replaceChildren(errBox(e&&e.code==='invalid_argument'?'결재 권한이 없어요. 승인 담당자 명단에 등록돼 있는지 확인해 주세요.':errText(e))); }
   };
   return h('section',{class:'ap-sec','aria-labelledby':'dec-title'},
     h('h3',{class:'ap-h3',id:'dec-title'},'결재'),
@@ -559,6 +572,7 @@ renderAll(true);
     const w=await user.can('data.write'); if(w===false) S.readOnly=true;
     if(me.id) $('#mineWrap').hidden=false;
   }
+  if(window.appAuth){ const lo=$('#logoutBtn'); lo.hidden=false; lo.onclick=()=>window.appAuth.signOut(); lo.title=window.appAuth.email; }
   role.textContent=(canApprove?'승인 담당자':(S.readOnly?'열람 전용':'신청자'))+((me&&me.name)?` / ${me.name}`:'');
   role.dataset.tone=canApprove?'brand':'neutral';
   if(S.readOnly) $('#newBtn').disabled=true;
