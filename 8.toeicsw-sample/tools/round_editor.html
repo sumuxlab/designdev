@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko" data-ds-brand="toeic">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOEIC S&amp;W 샘플테스트 차수 등록 도구</title>
+<!-- YDS 1.2.0 (버전 고정) → TOEIC 브랜드 → 화면 CSS 순서 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.2.0/dist/ybm-ds.css">
+<script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.2.0/dist/ybm-ds.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.2.0/dist/brands/toeic.css">
+<style>
+/* 화면 전용 배치. 값은 모두 --ds-* 토큰 */
+body { word-break: keep-all; overflow-wrap: break-word; background: var(--ds-color-bg-canvas); }
+.re-app { min-height: 100vh; }
+
+/* 머리글 */
+.re-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--ds-space-x3) var(--ds-space-x4);
+  box-sizing: border-box; width: min(100%, 1440px); margin-inline: auto; padding: var(--ds-space-x6) var(--ds-space-x4) var(--ds-space-x4); }
+.re-head__texts { display: flex; flex-direction: column; gap: var(--ds-space-x1_5); min-width: 0; }
+.re-head__tools { display: flex; flex-wrap: wrap; gap: var(--ds-space-x2); }
+.re-h1 { margin: 0; font-size: var(--ds-font-size-t09); line-height: var(--ds-line-height-t09); font-weight: var(--ds-font-weight-semibold); letter-spacing: -0.02em; color: var(--ds-color-fg-neutral); }
+.re-sub { margin: 0; font-size: var(--ds-font-size-t04); line-height: var(--ds-line-height-t04); color: var(--ds-color-fg-neutral-muted); }
+.re-h4 { margin: 0; font-size: var(--ds-font-size-t04); line-height: var(--ds-line-height-t04); font-weight: var(--ds-font-weight-bold); color: var(--ds-color-fg-neutral); }
+.re-caption { margin: 0; font-size: var(--ds-font-size-t03); line-height: var(--ds-line-height-t03); color: var(--ds-color-fg-neutral-subtle); }
+
+/* 본문 배치: 모바일 1단 → 1280부터 입력 | 확인 2단 */
+.re-content { box-sizing: border-box; width: min(100%, 1440px); margin-inline: auto; padding: 0 var(--ds-space-x4) var(--ds-space-x10);
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-x6); }
+.re-main, .re-side { display: flex; flex-direction: column; gap: var(--ds-space-x4); min-width: 0; }
+@media (min-width: 768px) {
+  .re-head { padding-inline: var(--ds-space-x6); }
+  .re-content { padding-inline: var(--ds-space-x6); }
+}
+@media (min-width: 1280px) {
+  .re-content { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .re-side { position: sticky; top: var(--ds-space-x4); max-height: calc(100vh - var(--ds-space-x8)); overflow: auto; }
+}
+
+/* 입력 묶음 */
+.re-meta { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-x4); }
+@media (min-width: 768px) { .re-meta { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; align-items: start; } .re-meta__switch { margin-top: var(--ds-space-x7); } }
+.re-meta__switch { min-height: 40px; display: flex; align-items: center; }
+.re-parts { display: flex; flex-direction: column; gap: var(--ds-space-x3); }
+.re-part { display: flex; flex-direction: column; gap: var(--ds-space-x5); padding-top: var(--ds-space-x1); }
+.re-q { display: flex; flex-direction: column; gap: var(--ds-space-x3); padding-top: var(--ds-space-x4); box-shadow: inset 0 1px 0 var(--ds-color-stroke-neutral-weak); }
+.re-g2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-x3); }
+@media (min-width: 768px) { .re-g2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+/* 사진 칸: 썸네일 | 파일명·상태 */
+.re-photo { display: flex; gap: var(--ds-space-x3); align-items: flex-start; }
+.re-photo__meta { display: flex; flex-direction: column; gap: var(--ds-space-x1_5); flex: 1 1 auto; min-width: 0; }
+.re-photo__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-x2); }
+.re-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* 확인 영역 */
+.re-json { max-height: 320px; overflow: auto; border-radius: var(--ds-shape-sm); }
+.re-warns { margin: var(--ds-space-x1) 0 0; padding-left: var(--ds-space-x4); }
+.re-uplist { display: flex; flex-direction: column; gap: var(--ds-space-x3); margin: 0; padding: 0; list-style: none; }
+.re-uplist > li { display: flex; align-items: center; gap: var(--ds-space-x3); min-width: 0; }
+.re-uplist__texts { display: flex; flex-direction: column; gap: var(--ds-space-x0_5); flex: 1 1 auto; min-width: 0; }
+.re-uplist__name { font-family: var(--ds-font-mono); font-size: var(--ds-font-size-t03); line-height: var(--ds-line-height-t03); color: var(--ds-color-fg-neutral); word-break: break-all; }
+
+/* 미리보기: 실제 샘플테스트 화면 구성을 토큰으로 옮긴 영역 (YDS에 없는 화면 요소) */
+.re-pv { display: flex; flex-direction: column; gap: var(--ds-space-x4); padding: var(--ds-space-x5); border-radius: var(--ds-shape-lg);
+  background: var(--ds-color-bg-layer-default); box-shadow: inset 0 0 0 1px var(--ds-color-stroke-neutral-weak);
+  font-size: var(--ds-font-size-t04); line-height: var(--ds-line-height-t04); color: var(--ds-color-fg-neutral); }
+.re-pv__title { margin: var(--ds-space-x1) 0 0; font-size: var(--ds-font-size-t06); line-height: var(--ds-line-height-t06); font-weight: var(--ds-font-weight-bold); }
+.re-pv__time { margin: var(--ds-space-x0_5) 0 0; font-size: var(--ds-font-size-t03); line-height: var(--ds-line-height-t03); color: var(--ds-color-fg-critical); }
+.re-pv__dir { display: flex; flex-direction: column; gap: var(--ds-space-x2); padding: var(--ds-space-x4); border-radius: var(--ds-shape-md); background: var(--ds-color-bg-neutral-weak-alpha); }
+.re-pv__dir p, .re-pv__q p { margin: 0; white-space: pre-line; }
+.re-pv__notice { color: var(--ds-color-fg-critical); font-size: var(--ds-font-size-t03); }
+.re-pv__q { display: flex; flex-direction: column; gap: var(--ds-space-x1_5); }
+.re-pv__qno { font-weight: var(--ds-font-weight-bold); }
+.re-pv__pics { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--ds-space-x3); }
+.re-pv__mail { display: flex; flex-direction: column; gap: var(--ds-space-x1); padding: var(--ds-space-x4); border-radius: var(--ds-shape-md); box-shadow: inset 0 0 0 1px var(--ds-color-stroke-neutral-weak); }
+.re-pv__mail dl { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--ds-space-x0_5) var(--ds-space-x2); margin: 0; }
+.re-pv__mail dt { font-weight: var(--ds-font-weight-bold); }
+.re-pv__mail dd { margin: 0; }
+.re-pv__body { margin: var(--ds-space-x2) 0; white-space: pre-line; }
+.re-pv__rt { font-weight: var(--ds-font-weight-bold); }
+.re-pv__empty { color: var(--ds-color-fg-placeholder); }
+.re-pv__spk { display: inline-grid; place-items: center; vertical-align: middle; width: var(--ds-space-x6); height: var(--ds-space-x6); margin-right: var(--ds-space-x1);
+  border-radius: var(--ds-shape-pill); background: var(--ds-color-bg-neutral-solid); color: var(--ds-color-fg-on-neutral-solid); --ds-icon-size: 14px; }
+.re-pv .ds-imageframe { width: 100%; }
+.re-pv__ph { display: grid; place-items: center; position: absolute; inset: 0; padding: var(--ds-space-x2); text-align: center;
+  color: var(--ds-color-fg-neutral-subtle); font-size: var(--ds-font-size-t02); line-height: var(--ds-line-height-t02); word-break: break-all; }
+</style>
+</head>
+<body>
+<div class="re-app">
+  <header class="re-head">
+    <div class="re-head__texts">
+      <h1 class="re-h1">샘플테스트 차수 등록</h1>
+      <p class="re-sub">TOEIC Speaking &amp; Writing 샘플테스트의 지문, 사진, 음성을 차수별로 입력합니다.</p>
+    </div>
+    <div class="re-head__tools">
+      <button type="button" class="ds-btn" data-variant="neutralWeak" data-size="medium" id="btnImport"><i class="ds-icon ds-icon--folder-input" aria-hidden="true"></i>JSON 불러오기</button>
+      <button type="button" class="ds-btn" data-variant="neutralWeak" data-size="medium" id="btnNew"><i class="ds-icon ds-icon--rotate-ccw" aria-hidden="true"></i>새로 시작</button>
+    </div>
+  </header>
+
+  <main class="re-content">
+    <div class="re-main">
+      <article class="ds-card">
+        <header class="ds-card__header"><h2 class="ds-card__title">차수 정보</h2></header>
+        <div class="ds-card__content re-meta">
+          <div class="ds-field">
+            <div class="ds-field__header"><label class="ds-field__label" for="rid">차수 ID</label><span class="ds-field__required" aria-hidden="true"></span></div>
+            <div class="ds-input" data-variant="outline" data-size="medium"><input class="ds-input__control" id="rid" placeholder="2026_02" autocomplete="off"></div>
+            <div class="ds-field__footer"><p class="ds-field__help">파일 이름이 됩니다. 영문, 숫자, _, - 만 씁니다.</p><p class="ds-field__error">영문, 숫자, _, - 만 쓸 수 있습니다.</p></div>
+          </div>
+          <div class="ds-field">
+            <div class="ds-field__header"><label class="ds-field__label" for="rtitle">제목</label></div>
+            <div class="ds-input" data-variant="outline" data-size="medium"><input class="ds-input__control" id="rtitle" placeholder="Sample Test 2026-02" autocomplete="off"></div>
+            <div class="ds-field__footer"><p class="ds-field__help">관리용 이름입니다. 화면에는 나오지 않습니다.</p></div>
+          </div>
+          <div class="re-meta__switch">
+            <label class="ds-switch" data-size="24"><span class="ds-switch__label">바로 공개</span><input type="checkbox" role="switch" class="ds-switch__control" id="ropen"></label>
+          </div>
+        </div>
+      </article>
+
+      <div class="ds-tabs" role="tablist" data-size="medium" aria-label="시험 영역">
+        <button type="button" class="ds-tabs__trigger" role="tab" aria-selected="true" data-sec="spe">Speaking (11문항)</button>
+        <button type="button" class="ds-tabs__trigger" role="tab" aria-selected="false" data-sec="wri">Writing (8문항)</button>
+      </div>
+      <p class="re-caption">사진은 끌어 놓거나 눌러서 등록합니다. 음성은 파일명만 쓰면 기본 경로가 붙고, 다른 곳의 파일은 https:// 로 시작하는 전체 주소를 씁니다.</p>
+      <div class="re-parts" id="form" role="tabpanel"></div>
+    </div>
+
+    <aside class="re-side" aria-label="확인">
+      <article class="ds-card">
+        <header class="ds-card__header"><h2 class="ds-card__title">미리보기</h2><p class="ds-card__desc" id="pvLabel"></p></header>
+        <div class="ds-card__content"><div class="re-pv" id="preview"></div></div>
+      </article>
+
+      <article class="ds-card" id="upPanel" hidden>
+        <header class="ds-card__header"><h2 class="ds-card__title">등록한 사진</h2><p class="ds-card__desc" id="upHint"></p></header>
+        <div class="ds-card__content"><ul class="re-uplist" id="upList"></ul></div>
+      </article>
+
+      <article class="ds-card">
+        <header class="ds-card__header"><h2 class="ds-card__title">입력 확인</h2></header>
+        <div class="ds-card__content" id="warnings"></div>
+      </article>
+
+      <article class="ds-card">
+        <header class="ds-card__header"><h2 class="ds-card__title">JSON 결과</h2><p class="ds-card__desc">복사한 내용을 <code id="fname">data/rounds/차수ID.json</code> 으로 저장해 올리면 등록이 끝납니다.</p></header>
+        <div class="ds-card__content">
+          <div class="re-json">
+            <figure class="ds-codeblock">
+              <figcaption class="ds-codeblock__header"><span class="ds-codeblock__language">json</span>
+                <button type="button" class="ds-codeblock__copy" data-ds-copy aria-label="JSON 복사"><i class="ds-icon ds-icon--copy ds-icon--sm" aria-hidden="true"></i></button></figcaption>
+              <pre class="ds-codeblock__code"><code id="json"></code></pre>
+            </figure>
+          </div>
+        </div>
+        <footer class="ds-card__footer"><button type="button" class="ds-btn" data-variant="brandSolid" data-layout="fill" id="btnCopy"><i class="ds-icon ds-icon--copy" aria-hidden="true"></i>JSON 복사</button></footer>
+      </article>
+    </aside>
+  </main>
+</div>
+
+<dialog class="ds-dialog" id="dlgImport" aria-labelledby="dlgImportTitle">
+  <div class="ds-dialog__header">
+    <h2 class="ds-dialog__title" id="dlgImportTitle">JSON 불러오기</h2>
+    <p class="ds-dialog__desc">이전 차수를 불러와 고치면 새 차수를 빠르게 만들 수 있습니다.</p>
+    <button type="button" class="ds-dialog__close" data-ds-close aria-label="닫기"></button>
+  </div>
+  <div class="ds-dialog__body re-part">
+    <div class="ds-fileattach">
+      <label class="ds-fileattach__dropzone">
+        <input type="file" class="ds-fileattach__input" id="file" accept=".json,application/json">
+        <i class="ds-icon ds-icon--file-code" aria-hidden="true"></i>
+        <span class="ds-fileattach__label">JSON 파일을 끌어 놓거나 눌러서 고르세요</span>
+      </label>
+    </div>
+    <div class="ds-field">
+      <div class="ds-field__header"><label class="ds-field__label" for="importText">또는 붙여넣기</label></div>
+      <textarea class="ds-textarea" data-size="medium" id="importText" rows="8" placeholder='{"id":"2026_01", ...}'></textarea>
+      <div class="ds-field__footer"><p class="ds-field__help">data/rounds 폴더의 차수 파일 내용을 그대로 붙여넣습니다.</p><p class="ds-field__error">JSON 형식이 올바르지 않습니다.</p></div>
+    </div>
+  </div>
+  <div class="ds-dialog__footer">
+    <button type="button" class="ds-btn" data-variant="neutralWeak" data-size="large" data-ds-close>취소</button>
+    <button type="button" class="ds-btn" data-variant="brandSolid" data-size="large" id="btnLoad">불러오기</button>
+  </div>
+</dialog>
+
+<script>
+/* config/parts.php 와 같은 정의 */
+var PARTS = {
+  spe: [
+    {key:'read_aloud', type:'text_list', from:1, to:2, title:'Read a text aloud', sub:'답변 준비시간 45초, 답변시간 45초'},
+    {key:'describe_picture', type:'picture_list', from:3, to:4, title:'Describe a picture', sub:'답변 준비시간 45초, 답변시간 30초'},
+    {key:'respond_questions', type:'question_set', from:5, to:7, title:'Respond to questions', sub:'답변 준비시간 문항당 3초, 답변시간 15~30초', context:true},
+    {key:'respond_info', type:'question_set', from:8, to:10, title:'Respond to questions using information provided', sub:'답변 준비시간 문항당 3초 (지문 읽는 시간 45초), 답변시간 15~30초', context:true, image:true, notice:'* 실제 시험에서는 위의 일정만 나오고, 아래의 지문과 Question은 음성으로만 제공됩니다.'},
+    {key:'opinion', type:'question_set', from:11, to:11, title:'Express an opinion', sub:'답변 준비시간 45초, 답변시간 60초'}
+  ],
+  wri: [
+    {key:'picture_sentence', type:'picture_keywords', from:1, to:5, title:'Write a sentence based on the picture', sub:'답변 시간 5문항에 총 8분'},
+    {key:'email', type:'email', from:6, to:7, title:'Respond to a written request', sub:'답변 시간 문항 당 10분'},
+    {key:'essay', type:'essay', from:8, to:8, title:'Write an opinion essay', sub:'답변 시간 30분'}
+  ]
+};
+var TOTAL = {spe:11, wri:8};
+/* [키, 라벨, 종류, 안내] */
+var ITEM_FIELDS = {
+  text_list:[['text','지문','area']],
+  picture_list:[['image','사진','image']],
+  question_set:[['text','질문','area'],['audio','질문 음성','text','예: VH761010.mp3']],
+  picture_keywords:[['image','사진','image'],['keywords','제시어','text','예: woman / help']],
+  email:[['from','FROM','text'],['to','TO','text'],['subject','SUBJECT','text'],['sent','SENT','text'],['body','본문','area'],['task','답장 지시문','area','Directions: 로 시작합니다.']],
+  essay:[['text','에세이 질문','area']]
+};
+var REQUIRED = {text_list:['text'],picture_list:['image'],question_set:['text'],picture_keywords:['image','keywords'],email:['from','to','subject','body','task'],essay:['text']};
+
+var IMG_BASE = 'https://imagesisa.ybmnet.co.kr/platform/exam_ybmnet_co_kr/content/toeicsw/';
+var UPLOAD_URL = window.SP_UPLOAD_URL || '';      // 사내 서버에 두면 admin/editor.php 가 채워 줌
+var MAX_MB = 3, OK_TYPES = ['image/jpeg','image/png','image/gif','image/webp'];
+var LOCAL = {};   // 사진 칸 경로 → {url(blob), file, size, dims, status}
+
+var state, curSec = 'spe', curPart = 'read_aloud', openParts = {read_aloud: true};
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function range(p){ return p.from === p.to ? 'Question ' + p.from : 'Questions ' + p.from + '-' + p.to; }
+function qLabel(p){ return 'Q' + p.from + (p.to !== p.from ? '-' + p.to : ''); }
+function notify(msg, tone){ if (window.DS && DS.snackbar) DS.snackbar(msg, tone ? {tone: tone} : undefined); }
+
+/* ---------- 데이터 ---------- */
+function blank(){
+  var r = {id:'', title:'', open:false, spe:{}, wri:{}};
+  ['spe','wri'].forEach(function(sec){
+    PARTS[sec].forEach(function(p){
+      var d = {items:[]};
+      if (sec === 'spe') d.audio_direction = '';
+      if (p.context){ d.context = ''; d.audio_context = ''; }
+      if (p.image) d.image = '';
+      for (var i = p.from; i <= p.to; i++){
+        var it = {}; ITEM_FIELDS[p.type].forEach(function(f){ it[f[0]] = ''; }); d.items.push(it);
+      }
+      r[sec][p.key] = d;
+    });
+  });
+  return r;
+}
+function normalize(src){   /* 불러온 JSON을 빈 틀에 덮어 빠진 칸이 없게 */
+  var r = blank();
+  r.id = src.id || ''; r.title = src.title || ''; r.open = !!src.open;
+  ['spe','wri'].forEach(function(sec){
+    PARTS[sec].forEach(function(p){
+      var s = (src[sec] || {})[p.key]; if (!s) return;
+      var d = r[sec][p.key];
+      Object.keys(d).forEach(function(k){ if (k !== 'items' && s[k] != null) d[k] = String(s[k]); });
+      if (s.direction) d.direction = s.direction;
+      d.items.forEach(function(it, i){
+        var si = (s.items || [])[i] || {};
+        Object.keys(it).forEach(function(k){ if (si[k] != null) it[k] = String(si[k]); });
+      });
+    });
+  });
+  return r;
+}
+function getPath(path){ var o = state; path.split('.').forEach(function(k){ o = o[k]; }); return o; }
+function setPath(path, v){ var ks = path.split('.'), o = state; for (var i = 0; i < ks.length - 1; i++) o = o[ks[i]]; o[ks[ks.length - 1]] = v; }
+function labelOf(type, k){ var f = ITEM_FIELDS[type].filter(function(x){ return x[0] === k; })[0]; return f ? f[1] : k; }
+function partWarnings(sec, p){
+  var d = state[sec][p.key], w = [];
+  if (p.image && !d.image.trim()) w.push('공통 이미지');
+  if (p.context && !d.context.trim()) w.push('상황 설명');
+  d.items.forEach(function(it, i){
+    REQUIRED[p.type].forEach(function(k){ if (!String(it[k]).trim()) w.push('Q' + (p.from + i) + ' ' + labelOf(p.type, k)); });
+  });
+  return w;
+}
+
+/* ---------- 사진 ---------- */
+function imgSrc(path, value){
+  if (LOCAL[path]) return LOCAL[path].url;
+  var v = String(value || '').trim(); if (!v) return '';
+  return /^https?:\/\//i.test(v) ? v : IMG_BASE + v;
+}
+var ST = {
+  local:['warning','업로드 필요'], ing:['informative','업로드 중'], done:['neutral','업로드 완료'], err:['critical','업로드 실패'], server:['neutral','서버 파일']
+};
+function stBadge(path, value){
+  var key = LOCAL[path] ? LOCAL[path].status : (String(value || '').trim() ? 'server' : '');
+  if (!key) return '';
+  return '<span class="ds-badge" data-tone="' + ST[key][0] + '">' + ST[key][1] + '</span>';
+}
+function fmtSize(b){ return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + 'KB' : (b / 1048576).toFixed(1) + 'MB'; }
+function photoField(path, label, value, required){
+  var src = imgSrc(path, value), L = LOCAL[path], id = 'f-' + path.replace(/\./g, '-');
+  var head = '<div class="ds-field__header"><span class="ds-field__label" id="' + id + '-l">' + label + '</span>' + (required ? '<span class="ds-field__required" aria-hidden="true"></span>' : '') + '</div>';
+  if (!src){
+    return '<div class="ds-field">' + head
+      + '<div class="ds-fileattach"><label class="ds-fileattach__dropzone">'
+      + '<input type="file" class="ds-fileattach__input" accept="image/*" data-img="' + path + '" aria-labelledby="' + id + '-l">'
+      + '<i class="ds-icon ds-icon--image" aria-hidden="true"></i>'
+      + '<span class="ds-fileattach__label">사진을 끌어 놓거나 눌러서 고르세요</span></label></div>'
+      + '<div class="ds-field__footer"><p class="ds-field__help">JPG, PNG, GIF, WEBP, ' + MAX_MB + 'MB 이하</p></div></div>';
+  }
+  var info = L ? (L.dims + ', ' + fmtSize(L.size)) : '이미지 서버에 있는 파일';
+  return '<div class="ds-field">' + head + '<div class="re-photo">'
+    + '<div class="ds-fileitem" data-layout="image">'
+    +   '<img class="ds-fileitem__image" src="' + esc(src) + '" alt="' + esc(label) + ' 미리보기" onerror="this.remove()">'
+    +   '<button type="button" class="ds-fileitem__remove" data-clear="' + path + '" aria-label="사진 빼기"><i class="ds-icon ds-icon--x" aria-hidden="true"></i></button>'
+    + '</div>'
+    + '<div class="re-photo__meta">'
+    +   '<div class="ds-input" data-variant="outline" data-size="medium"><input class="ds-input__control" data-path="' + path + '" value="' + esc(value) + '" aria-label="' + esc(label) + ' 파일명"></div>'
+    +   '<div class="re-photo__row"><span data-st="' + path + '">' + stBadge(path, value) + '</span><span class="re-caption">' + info + '</span>'
+    +   '<label class="ds-btn" data-variant="neutralWeak" data-size="xsmall"><input type="file" class="re-file" accept="image/*" data-img="' + path + '">바꾸기</label></div>'
+    + '</div></div></div>';
+}
+function registerImage(path, file){
+  if (!file) return;
+  if (OK_TYPES.indexOf(file.type) < 0){ notify('JPG, PNG, GIF, WEBP 사진만 등록할 수 있습니다', 'critical'); return; }
+  if (file.size > MAX_MB * 1048576){ notify('사진이 ' + MAX_MB + 'MB를 넘습니다 (' + (file.size / 1048576).toFixed(1) + 'MB)', 'critical'); return; }
+  var blobUrl = URL.createObjectURL(file), probe = new Image();
+  probe.onerror = function(){ URL.revokeObjectURL(blobUrl); notify('열 수 없는 사진 파일입니다', 'critical'); };
+  probe.onload = function(){
+    if (LOCAL[path]) URL.revokeObjectURL(LOCAL[path].url);
+    LOCAL[path] = {url: blobUrl, file: file, size: file.size, dims: probe.naturalWidth + '×' + probe.naturalHeight, status: 'local'};
+    setPath(path, file.name.replace(/\s+/g, '_'));
+    curPart = path.split('.')[1]; openParts[curPart] = true;
+    if (UPLOAD_URL) upload(path);
+    renderForm(); renderPreview(); renderSide();
+    notify('사진을 등록했습니다', 'positive');
+  };
+  probe.src = blobUrl;
+}
+function upload(path){
+  var L = LOCAL[path]; if (!L || !UPLOAD_URL) return;
+  if (!/^[A-Za-z0-9_-]+$/.test(state.id)){ L.status = 'err'; notify('차수 ID를 먼저 입력하세요', 'critical'); return; }
+  L.status = 'ing';
+  var fd = new FormData();
+  fd.append('round', state.id); fd.append('name', getPath(path)); fd.append('file', L.file);
+  fetch(UPLOAD_URL, {method: 'POST', body: fd, credentials: 'same-origin'})
+    .then(function(r){ return r.json(); })
+    .then(function(res){ if (!res.ok) throw new Error(res.error || '실패'); L.status = 'done'; setPath(path, res.url); })
+    .catch(function(e){ L.status = 'err'; notify('업로드하지 못했습니다: ' + e.message, 'critical'); })
+    .then(function(){ renderForm(); renderPreview(); renderSide(); });
+}
+
+/* ---------- 입력 화면 ---------- */
+function field(path, label, kind, value, opt){
+  opt = opt || {};
+  if (kind === 'image') return photoField(path, label, value, opt.required);
+  var id = 'f-' + path.replace(/\./g, '-');
+  var control = kind === 'area'
+    ? '<textarea class="ds-textarea" data-size="medium" rows="3" id="' + id + '" data-path="' + path + '">' + esc(value) + '</textarea>'
+    : '<div class="ds-input" data-variant="outline" data-size="medium"><input class="ds-input__control" id="' + id + '" data-path="' + path + '" value="' + esc(value) + '" autocomplete="off"></div>';
+  return '<div class="ds-field"><div class="ds-field__header"><label class="ds-field__label" for="' + id + '">' + label + '</label>'
+    + (opt.required ? '<span class="ds-field__required" aria-hidden="true"></span>' : '<span class="ds-field__indicator">선택</span>') + '</div>'
+    + control + (opt.help ? '<div class="ds-field__footer"><p class="ds-field__help">' + opt.help + '</p></div>' : '') + '</div>';
+}
+function partBadge(sec, p){
+  var w = partWarnings(sec, p);
+  return w.length ? '<span class="ds-badge" data-tone="warning">' + w.length + '개 남음</span>' : '<span class="ds-badge">입력 완료</span>';
+}
+function renderForm(){
+  var html = '';
+  PARTS[curSec].forEach(function(p){
+    var d = state[curSec][p.key], base = curSec + '.' + p.key + '.';
+    html += '<details class="ds-accordion" data-layout="separated" data-part="' + p.key + '"' + (openParts[p.key] ? ' open' : '') + '>'
+      + '<summary class="ds-accordion__trigger"><span class="ds-accordion__body"><span class="ds-accordion__title">' + qLabel(p) + ' ' + esc(p.title) + '</span>'
+      + '<span class="ds-accordion__desc">' + esc(p.sub) + '</span></span><span data-badge="' + p.key + '">' + partBadge(curSec, p) + '</span></summary>'
+      + '<div class="ds-accordion__content re-part">';
+    if (curSec === 'spe') html += field(base + 'audio_direction', 'Directions 음성', 'text', d.audio_direction, {help: '비워 두면 스피커 버튼이 나오지 않습니다.'});
+    if (p.image) html += field(base + 'image', '공통 이미지 (일정표)', 'image', d.image, {required: true});
+    if (p.context) html += '<div class="re-g2">' + field(base + 'context', '상황 설명', 'area', d.context, {required: true}) + field(base + 'audio_context', '상황 설명 음성', 'text', d.audio_context) + '</div>';
+    d.items.forEach(function(it, i){
+      var inline = [], block = [];
+      ITEM_FIELDS[p.type].forEach(function(f){
+        var h = field(base + 'items.' + i + '.' + f[0], f[1], f[2], it[f[0]], {required: REQUIRED[p.type].indexOf(f[0]) >= 0, help: f[3]});
+        (p.type === 'email' && f[2] === 'text' ? inline : block).push(h);
+      });
+      html += '<section class="re-q" aria-label="Question ' + (p.from + i) + '"><h3 class="re-h4">Question ' + (p.from + i) + '</h3>'
+        + (inline.length ? '<div class="re-g2">' + inline.join('') + '</div>' : '') + block.join('') + '</section>';
+    });
+    html += '</div></details>';
+  });
+  $('form').innerHTML = html;
+}
+function refreshBadges(){
+  PARTS[curSec].forEach(function(p){ var b = document.querySelector('[data-badge="' + p.key + '"]'); if (b) b.innerHTML = partBadge(curSec, p); });
+  document.querySelectorAll('[data-st]').forEach(function(el){ var k = el.getAttribute('data-st'); el.innerHTML = stBadge(k, getPath(k)); });
+}
+
+/* ---------- 미리보기 ---------- */
+function spk(f){ return String(f || '').trim() ? '<span class="re-pv__spk" title="' + esc(f) + '"><i class="ds-icon ds-icon--volume-2" aria-hidden="true"></i></span>' : ''; }
+function t(v, ph){ return String(v || '').trim() ? esc(v) : '<span class="re-pv__empty">' + ph + '</span>'; }
+function frame(f, path){
+  var src = imgSrc(path, f), label = String(f || '').trim() ? esc(f) : '사진 미등록';
+  return '<div class="ds-imageframe" data-ratio="4:3" data-radius="md" data-stroke><span class="re-pv__ph">' + label + '</span>'
+    + (src ? '<img src="' + esc(src) + '" alt="" onerror="this.remove()">' : '') + '</div>';
+}
+function renderPreview(){
+  var p = PARTS[curSec].filter(function(x){ return x.key === curPart; })[0];
+  var d = state[curSec][p.key], base = curSec + '.' + p.key, h = '';
+  $('pvLabel').textContent = (curSec === 'spe' ? 'Speaking ' : 'Writing ') + range(p) + ' — 실제 화면 구성';
+  h += '<div><span class="ds-badge" data-variant="solid" data-tone="brand">' + range(p) + ' of ' + TOTAL[curSec] + '</span>'
+     + '<h3 class="re-pv__title">' + range(p) + ': ' + esc(p.title) + '</h3><p class="re-pv__time">' + esc(p.sub) + '</p></div>';
+  h += '<div class="re-pv__dir"><strong>Directions.</strong><p>' + spk(d.audio_direction) + '<span class="re-pv__empty">파트 공통 안내 문구 (config/parts.php)</span></p>';
+  if (p.image) h += frame(d.image, base + '.image');
+  if (p.notice) h += '<p class="re-pv__notice">' + esc(p.notice) + '</p>';
+  if (p.context) h += '<p>' + spk(d.audio_context) + t(d.context, '상황 설명') + '</p>';
+  h += '</div>';
+  if (p.type === 'picture_keywords') h += '<div class="re-pv__pics">';
+  d.items.forEach(function(it, i){
+    var no = p.from + i, ip = base + '.items.' + i + '.image';
+    switch (p.type){
+      case 'text_list': h += '<div class="re-pv__q"><span class="re-pv__qno">Question ' + no + '.</span><p>' + t(it.text, '지문') + '</p></div>'; break;
+      case 'picture_list': h += '<div class="re-pv__q"><span class="re-pv__qno">Question ' + no + '.</span>' + frame(it.image, ip) + '</div>'; break;
+      case 'question_set': h += '<div class="re-pv__q"><p><span class="re-pv__qno">Question ' + no + '.</span> ' + t(it.text, '질문') + ' ' + spk(it.audio) + '</p></div>'; break;
+      case 'picture_keywords': h += '<div class="re-pv__q">' + frame(it.image, ip) + '<p>' + t(it.keywords, '제시어') + '</p></div>'; break;
+      case 'email': h += '<div class="re-pv__q"><span class="re-pv__qno">Question.</span><div class="re-pv__mail"><p>Directions: Read the e-mail.</p><dl>'
+        + ['from','to','subject','sent'].map(function(k){ return '<dt>' + k.toUpperCase() + '</dt><dd>' + t(it[k], '-') + '</dd>'; }).join('')
+        + '</dl><p class="re-pv__body">' + t(it.body, '본문') + '</p><p>' + t(it.task, '답장 지시문') + '</p></div><p class="re-pv__rt">Response time: 10 minutes</p></div>'; break;
+      case 'essay': h += '<div class="re-pv__q"><span class="re-pv__qno">Question.</span><p>' + t(it.text, '에세이 질문') + '</p></div>'; break;
+    }
+  });
+  if (p.type === 'picture_keywords') h += '</div>';
+  $('preview').innerHTML = h;
+}
+
+/* ---------- 확인 영역 ---------- */
+function renderUploads(){
+  var keys = Object.keys(LOCAL);
+  $('upPanel').hidden = !keys.length;
+  if (!keys.length) return;
+  $('upHint').textContent = UPLOAD_URL
+    ? '고르는 즉시 서버에 올라갑니다. 실패한 사진은 다시 올릴 수 있습니다.'
+    : '아래 파일을 이미지 서버 toeicsw 폴더에 표시된 파일명 그대로 올려 주세요.';
+  $('upList').innerHTML = keys.map(function(k){
+    var L = LOCAL[k], parts = k.split('.');
+    var p = PARTS[parts[0]].filter(function(x){ return x.key === parts[1]; })[0];
+    var q = (parts[0] === 'spe' ? 'Speaking ' : 'Writing ') + (parts[2] === 'items' ? 'Q' + (p.from + Number(parts[3])) : qLabel(p) + ' 공통 이미지');
+    return '<li><div class="ds-fileitem" data-layout="image"><img class="ds-fileitem__image" src="' + L.url + '" alt=""></div>'
+      + '<div class="re-uplist__texts"><span class="re-h4">' + q + '</span><span class="re-uplist__name">' + esc(getPath(k)) + '</span><span class="re-caption">' + L.dims + '</span></div>'
+      + stBadge(k)
+      + (L.status === 'err' && UPLOAD_URL ? '<button type="button" class="ds-btn" data-variant="neutralWeak" data-size="small" data-retry="' + k + '">다시 올리기</button>' : '')
+      + '</li>';
+  }).join('');
+}
+function renderSide(){
+  var all = [];
+  if (!/^[A-Za-z0-9_-]+$/.test(state.id)) all.push('차수 ID');
+  ['spe','wri'].forEach(function(sec){
+    PARTS[sec].forEach(function(p){ partWarnings(sec, p).forEach(function(w){ all.push((sec === 'spe' ? 'Speaking ' : 'Writing ') + w); }); });
+  });
+  $('warnings').innerHTML = all.length
+    ? '<div class="ds-callout" data-tone="warning"><i class="ds-icon ds-icon--triangle-alert-solid" aria-hidden="true"></i><div class="ds-callout__content"><strong class="ds-callout__title">' + all.length + '개 항목이 비어 있습니다</strong>'
+      + '<ul class="re-warns">' + all.slice(0, 12).map(function(w){ return '<li>' + esc(w) + '</li>'; }).join('') + (all.length > 12 ? '<li>외 ' + (all.length - 12) + '개</li>' : '') + '</ul></div></div>'
+    : '<div class="ds-callout" data-tone="positive"><i class="ds-icon ds-icon--circle-check-solid" aria-hidden="true"></i><p class="ds-callout__content"><strong class="ds-callout__title">모두 입력했습니다</strong>  JSON을 복사해 올리면 됩니다.</p></div>';
+  $('json').textContent = JSON.stringify(state, null, 2);
+  $('fname').textContent = 'data/rounds/' + (state.id || '차수ID') + '.json';
+  var bad = state.id !== '' && !/^[A-Za-z0-9_-]+$/.test(state.id);
+  if (bad) $('rid').setAttribute('aria-invalid', 'true'); else $('rid').removeAttribute('aria-invalid');
+  renderUploads();
+  try { localStorage.setItem('toeicsw_round_draft', JSON.stringify(state)); } catch (e) {}
+}
+function renderAll(){
+  $('rid').value = state.id; $('rtitle').value = state.title; $('ropen').checked = state.open;
+  renderForm(); renderPreview(); renderSide();
+}
+
+/* ---------- 이벤트 ---------- */
+$('form').addEventListener('input', function(e){
+  var path = e.target.getAttribute('data-path'); if (!path) return;
+  setPath(path, e.target.value);
+  curPart = path.split('.')[1];
+  renderPreview(); renderSide(); refreshBadges();
+});
+$('form').addEventListener('change', function(e){
+  var path = e.target.getAttribute('data-img'); if (path) registerImage(path, e.target.files[0]);
+});
+$('form').addEventListener('toggle', function(e){
+  var key = e.target.getAttribute && e.target.getAttribute('data-part'); if (!key) return;
+  openParts[key] = e.target.open;
+  if (e.target.open){ curPart = key; renderPreview(); }
+}, true);
+$('form').addEventListener('click', function(e){
+  var btn = e.target.closest('[data-clear]'); if (!btn) return;
+  e.preventDefault();
+  var c = btn.getAttribute('data-clear');
+  if (LOCAL[c]){ URL.revokeObjectURL(LOCAL[c].url); delete LOCAL[c]; }
+  setPath(c, ''); renderForm(); renderPreview(); renderSide();
+});
+$('upList').addEventListener('click', function(e){
+  var b = e.target.closest('[data-retry]'); if (b){ upload(b.getAttribute('data-retry')); renderUploads(); }
+});
+document.querySelectorAll('.ds-tabs__trigger').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.ds-tabs__trigger').forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+    curSec = b.getAttribute('data-sec'); curPart = PARTS[curSec][0].key; openParts[curPart] = true;
+    renderForm(); renderPreview();
+  });
+});
+$('rid').addEventListener('input', function(e){ state.id = e.target.value.trim(); renderSide(); });
+$('rtitle').addEventListener('input', function(e){ state.title = e.target.value; renderSide(); });
+$('ropen').addEventListener('change', function(e){ state.open = e.target.checked; renderSide(); });
+$('btnCopy').addEventListener('click', function(){
+  var txt = $('json').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){ notify('JSON을 복사했습니다', 'positive'); }, function(){ notify('복사하지 못했습니다. 코드 칸에서 직접 복사하세요', 'critical'); });
+});
+$('btnNew').addEventListener('click', function(){ LOCAL = {}; state = blank(); curPart = PARTS[curSec][0].key; openParts = {}; openParts[curPart] = true; renderAll(); notify('빈 양식으로 시작합니다'); });
+$('btnImport').addEventListener('click', function(){ $('importText').removeAttribute('aria-invalid'); $('dlgImport').showModal(); });
+$('file').addEventListener('change', function(e){
+  var f = e.target.files[0]; if (!f) return;
+  var rd = new FileReader(); rd.onload = function(){ $('importText').value = rd.result; }; rd.readAsText(f);
+});
+$('btnLoad').addEventListener('click', function(){
+  try {
+    state = normalize(JSON.parse($('importText').value)); LOCAL = {};
+    $('dlgImport').close(); renderAll(); notify('불러왔습니다. 차수 ID를 새 값으로 바꾸세요', 'positive');
+  } catch (e) { $('importText').setAttribute('aria-invalid', 'true'); }
+});
+
+/* 시작: 작성 중이던 초안이 있으면 이어서 */
+(function(){
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('toeicsw_round_draft')); } catch (e) {}
+  state = saved ? normalize(saved) : normalize({
+    id:'2026_02', title:'Sample Test 2026-02', open:false,
+    spe:{ read_aloud:{audio_direction:'2026_Q01-02.mp3', items:[{text:'(예시) Question 1 지문을 여기에 입력합니다.'},{text:''}]} },
+    wri:{ picture_sentence:{items:[{image:'', keywords:'woman / help'}]} }
+  });
+  renderAll();
+})();
+</script>
+</body>
+</html>

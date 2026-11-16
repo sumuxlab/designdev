@@ -1,0 +1,78 @@
+{
+  "id": "2026_01",
+  "title": "Sample Test 2026-01",
+  "open": true,
+  "spe": {
+    "read_aloud": {
+      "audio_direction": "2021_Q01-02.mp3",
+      "items": [
+        { "text": "[Question 1 지문]" },
+        { "text": "[Question 2 지문]" }
+      ]
+    },
+    "describe_picture": {
+      "audio_direction": "",
+      "items": [
+        { "image": "VH606009.jpg" },
+        { "image": "VH877989.jpg" }
+      ]
+    },
+    "respond_questions": {
+      "audio_direction": "2021_Q05-07.mp3",
+      "context": "[상황 설명 — 예: Imagine that you are talking to ...]",
+      "audio_context": "VH760997.mp3",
+      "items": [
+        { "text": "[Question 5]", "audio": "VH761010.mp3" },
+        { "text": "[Question 6]", "audio": "VH761041.mp3" },
+        { "text": "[Question 7]", "audio": "VH764100.mp3" }
+      ]
+    },
+    "respond_info": {
+      "audio_direction": "2022_Q08-10.mp3",
+      "image": "VH567037.jpg",
+      "context": "[전화 건 사람의 도입 멘트]",
+      "audio_context": "VH567037.mp3",
+      "items": [
+        { "text": "[Question 8]", "audio": "VH567042.mp3" },
+        { "text": "[Question 9]", "audio": "VH567068.mp3" },
+        { "text": "[Question 10]", "audio": "2022_VH567112.mp3" }
+      ]
+    },
+    "opinion": {
+      "audio_direction": "",
+      "items": [
+        { "text": "[Question 11]", "audio": "" }
+      ]
+    }
+  },
+  "wri": {
+    "picture_sentence": {
+      "items": [
+        { "image": "Writing10_Q1.jpg", "keywords": "woman / help" },
+        { "image": "Writing10_Q2.jpg", "keywords": "in / pot" },
+        { "image": "Writing10_Q3.jpg", "keywords": "quickly / building" },
+        { "image": "Writing10_Q4.jpg", "keywords": "sit / while" },
+        { "image": "Writing10_Q5.jpg", "keywords": "after / close" }
+      ]
+    },
+    "email": {
+      "items": [
+        {
+          "from": "[보낸 사람]", "to": "[받는 사람]", "subject": "[제목]", "sent": "[보낸 일시]",
+          "body": "[이메일 본문 — 줄바꿈 그대로 입력]",
+          "task": "Directions: [답장 작성 지시문]"
+        },
+        {
+          "from": "[보낸 사람]", "to": "[받는 사람]", "subject": "[제목]", "sent": "[보낸 일시]",
+          "body": "[이메일 본문]",
+          "task": "Directions: [답장 작성 지시문]"
+        }
+      ]
+    },
+    "essay": {
+      "items": [
+        { "text": "[에세이 질문]" }
+      ]
+    }
+  }
+}
