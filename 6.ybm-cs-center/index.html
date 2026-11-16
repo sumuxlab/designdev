@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>YBM Family 고객센터</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.css">
+<script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.js" defer></script>
+<link rel="stylesheet" href="css/cs.css">
+<link rel="shortcut icon" href="http://www.ybmnet.co.kr/favicon.ico">
+<script src="js/jquery-latest.js"></script>
+<script>
+	/* ARS 안내 창: 예전 jQuery fadeIn 레이어를 YDS Dialog(<dialog>)로 바꿨다. 호출 이름 layer_open('layer1')은 그대로 */
+	function layer_open(el){
+		var temp = document.getElementById(el);
+		if (temp && typeof temp.showModal === 'function') temp.showModal();
+	}
+	document.addEventListener('click', function(e){
+		var pop = e.target.closest ? e.target.closest('.pop_layer') : null;
+		if (pop && e.target === pop) pop.close(); /* 바깥(흐린 바탕)을 누르면 닫힘: 예전 .layer .bg 동작 */
+	});
+</script>
+<!--모달팝업 스크립트-->
+<script>
+	if (window.jQuery) {
+		jQuery(document).ready(function() {
+			$('#myModal').show();
+		});
+	}
+	function close_pop(flag) {
+		var m = document.getElementById('myModal');
+		if (m) m.style.display = 'none';
+	}
+</script>
+<!--//모달팝업 스크립트-->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6T980XKE1E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6T980XKE1E');
+</script>
+</head>
+<body>
+
+<!-- 모달팝업 -->
+<!--div id="myModal" class="modal"> … (운영 화면에서도 주석 처리된 점검 안내 팝업, 그대로 둠) </div-->
+<!-- //모달팝업 -->
+
+<div id="wrap">
+  <!-- header -->
+  <div class="cs-topbar"><div class="cs-topbar__in">
+    <header id="header" class="ds-topnav">
+      <div class="ds-topnav__left">
+        <h1 class="cs-logo">
+          <a class="ds-topnav__heading" href="http://www.ybmfamily.com" title="YBM family 고객센터"><img src="https://imagesisa.ybmsisa.com/platform/common/logo/ybm_family.svg" class="logo_family" alt="YBM Family"></a>
+          <a class="ds-topnav__heading" href="/center_2014/index.asp"><img src="https://www.ybmnet.co.kr/center_2014/images/logo_s.png" class="logo_my" alt="고객센터"></a>
+        </h1>
+        <nav class="ds-topnav__menu m_menu" aria-label="주요 메뉴">
+          <a class="ds-topnav__item m1" href="/center_2014/faqList.asp">FAQ</a>
+          <a class="ds-topnav__item m2" href="/center_2014/consultWrite.asp">고객문의</a>
+          <a class="ds-topnav__item m3" href="/center_2014/newsList.asp">뉴스</a>
+        </nav>
+      </div>
+      <!-- 비로그인 -->
+      <div class="ds-topnav__end u_menu">
+        <a class="ds-btn" data-variant="neutralWeak" data-size="xsmall" href="http://www.ybmnet.co.kr/common/login.asp?url=/center_2014/index.asp&amp;what=www.ybmnet.co.kr&amp;getSiteName=">로그인</a>
+        <a class="ds-btn" data-variant="ghost" data-size="xsmall" href="JavaScript:openWin('https://member.ybmnet.co.kr/join/join_step1.jsp', 'joinWin','scrollbars=yes,width=1024,height=768')">회원가입</a>
+        <a class="ds-btn" data-variant="ghost" data-size="xsmall" href="/YBMSisacom.asp?siteURL=www.ybmfamily.com" target="_blank">YBM 패밀리</a>
+      </div>
+      <!-- //비로그인 -->
+    </header>
+  </div></div>
+  <form name="frm" method="POST" target="_parent">
+    <input type="hidden" name="what" value="www.ybm.co.kr">
+    <input type="hidden" name="url" value="http://www.ybm.co.kr">
+  </form>
+  <script>
+	if (window.jQuery) {
+		$(document).ready(function(){
+			$('.id').click(function () {
+				if($('.id_ly').is(':visible')){
+					$('.id_ly').css("display","none");
+				}else {
+					$('.id_ly').css("display","block");
+				}
+			});
+		});
+	}
+
+	function goToLogout(){
+		var f = document.frm;
+		f.action="/common/logout.asp";
+		f.submit();
+		return true;
+	}
+
+	function openWin(theURL,winName,features){
+		var MyMain = window.open(theURL,winName,features);
+	}
+  </script>
+  <!-- //header -->
+
+  <!-- container -->
+  <main id="container" class="cs-page">
+    <!-- contents -->
+    <section class="contents_b cs-contents">
+      <div class="title_group cs-head">
+        <div class="cs-head__texts">
+          <h2 class="cs-h1">고객센터</h2>
+          <p class="cs-sub">고객님의 칭찬, 불편사항, 제안 등 소중한 의견을 보다 신속하고 정확하게 해결해 드리겠습니다.</p>
+          <div>
+            <button type="button" class="ds-btn btn_ars_pop" data-variant="neutralOutline" data-size="small" onclick="layer_open('layer1');return false;"><i class="ds-icon ds-icon--phone" aria-hidden="true"></i>ARS 서비스번호 안내</button>
+          </div>
+        </div>
+        <div class="cs-head__loc">
+          <nav class="ds-breadcrumbs location" aria-label="현재 위치">
+            <ol>
+              <li><span aria-current="page">고객센터</span></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+
+      <div class="cs-banner"><img src="https://imagesisa.ybmsisa.com/platform/www_ybmsisa_com/index/center_bn.jpg" alt="타인의 감정을 배려하는 당신! 진정한 고객입니다"></div>
+
+      <!-- ars POPUP -->
+      <dialog class="ds-dialog pop_layer" id="layer1" aria-labelledby="layer1-title">
+        <div class="ds-dialog__header">
+          <h2 class="ds-dialog__title" id="layer1-title">ARS 서비스번호</h2>
+          <p class="ds-dialog__desc"><strong>02-2008-5200</strong> 연결 후 서비스 안내번호를 선택합니다.</p>
+          <button type="button" class="ds-dialog__close btn_pop_close" data-ds-close aria-label="닫기"></button>
+        </div>
+        <div class="ds-dialog__body wrap_pop_ars">
+          <ul class="ds-list cs-ars" data-divider>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">1번</span><span class="ds-list-item__content"><span class="ds-list-item__title">토익 및 기타어학시험</span><span class="ds-list-item__desc"><span class="cs-ars__sub"><span class="cs-ars__no">1번</span>시험관련</span><span class="cs-ars__sub"><span class="cs-ars__no">2번</span>인터넷접수 및 결제</span><span class="cs-ars__sub"><span class="cs-ars__no">3번</span>성적표 출력 오류</span><span class="cs-ars__sub"><span class="cs-ars__no">0번</span>상담원 연결</span></span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">2번</span><span class="ds-list-item__content"><span class="ds-list-item__title">YBM인강</span><span class="ds-list-item__desc"><span class="cs-ars__sub"><span class="cs-ars__no">1번</span>토익/토스/영어 인강</span><span class="cs-ars__sub"><span class="cs-ars__no">2번</span>중국어/일본어/기타 인강</span><span class="cs-ars__sub"><span class="cs-ars__no">3번</span>전화화상외국어</span></span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">3번</span><span class="ds-list-item__content"><span class="ds-list-item__title">기업 및 단체교육</span><span class="ds-list-item__desc"><span class="cs-ars__sub"><span class="cs-ars__no">1번</span>기업 및 단체 어학교육</span><span class="cs-ars__sub"><span class="cs-ars__no">2번</span>기업 및 단체 직무교육</span><span class="cs-ars__sub"><span class="cs-ars__no">3번</span>기업 및 단체 출강교육</span><span class="cs-ars__sub"><span class="cs-ars__no">4번</span>오프라인 외국어교육</span><span class="cs-ars__sub"><span class="cs-ars__no">5번</span>임직원 외국어캠프</span><span class="cs-ars__sub"><span class="cs-ars__no">0번</span>상담원 연결</span></span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">4번</span><span class="ds-list-item__content"><span class="ds-list-item__title">전화화상 외국어</span></span></div></li>
+            <!-- 5번 학점은행: 운영 화면에서도 주석 처리 -->
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">6번</span><span class="ds-list-item__content"><span class="ds-list-item__title">잉글루리더스</span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">7번</span><span class="ds-list-item__content"><span class="ds-list-item__title">교원연수원</span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">8번</span><span class="ds-list-item__content"><span class="ds-list-item__title">ECC</span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">9번</span><span class="ds-list-item__content"><span class="ds-list-item__title">대학교양수업 및 특강</span></span></div></li>
+            <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__prefix cs-ars__no">0번</span><span class="ds-list-item__content"><span class="ds-list-item__title">상담원연결</span></span></div></li>
+          </ul>
+          <div class="ds-callout notice">
+            <i class="ds-icon ds-icon--info" aria-hidden="true"></i>
+            <p class="ds-callout__content">※ 고객센터 연결 시, 통화료 발생됩니다.</p>
+          </div>
+        </div>
+      </dialog>
+      <!-- ars POPUP //-->
+
+      <div class="main_cont cs-main">
+        <div class="cs-cards">
+          <!-- cont_l -->
+          <article class="ds-card exam cs-card">
+            <header class="ds-card__header">
+              <h3 class="ds-card__title cs-card__title"><i class="ds-icon ds-icon--phone" aria-hidden="true"></i>어학시험문의</h3>
+              <p class="ds-card__desc">평일 <span class="cs-num">09:30~17:00</span> ( 점심시간 <span class="cs-num">12:30~1:30</span>)<br>주말 / 공휴일 휴무</p>
+            </header>
+            <div class="ds-card__content ars_list cs-groups">
+              <section class="cs-group">
+                <h4 class="cs-h4">토익 / 토익스피킹 / 기타시험</h4>
+                <ul class="ds-list cs-tel" data-divider>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">시험관련문의</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2279-0505</span><a class="ds-link" data-size="small" href="http://exam.ybmnet.co.kr/center_new/">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">인터넷접수/결제</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2008-5200<strong>+1+2</strong></span><a class="ds-link" data-size="small" href="http://exam.ybmnet.co.kr/center_new/">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">온라인성적표출력</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">1544-4536</span><a class="ds-link" data-size="small" href="http://exam.ybmnet.co.kr/center_new/?strWord=30">고객문의</a></span></div></li>
+                </ul>
+              </section>
+              <section class="cs-group">
+                <h4 class="cs-h4">학원</h4>
+                <ul class="ds-list cs-tel" data-divider>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">YBM어학원</span></span><span class="ds-list-item__suffix cs-tel__row"><span>각 학원으로 문의</span><a class="ds-link" data-size="small" href="http://www.ybmedu.com/introduction/4_customer_faq_listV2.asp">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">잉글루</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2008-5200<strong>+6</strong></span><a class="ds-link" data-size="small" href="https://www.ybmengloo.com/cus/faq">고객문의</a></span></div></li>
+                </ul>
+              </section>
+              <section class="cs-group">
+                <h4 class="cs-h4">MOS / IT시험</h4>
+                <ul class="ds-list cs-tel" data-divider>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">시험관련문의</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2279-0505<strong>+3</strong></span><a class="ds-link" data-size="small" href="https://www.ybmit.com/cs/faq_list.jsp">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">인터넷접수/결제</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2279-0505<strong>+3</strong></span><a class="ds-link" data-size="small" href="https://www.ybmit.com/cs/faq_list.jsp">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">회원가입, 인증문의</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2008-5200<strong>+0</strong></span><span class="cs-tel__gap" aria-hidden="true">고객문의</span></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">온라인강의 패키지<br>(강의+쿠폰) 문의</span></span><span class="ds-list-item__suffix cs-tel__row"><span>1:1문의 게시판으로 문의</span><a class="ds-link" data-size="small" href="https://www.ybmcc.com/v2/custom/myqna_write.asp">고객문의</a></span></div></li>
+                </ul>
+              </section>
+            </div>
+          </article>
+          <!-- //cont_l -->
+
+          <!-- cont_r -->
+          <article class="ds-card ybm cs-card">
+            <header class="ds-card__header">
+              <h3 class="ds-card__title cs-card__title"><i class="ds-icon ds-icon--headset" aria-hidden="true"></i>YBM고객센터</h3>
+              <p class="ds-card__desc">평일 <span class="cs-num">09:00~18:00</span> ( 점심시간 <span class="cs-num">12:30~1:30</span>)<br>주말 / 공휴일 휴무</p>
+            </header>
+            <div class="ds-card__content ars_list cs-groups">
+              <section class="cs-group">
+                <h4 class="cs-h4">인터넷강의</h4>
+                <ul class="ds-list cs-tel" data-divider>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">YBM 인강</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2008-5200<strong>+2</strong></span><a class="ds-link" data-size="small" href="/center_2014/faqList.asp?strWord1=20&amp;strWord2=1&amp;strWoard=&amp;intPage=1">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">전화영어</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2008-5268</span><a class="ds-link" data-size="small" href="/center_2014/faqList.asp?strWord1=2">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">YBM 커리어캠퍼스</span></span><span class="ds-list-item__suffix cs-tel__row"><span>1:1문의 게시판으로 문의</span><a class="ds-link" data-size="small" href="https://www.ybmcc.com/v2/custom/myqna_write.asp">고객문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">교원연수</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-501-7812</span><a class="ds-link" data-size="small" href="http://www.ybmteachers.com/ver20/community/faq.asp">고객문의</a></span></div></li>
+                  <!-- 학점은행 02-2009-0524: 운영 화면에서도 주석 처리 -->
+                </ul>
+              </section>
+              <section class="cs-group">
+                <h4 class="cs-h4">기업 / 단체교육</h4>
+                <ul class="ds-list cs-tel" data-divider>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">어학교육</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2009-0000</span><a class="ds-link" data-size="small" href="http://www.ybmb2b.com/">교육문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">온/오프라인 통합교육</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2009-0000</span><a class="ds-link" data-size="small" href="http://www.ybmb2b.com/">교육문의</a></span></div></li>
+                  <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">출강교육</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2009-0071</span><a class="ds-link" data-size="small" href="http://www.ybmb2b.com/">교육문의</a></span></div></li>
+                </ul>
+              </section>
+            </div>
+          </article>
+          <!-- //cont_r -->
+        </div>
+
+        <section class="ds-card ars_list cs-card">
+          <header class="ds-card__header">
+            <h3 class="ds-card__title">YBM Family Site</h3>
+          </header>
+          <div class="ds-card__content cs-family">
+            <div class="cs-family__col"><ul class="ds-list cs-tel" data-divider>
+              <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">학습교재</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2000-0515</span><a class="ds-link" data-size="small" href="http://www.ybmbooks.com/customer/faq.asp">고객문의</a></span></div></li>
+              <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">교과서ㆍ참고서</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2000-0500</span><a class="ds-link" data-size="small" href="https://www.ybmbooksam.com/html/board/notice_list">고객문의</a></span></div></li>
+              <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">모임공간 YBM the Biz</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">1588-4172</span><a class="ds-link" data-size="small" href="http://www.ybmthebiz.com/customer/question_list.asp">고객문의</a></span></div></li>
+            </ul></div>
+            <div class="cs-family__col"><ul class="ds-list cs-tel" data-divider>
+              <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">교과서(학교 교사 지원)</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2000-0599</span><a class="ds-link" data-size="small" href="https://www.ybmcloud.com/cscenter/faq?gnbId=347&amp;siteType=E">고객문의</a></span></div></li>
+              <li><div class="ds-list-item" data-size="small"><span class="ds-list-item__content"><span class="ds-list-item__title">유학</span></span><span class="ds-list-item__suffix cs-tel__row"><span class="cs-num">02-2273-9671</span><a class="ds-link" data-size="small" href="http://www.ybmuhak.com/custom/custom_main.asp">고객문의</a></span></div></li>
+            </ul></div>
+          </div>
+        </section>
+      </div>
+    </section>
+    <!-- //contents -->
+  </main>
+  <!-- container -->
+
+  <!-- foot -->
+  <footer id="footer" class="cs-footer">
+    <div class="footer_in footer_util">
+      <p class="footer_txt">
+        <a class="ds-link" data-size="small" href="http://company.ybmnet.co.kr/" target="_blank">회사소개</a>
+        <a class="ds-link" data-size="small" href="#" onclick="window.open('https://member.ybmnet.co.kr/join/terms/ybmnet_agree.html', 'popupName', 'width=700, height=600, statusbar=0, scrollbars=0'); return false;">이용약관</a>
+        <a class="ds-link" data-size="small" href="http://member.ybmnet.co.kr/join/terms/ybmnet_indiv_new.html" target="_blank"><strong>개인정보처리방침</strong></a>
+      </p>
+      <p class="footer_copyright">Copyright ⓒ (주)와이비엠넷. All rights reserved.</p>
+    </div>
+  </footer>
+  <!-- //foot -->
+</div>
+</body>
+</html>

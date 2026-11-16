@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YBM IT GNB 간격 수정</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ===== ybm-ds-tokens.css ===== */
+/* ============================================================
+   YBM DS — 토큰 전용 추출본 (ybm-ds-tokens.css)
+   원본: design.ybmnet.co.kr/ds/dist/ybm-ds.css?ver1002 (176KB)
+   ------------------------------------------------------------
+   메가메뉴(nav-*)가 사용하는 토큰 + 의존 변수 49개만 포함.
+   리셋·태그 스타일·컴포넌트 클래스 없음 → 기존 페이지에 무영향.
+   ============================================================ */
+:root{
+  /* Color primitives */
+  --color-white:#ffffff;
+  --color-gray-50:#f9fafb;
+  --color-gray-100:#f3f4f6;
+  --color-gray-200:#e5e7eb;
+  --color-gray-400:#9ca3af;
+  --color-gray-600:#4b5563;
+  --color-gray-950:#030712;
+
+  /* Brand — DS 기본(블루). YBM IT 오렌지는 body.ybmit-brand 에서 오버라이드 */
+  --brand-50:#fff3ea;
+  --brand-100:#ffe2cc;
+  --brand-500:#ff8c40;
+  --brand-600:#ff761e;   /* YBM IT primary */
+  --brand-700:#e8600c;   /* hover  */
+  --brand-800:#c24e08;   /* active */
+  --color-focus-ring:var(--brand-600);
+
+  /* Semantic */
+  --text-primary:var(--color-gray-950);
+  --text-secondary:var(--color-gray-600);
+  --text-tertiary:var(--color-gray-400);
+  --surface-default:var(--color-white);
+  --surface-subtle:var(--color-gray-50);
+  --surface-muted:var(--color-gray-100);
+  --border-default:var(--color-gray-200);
+  --border-subtle:var(--color-gray-100);
+
+  /* Typography */
+  --text-12:12px;
+  --text-14:14px;
+  --text-15:15px;
+  --text-17:17px;
+  --text-18:18px;
+  --text-22:22px;
+  --weight-regular:400;
+  --weight-medium:500;
+  --weight-semibold:600;
+  --weight-bold:700;
+
+  /* Spacing */
+  --space-8:8px;
+  --space-10:10px;
+  --space-12:12px;
+  --space-16:16px;
+  --space-20:20px;
+  --space-24:24px;
+  --space-32:32px;
+  --space-40:40px;
+  --space-48:48px;
+  --space-64:64px;
+
+  /* Radius */
+  --radius-8:8px;
+  --radius-12:12px;
+  --radius-16:16px;
+
+  /* Motion & Shadow */
+  --duration-fast:120ms;
+  --duration-normal:200ms;
+  --ease-out:cubic-bezier(0, 0, 0.2, 1);
+  --shadow-2xl:0 8px 24px 0 rgba(0, 0, 0, 0.12);
+}
+
+
+/* ===== main-h.css 중 헤더 의존 값 + 리셋 ===== */
+/* ---------- 1) 헤더 의존 값 (헤더 전용 · 시안 E 본문에서는 쓰지 않음) ----------
+   원본 header.css 가 쓰는데 DS 토큰 파일에 없는 값 (A~D 는 common.css 에서 받음)
+   이 값이 없으면 헤더 폭 · 간격이 깨지므로 시안 E 에서만 채워 둠
+   헤더 원본 값이므로 --text-13(13px)도 그대로 유지 */
+:root {
+  --container-max: 1100px; /* 본문 · 푸터(1100)와 같은 폭 */
+  --space-0: 0px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-14: 14px;
+  --space-56: 56px;
+  --text-13: 13px;
+  --text-16: 16px;
+  --radius-6: 6px;
+}
+
+/* ---------- 2) 리셋 · 레이아웃 ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+  font-size: var(--text-15);
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--surface-muted); /* 메인 배경 : gray-50 → gray-100 한 단계 올림 */
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+.blind {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+body { min-height: 100vh; }
+
+/* ===== header.css (GNB 간격 수정본: [간격 수정] 주석 참고) ===== */
+/* =========================================================
+   공용 헤더 (채용정보 배너 + 헤더 + 메가메뉴 + 모바일 전체 메뉴)
+   원본: localhost:5577 헤더 네비게이션 (style.css)
+   - 공통 토큰은 common.css 에 있으므로 여기에는 헤더 전용 확장 토큰만 둠
+   - 데모 본문(.demo-content) 스타일은 제외
+   ========================================================= */
+:root {
+  /* 색상 */
+  --nvb-blue: #0068f0;            /* 채용정보 배너 기업명 */
+  --color-shadow: #0000001a;      /* 관련사이트 드롭다운 그림자 */
+  --color-card-shadow: #0000000d; /* 채용정보 카드 그림자 */
+  --color-dim: #00000066;         /* 메가메뉴 배경 딤 (검정 40%) */
+
+  /* 행간 */
+  --line-height-normal: normal;
+  --line-height-130: 1.3;
+  --line-height-150: 1.5;
+
+  /* 간격 */
+  --space-30: 30px;
+
+  /* 크기 */
+  --header-top-h: 58px;
+  --gnb-h: 60px;
+  --letter-spacing-tight: -0.03em; /* [두 줄 맞춤] 긴 하위 메뉴를 칸 너비에 맞출 때 쓰는 좁은 자간 */
+  --gnb-mobile-h: 52px;
+  --logo-ybmit-w: 94.739px;
+  --logo-ybm-w: 55.161px;
+  --logo-h: 30px;
+  --icon-14: 14px;
+  --icon-16: 16px;
+  --icon-24: 24px;
+  --icon-32: 32px;
+  --dropdown-w: 94px;
+  --menu-line-w: 18px;
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-3: 3px;
+  --shadow-dropdown: 0 0 4px var(--color-shadow);
+  --banner-btn-size: 40px;
+  --banner-body-max-h: 260px;
+  --shadow-card: 0 2px 8px var(--color-card-shadow);
+
+  /* 모션 */
+  --duration-slow: 300ms;
+  --ease-default: ease;
+
+  /* 쌓임 순서 */
+  --z-header: 100;
+  --z-dim: 99;
+  --z-banner: 100;
+  --z-dropdown: 10;
+}
+
+/* 원본(5577) 기본 글꼴 환경 그대로 고정
+   - 시안 본문(body)의 폰트·크기·행간·줄바꿈 설정이 헤더로 상속되지 않게 차단 */
+.recruit-banner,
+.header {
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 16px;
+  line-height: normal;
+  word-break: normal;
+}
+
+/* 헤더 내부 컨테이너 */
+.container {
+  width: 100%;
+  max-width: calc(var(--container-max) + var(--space-20) * 2);
+  margin: var(--space-0) auto;
+  padding: var(--space-0) var(--space-20);
+}
+
+/* =========================================================
+   채용정보 배너 (헤더 위)
+   - 토글로 카드 영역을 접고 펼침, X 로 배너 전체 닫기
+   ========================================================= */
+.recruit-banner {
+  position: relative;
+  z-index: var(--z-banner);
+  overflow-x: clip; /* 좁은 데스크톱에서 바깥 화살표가 가로 스크롤을 만들지 않게 */
+  background: var(--surface-subtle);
+  border-bottom: var(--border-1) solid var(--border-default);
+}
+
+.recruit-banner.is-hidden {
+  display: none;
+}
+
+.recruit-banner-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: var(--space-12) var(--space-0);
+}
+
+.recruit-banner-logo {
+  height: 20px; /* 요청에 따라 변수 대신 숫자로 명시 */
+}
+
+.recruit-banner-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.recruit-banner-title {
+  font-size: var(--text-15);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.recruit-banner-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-10);
+  border: var(--border-1) solid var(--border-default);
+  border-radius: var(--radius-8);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* 펼친 상태에서는 위쪽 화살표(닫기), 접힌 상태에서는 아래쪽 화살표(열기) */
+.recruit-banner-badge .recruit-banner-badge-icon {
+  width: var(--icon-14);
+  height: var(--icon-14);
+  transform: rotate(180deg);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.recruit-banner.is-collapsed .recruit-banner-badge .recruit-banner-badge-icon {
+  transform: none;
+}
+
+.recruit-banner-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  font-size: var(--text-12);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.recruit-banner-today {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  cursor: pointer;
+}
+
+.recruit-banner-today-check {
+  margin: var(--space-0);
+}
+
+.recruit-banner-close {
+  padding: var(--space-2);
+  line-height: 0;
+  color: var(--text-tertiary);
+}
+
+.recruit-banner-close:hover,
+.recruit-banner-close:focus-visible {
+  color: var(--text-secondary);
+}
+
+/* 카드 영역: 최대 높이 전환으로 접고 펼침
+   펼침이 끝나면(.is-settled) 바깥 화살표가 잘리지 않도록 overflow 해제 */
+.recruit-banner-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--duration-normal) var(--ease-out);
+}
+
+.recruit-banner-body.is-open {
+  max-height: var(--banner-body-max-h);
+}
+
+.recruit-banner-body.is-open.is-settled {
+  overflow: visible;
+}
+
+/* --slider-inset: 화면 양옆 여백이 화살표 자리(56px + 여유 16px)보다 좁으면
+   모자란 만큼 카드 영역을 안쪽으로 밀어 화살표가 화면 밖으로 나가거나 카드와 겹치지 않게 함
+   (100% = 콘텐츠 폭, (100vw - 100%) / 2 = 한쪽 여백) */
+.recruit-slider {
+  /* max() 안에서는 단위 없는 0(--space-0)을 쓸 수 없어 0px 사용 */
+  --slider-inset: max(0px, calc(var(--space-56) + var(--space-16) - (100vw - 100%) / 2));
+  position: relative;
+  padding: var(--space-8) var(--slider-inset) var(--space-24);
+}
+
+.recruit-slider-viewport {
+  overflow: hidden;
+}
+
+/* 이동 거리는 script.js 에서 카드 폭 + 간격으로 계산 */
+.recruit-slider-track {
+  display: flex;
+  gap: var(--space-16);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+/* 데스크톱: 한 화면에 4장 */
+.recruit-card {
+  flex: 0 0 calc((100% - var(--space-16) * 3) / 4);
+  padding: var(--space-20) var(--space-24);
+  background: var(--surface-default);
+  border: var(--border-1) solid var(--border-subtle);
+  border-radius: var(--radius-12);
+  box-shadow: var(--shadow-card);
+}
+
+.recruit-card-company {
+  margin-bottom: var(--space-10);
+  font-size: var(--text-18);
+  font-weight: var(--weight-bold);
+  color: var(--nvb-blue);
+}
+
+.recruit-card-status {
+  padding-bottom: var(--space-12);
+  border-bottom: var(--border-1) solid var(--border-default);
+  font-size: var(--text-14);
+  color: var(--text-primary);
+}
+
+.recruit-card-desc {
+  margin-top: var(--space-12);
+  font-size: var(--text-14);
+  color: var(--text-tertiary);
+}
+
+/* 좌우 화살표: 카드 바깥 56px 위치 (여백이 좁으면 --slider-inset 만큼 안쪽으로) */
+.recruit-slider-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--banner-btn-size);
+  height: var(--banner-btn-size);
+  color: var(--text-tertiary);
+  transform: translateY(-50%);
+}
+
+.recruit-slider-btn svg {
+  width: var(--icon-32);
+  height: var(--icon-32);
+}
+
+.recruit-slider-btn:hover,
+.recruit-slider-btn:focus-visible {
+  color: var(--brand-700);
+}
+
+.recruit-slider-prev {
+  left: calc(var(--slider-inset) - var(--space-56));
+}
+
+.recruit-slider-next {
+  right: calc(var(--slider-inset) - var(--space-56));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recruit-banner-badge-icon,
+  .recruit-banner-body,
+  .recruit-slider-track {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   헤더
+   - .header 는 본문 흐름에서 접힌 높이만 차지하고,
+     .header-wrap 이 그 위에 떠서 펼쳐질 때 본문을 덮는다.
+   ========================================================= */
+.header {
+  position: relative;
+  z-index: var(--z-header);
+  height: calc(var(--header-top-h) + var(--gnb-h));
+}
+
+.header-wrap {
+  position: absolute;
+  top: var(--space-0);
+  left: var(--space-0);
+  right: var(--space-0);
+  background: var(--surface-default);
+  /* 메가메뉴 열림/닫힘: 레퍼런스(현대자동차그룹 UX 스튜디오)처럼
+     높이가 0.2초 동안 늘어나고 줄어들며 커튼처럼 드러남.
+     열린 높이는 script.js 에서 실제 높이를 재서 지정 */
+  height: calc(var(--header-top-h) + var(--gnb-h));
+  overflow: hidden;
+  transition: height var(--duration-normal) var(--ease-out);
+}
+
+/* 관련사이트 드롭다운이 열려 있을 때는 헤더 밖으로 나와도 잘리지 않게 함
+   (드롭다운을 연 상태에서 메가메뉴가 열리면 script.js 가 드롭다운을 먼저 닫음) */
+.header-wrap:has(.util-related.is-open) {
+  overflow: visible;
+}
+
+/* ---------- 상단 바 ---------- */
+.header-top-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* 높이는 내용(로고 30px)과 위아래 패딩으로 결정 */
+  padding-top: var(--space-14);
+  padding-bottom: var(--space-14);
+}
+
+/* 로고: 피그마 YBMIT 인스턴스의 두 그룹 위치를 비율 그대로 배치 */
+.logo-ybmit {
+  position: relative;
+  display: block;
+  width: var(--logo-ybmit-w);
+  height: var(--logo-h);
+}
+
+.logo-ybmit-symbol {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 59.61%;
+  height: 100%;
+}
+
+.logo-ybmit-text {
+  position: absolute;
+  top: 4.76%;
+  left: 68.7%;
+  width: 31.3%;
+  height: 95.14%;
+}
+
+/* ---------- 유틸 메뉴 ---------- */
+.util {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+}
+
+.util-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-14);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-normal);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.util-link:hover,
+.util-link:focus-visible {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.icon-chevron {
+  width: var(--icon-16);
+  height: var(--icon-16);
+}
+
+/* 관련사이트 드롭다운 */
+.util-related {
+  position: relative;
+}
+
+.util-related.is-open .icon-chevron {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  top: calc(100% + var(--space-6));
+  right: var(--space-0);
+  display: none;
+  width: var(--dropdown-w);
+  border-radius: var(--radius-6);
+  background: var(--surface-default);
+  filter: drop-shadow(var(--shadow-dropdown));
+  overflow: hidden;
+}
+
+.util-related.is-open .dropdown {
+  display: block;
+}
+
+.dropdown-link {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12);
+  font-size: var(--text-14);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-normal);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.dropdown-link:hover,
+.dropdown-link:focus-visible {
+  background: var(--surface-muted);
+  font-weight: var(--weight-semibold);
+}
+
+/* 모바일 전용 요소는 기본 숨김 */
+.menu-btn,
+.gnb-util {
+  display: none;
+}
+
+/* ---------- GNB ---------- */
+.gnb-list {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.gnb-item {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto; /* [간격 수정] 대메뉴 글자 너비 + 남는 폭을 칸마다 똑같이 → 대메뉴 사이 간격 일정 */
+  min-width: 0;
+}
+
+.gnb-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--gnb-h);
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-height-normal);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* 상위 메뉴 밑줄
+   - ::before 로 그려 글자 세로 위치에 영향이 없게 함
+   - 왼쪽 끝에서 오른쪽으로 늘어남 */
+.gnb-link::before {
+  content: "";
+  position: absolute;
+  left: var(--space-0);
+  right: var(--space-16); /* [밑줄 영역] 칸 너비 - 옆 칸과의 최소 간격 */
+  bottom: var(--space-0);
+  height: var(--border-3);
+  background: var(--text-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-slow) var(--ease-default);
+}
+
+/* 펼침 상태에서 마우스/포커스가 있는 열의 상위 메뉴 강조 */
+.header.is-open .gnb-item:hover .gnb-link,
+.header.is-open .gnb-item:has(:focus-visible) .gnb-link { /* [강조 수정] focus-within → 키보드 포커스만 */
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.header.is-open .gnb-item:hover .gnb-link::before,
+.header.is-open .gnb-item:has(:focus-visible) .gnb-link::before {
+  transform: scaleX(1);
+}
+
+/* [강조 수정] 마우스가 메뉴 위에 있으면 마우스가 없는 칸은 강조하지 않음 */
+.header.is-open .gnb-list:hover .gnb-item:not(:hover) .gnb-link {
+  font-weight: var(--weight-semibold);
+}
+
+.header.is-open .gnb-list:hover .gnb-item:not(:hover) .gnb-link::before {
+  transform: scaleX(0);
+}
+
+/* 움직임 줄이기 설정을 켠 사용자는 모션 없이 표시 */
+@media (prefers-reduced-motion: reduce) {
+  .gnb-link::before {
+    transition: none;
+  }
+}
+
+/* ---------- 메가메뉴 (펼침) ----------
+   - 소메뉴와 하단 로고는 항상 배치해 두고 .header-wrap 높이로 가림
+   - 닫혀 있을 때는 visibility 로 숨겨 Tab 포커스가 들어가지 않게 함
+     (닫히는 0.2초 동안은 보이도록 visibility 전환을 늦춤) */
+.gnb-sub,
+.gnb-footer {
+  visibility: hidden;
+  transition: visibility 0s linear var(--duration-normal);
+}
+
+.header.is-open .gnb-sub,
+.header.is-open .gnb-footer {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.gnb-sub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  padding: var(--space-20) var(--space-0);
+  /* [간격 수정] 하위 메뉴가 칸 너비를 늘리지 않게 하고(width 0), 칸 너비만큼 채움
+     오른쪽 16px 은 옆 칸 하위 메뉴와의 최소 간격 */
+  width: 0;
+  min-width: 100%;
+  padding-right: var(--space-16);
+}
+
+.gnb-sub-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+/* 그룹 사이 구분선
+   - 피그마 선은 높이 0이라 간격(24 + 24)에 선 두께를 포함시킴 */
+.gnb-sub-group + .gnb-sub-group {
+  padding-top: calc(var(--space-24) - var(--border-1));
+  border-top: var(--border-1) solid var(--border-default);
+}
+
+.gnb-sub-link {
+  display: block;
+  font-size: var(--text-14);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-height-130);
+  color: var(--text-secondary);
+  white-space: normal; /* [간격 수정] 칸 너비를 넘으면 단어 단위로 줄바꿈 */
+  word-break: keep-all;
+}
+
+/* 피그마에서 두세 줄로 나뉜 항목 */
+.gnb-sub-link.is-multiline {
+  line-height: var(--line-height-150);
+}
+
+/* [두 줄 맞춤] 한 줄이 칸보다 조금 긴 항목은 자간만 좁혀 두 줄을 지킴 */
+.gnb-sub-link.is-tight {
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+/* [두 줄 맞춤] 화면 폭에 따라 자간을 단계별로 조정
+   - 1140px 이상: 메뉴 폭 1100px 고정 → -0.03em
+   - 1025~1139px: 메뉴 폭이 줄어드는데 글자는 16px 그대로 → -0.07em
+   - 1024px 이하: 글자가 15px 로 작아짐 → -0.05em */
+@media (max-width: 1139px) {
+  :root {
+    --letter-spacing-tight: -0.07em;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --letter-spacing-tight: -0.05em;
+  }
+}
+
+.gnb-sub-link:hover,
+.gnb-sub-link:focus-visible {
+  font-weight: var(--weight-semibold);
+  color: var(--brand-600);
+}
+
+.gnb-footer {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-30) var(--space-0);
+}
+
+/* 움직임 줄이기 설정을 켠 사용자는 높이 전환 없이 바로 열고 닫음 */
+@media (prefers-reduced-motion: reduce) {
+  .header-wrap,
+  .gnb-sub,
+  .gnb-footer {
+    transition: none;
+  }
+}
+
+.logo-ybm {
+  width: var(--logo-ybm-w);
+  height: var(--logo-h);
+}
+
+/* ---------- 배경 딤 ----------
+   - 메가메뉴가 열리면(.header.is-open) 헤더 아래 본문을 어둡게 덮음
+   - 클릭을 막지 않도록 pointer-events 없음 */
+.dim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dim);
+  background: var(--color-dim);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--duration-slow) var(--ease-default),
+              visibility var(--duration-slow) var(--ease-default);
+}
+
+.header.is-open ~ .dim {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dim {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   태블릿
+   ========================================================= */
+@media (max-width: 1024px) {
+  /* 열 폭이 좁아지므로 메뉴 글자는 단어 단위로 줄바꿈 */
+  .gnb-link {
+    font-size: var(--text-14);
+    line-height: var(--line-height-130);
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  .gnb-sub-link {
+    font-size: var(--text-13);
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  /* 채용정보 배너: 한 화면에 3장, 화살표는 카드 양옆 여백 안으로 */
+  .recruit-slider {
+    --slider-inset: var(--space-40);
+  }
+
+  .recruit-card {
+    flex-basis: calc((100% - var(--space-16) * 2) / 3);
+  }
+
+  .recruit-slider-prev {
+    left: var(--space-0);
+  }
+
+  .recruit-slider-next {
+    right: var(--space-0);
+  }
+
+  .recruit-slider-btn svg {
+    width: var(--icon-24);
+    height: var(--icon-24);
+  }
+}
+
+/* =========================================================
+   모바일
+   - 유틸 메뉴와 GNB를 햄버거 버튼 안의 전체 메뉴로 이동
+   - 상위 메뉴를 누르면 하위 메뉴가 아코디언으로 열림
+   ========================================================= */
+@media (max-width: 768px) {
+  .header {
+    height: var(--header-top-h);
+  }
+
+  /* 모바일은 높이 커튼 대신 전체 메뉴가 자연 높이로 열림 */
+  .header-wrap {
+    height: auto;
+    overflow: visible;
+    transition: none;
+  }
+
+  .util {
+    display: none;
+  }
+
+  /* 햄버거 버튼 */
+  .menu-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    width: var(--icon-24);
+    height: var(--icon-24);
+  }
+
+  .menu-btn-line {
+    width: var(--menu-line-w);
+    height: var(--border-2);
+    background: var(--text-primary);
+  }
+
+  /* 열린 상태: X 모양 */
+  .header.is-menu-open .menu-btn-line:nth-child(1) {
+    transform: translateY(calc(var(--space-4) + var(--border-2))) rotate(45deg);
+  }
+
+  .header.is-menu-open .menu-btn-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .header.is-menu-open .menu-btn-line:nth-child(3) {
+    transform: translateY(calc((var(--space-4) + var(--border-2)) * -1)) rotate(-45deg);
+  }
+
+  /* 전체 메뉴 */
+  .gnb {
+    display: none;
+    max-height: calc(100vh - var(--header-top-h));
+    overflow-y: auto;
+    border-bottom: var(--border-1) solid var(--border-default);
+  }
+
+  .header.is-menu-open .gnb {
+    display: block;
+  }
+
+  .gnb-list {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gnb-item {
+    flex: none;
+    border-bottom: var(--border-1) solid var(--border-default);
+  }
+
+  .gnb-item:last-child {
+    border-bottom: 0;
+  }
+
+  .gnb-link {
+    justify-content: space-between;
+    height: var(--gnb-mobile-h);
+    font-size: var(--text-16);
+  }
+
+  /* 하위 메뉴가 있는 항목에만 화살표 표시 */
+  .gnb-item.has-sub .gnb-link::after {
+    content: "";
+    width: var(--icon-16);
+    height: var(--icon-16);
+    background: url("https://dbdmsdk3.github.io/ybmit-main-renewal/images/icon-chevron-down.svg") no-repeat center / contain;
+  }
+
+  .gnb-item.is-expanded .gnb-link::after {
+    transform: rotate(180deg);
+  }
+
+  /* 모바일은 밑줄 없음 */
+  .gnb-link::before {
+    content: none;
+  }
+
+  .gnb-item.is-expanded .gnb-link {
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+  }
+
+  /* 데스크톱 펼침 규칙 대신 아코디언 상태만 따름 */
+  .gnb-sub {
+    display: none;
+    visibility: visible;
+    transition: none;
+  }
+
+  .header .gnb-item.is-expanded .gnb-sub {
+    display: flex;
+  }
+
+  .gnb-sub {
+    width: auto; /* [간격 수정] 모바일은 원래 너비 */
+    padding: var(--space-0) var(--space-0) var(--space-20);
+  }
+
+  /* [줄바꿈 지정] 모바일은 한 줄 폭이 넉넉하므로 정해 둔 줄바꿈을 끔 */
+  .gnb-sub-link.is-multiline br {
+    display: none;
+  }
+
+  .gnb-sub-link {
+    font-size: var(--text-14);
+  }
+
+  .gnb-footer {
+    display: none;
+  }
+
+  /* 모바일 유틸 메뉴 */
+  .gnb-util {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-12) var(--space-20);
+    padding: var(--space-20);
+    background: var(--surface-muted);
+    font-size: var(--text-12);
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+  }
+
+  /* 채용정보 배너
+     - 1줄: 로고 + 오늘 하루 닫기 / X, 2줄: 안내 문구 + 열기·닫기
+     - 카드는 한 화면에 2장 */
+  .recruit-banner-head {
+    flex-wrap: wrap;
+    gap: var(--space-10) var(--space-16);
+  }
+
+  .recruit-banner-toggle {
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .recruit-banner-right {
+    order: 1;
+  }
+
+  .recruit-banner-title {
+    font-size: var(--text-14);
+    word-break: keep-all;
+  }
+
+  .recruit-slider {
+    --slider-inset: var(--space-30);
+  }
+
+  .recruit-card {
+    flex-basis: calc((100% - var(--space-16)) / 2);
+    padding: var(--space-16);
+  }
+
+  .recruit-card-company {
+    font-size: var(--text-16);
+  }
+
+  .recruit-card-status,
+  .recruit-card-desc {
+    font-size: var(--text-13);
+    word-break: keep-all;
+  }
+
+  .recruit-slider-btn {
+    width: var(--space-30);
+  }
+}
+
+/* 공용 리셋(img max-width)과 충돌 방지 */
+.header img, .recruit-banner img { max-width: none; }
+
+
+/* ===== main-h.css 중 GNB 덮어쓰기 (원본 그대로) ===== */
+/* ---------- GNB 글자 크기 : 공용 header.css 보다 2px 크게 (대메뉴 16→18, 하위 14→16) ---------- */
+.gnb-link { font-size: var(--text-18); }
+.gnb-sub-link { font-size: var(--text-16); }
+
+/* ---------- 8) 반응형 : 태블릿 ---------- */
+/* 모바일 전체 메뉴 하단 고정 바 : 데스크톱 · 태블릿에서는 숨김 (모바일 규칙은 아래 768 블록) */
+.gnb-bottom { display: none; }
+@media (max-width: 1024px) {
+  /* GNB 글자 크기 : 태블릿도 공용보다 2px 크게 (대메뉴 14→16, 하위 13→15) */
+  .gnb-link { font-size: var(--text-16); }
+  .gnb-sub-link { font-size: var(--text-15); }
+}
+@media (max-width: 768px) {
+  /* ---------- 모바일 전체 메뉴 : 라인형 → 아코디언형 (mobile-menu-proposal A 안) ----------
+     공용 header.css 는 그대로 두고 여기서 덮어씀 · 호버는 PC 와 같게(대메뉴 Bold, 하위 SemiBold + 주황, 유틸 SemiBold) */
+  .gnb { border-bottom: 0px; }
+  .header.is-menu-open .gnb { display: flex; flex-direction: column; }
+
+  /* 상단 유틸 : 메뉴 목록 위 · 회색 알약 버튼 */
+  .gnb-util {
+    order: -1;
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-20) var(--space-16);
+    font-size: var(--text-14);
+    font-weight: var(--weight-regular);
+    background: var(--surface-default);
+  }
+  .gnb-util a {
+    display: block;
+    padding: var(--space-8) var(--space-12);
+    color: var(--text-secondary);
+    background: var(--surface-muted);
+    border-radius: 999px;
+  }
+  .gnb-util a:hover,
+  .gnb-util a:focus-visible { font-weight: var(--weight-semibold); color: var(--text-primary); }
+
+  /* 메뉴 목록 : 위쪽 8px 연회색 띠로 구분, 항목 사이 선 없음 */
+  .gnb .container { padding: 0px; border-top: 8px solid var(--surface-subtle); }
+  .gnb-item { border-bottom: 0px; }
+  .gnb-link {
+    height: 56px;
+    padding: 0px var(--space-20);
+    font-size: var(--text-17);
+    font-weight: var(--weight-medium);
+  }
+  .gnb-link:hover,
+  .gnb-link:focus-visible { font-weight: var(--weight-bold); }
+
+  /* 펼친 하위 메뉴 : 연회색 바탕 · 그룹 구분선 없이 한 목록으로 */
+  .gnb-sub { gap: 0px; padding: var(--space-8) 0px; background: var(--surface-subtle); }
+  .gnb-sub-group { gap: 0px; }
+  .gnb-sub-group + .gnb-sub-group { padding-top: 0px; border-top: 0px; }
+  .gnb-sub-link {
+    padding: var(--space-10) var(--space-20) var(--space-10) var(--space-32);
+    font-size: var(--text-15);
+    white-space: normal;
+  }
+
+  /* 하단 고정 바 : 어학시험 | 온라인 강의 (메뉴를 스크롤해도 아래에 붙어 있음) */
+  .gnb-bottom {
+    position: sticky;
+    bottom: 0px;
+    display: flex;
+    background: var(--surface-default);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .gnb-bottom li { flex: 1; }
+  .gnb-bottom li + li { border-left: 1px solid var(--border-subtle); }
+  .gnb-bottom a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    font-size: var(--text-15);
+    color: var(--text-secondary);
+  }
+  .gnb-bottom a:hover,
+  .gnb-bottom a:focus-visible { font-weight: var(--weight-semibold); color: var(--text-primary); }
+
+  /* 메뉴 열림 : 채용 배너는 숨기고 헤더(로고 · ✕ + 메뉴)만 화면 전체를 덮음, 뒤 페이지 스크롤 잠금 */
+  body:has(.header.is-menu-open) { overflow: hidden; }
+  body:has(.header.is-menu-open) .recruit-banner { display: none; }
+  .header.is-menu-open { position: fixed; inset: 0px; z-index: 1000; height: auto; }
+  .header.is-menu-open .header-wrap { bottom: 0px; display: flex; flex-direction: column; }
+  .header.is-menu-open .gnb { flex: 1; min-height: 0px; max-height: none; }
+  .gnb-bottom { margin-top: auto; } /* 메뉴가 짧아도 하단 바는 화면 맨 아래 */
+}
+</style>
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="header-wrap">
+
+      <!-- 상단 바: 로고 + 유틸 메뉴 -->
+      <div class="header-top">
+        <div class="container header-top-inner">
+          <h1 class="header-logo">
+            <a href="/" title="YBM IT 메인으로 이동">
+              <img class="logo-ybmit" src="https://dbdmsdk3.github.io/ybmit-main-renewal/images/logo-ybmit.svg" alt="YBM IT">
+            </a>
+          </h1>
+
+          <ul class="util">
+            <li><a class="util-link" href="https://www.ybmnet.co.kr/common/login.asp?url=/&amp;what=www.ybmit.com">로그인</a></li>
+            <li><a class="util-link" href="/mytest/mytest_app.jsp">마이페이지</a></li>
+            <!-- 이벤트 : GNB에서 빼서 유틸 메뉴 마이페이지 옆으로 이동 -->
+            <li><a class="util-link" href="/cs/event_list.jsp">이벤트</a></li>
+            <li><a class="util-link" href="/cs/notice_list.jsp">고객센터</a></li>
+            <li class="util-related">
+              <button type="button" class="util-link util-related-btn" aria-expanded="false" aria-controls="related-list">
+                관련사이트
+                <!-- hover 시 글자색을 따라가도록 인라인 SVG + currentColor 사용 (원본: images/icon-chevron-down.svg) -->
+                <svg class="icon-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <!-- 관련사이트 드롭다운 -->
+              <ul class="dropdown" id="related-list">
+                <li><a class="dropdown-link" href="http://www.ybmit.com/ybmsisacom.jsp?SiteURL=exam.ybmnet.co.kr" target="_blank" rel="noopener noreferrer">어학시험</a></li>
+                <li><a class="dropdown-link" href="https://www.ybmcc.com/v2/index.asp?utm_source=IT_Main&amp;utm_medium=IT_Main&amp;utm_campaign=MOS_Util" target="_blank" rel="noopener noreferrer">온라인 강의</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <!-- 모바일 전용: 메뉴 열기 버튼 -->
+          <button type="button" class="menu-btn" aria-expanded="false" aria-controls="gnb" aria-label="전체 메뉴 열기">
+            <span class="menu-btn-line"></span>
+            <span class="menu-btn-line"></span>
+            <span class="menu-btn-line"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GNB + 메가메뉴 -->
+      <nav class="gnb" id="gnb" aria-label="주 메뉴">
+        <div class="container">
+          <ul class="gnb-list">
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="/test_rec/gen_rec.jsp">시험접수</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/test_rec/gen_rec.jsp">시험접수</a></li>
+                  <li><a class="gnb-sub-link" href="/mytest/mytest_app.jsp">접수확인 / 수험표출력</a></li>
+                  <li><a class="gnb-sub-link" href="/mytest/mytest_app_change.jsp">접수변경 / 취소</a></li>
+                </ul>
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link is-multiline" href="/test_rec/search_schedule.jsp">시험센터 / <br>시험일정조회</a></li>
+                  <li><a class="gnb-sub-link" href="/test_rec/test_s_center.jsp">시험센터 안내</a></li>
+                  <li><a class="gnb-sub-link" href="/test_rec/test_guide.jsp">수험자 가이드</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="#">Generative AI</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="#">Generative AI 소개</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="/mos/int_test.jsp">MOS</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/mos/int_test.jsp">MOS 소개</a></li>
+                  <li><a class="gnb-sub-link" href="/mos/mos_use_ex.jsp">MOS 활용사례</a></li>
+                </ul>
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/mos/course_info_list.jsp">MOS 온라인 강의</a></li>
+                  <li><a class="gnb-sub-link" href="/mos/skill_pds_list.jsp">오피스 스킬 자료실</a></li>
+                  <li><a class="gnb-sub-link is-multiline" href="/mos/institute_info_list.jsp">지역별 MOS <br>학원 정보</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="/cos/cos_info.jsp">COS</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/cos/cos_info.jsp">COS 소개</a></li>
+                  <li><a class="gnb-sub-link is-multiline" href="/cos/cos_ex_test.jsp">COS 시험 <br>체험하기</a></li>
+                  <li><a class="gnb-sub-link" href="/cos/cos_sam.jsp">COS 샘플문제</a></li>
+                  <li><a class="gnb-sub-link" href="/cos/cos_use_ex.jsp">COS 활용사례</a></li>
+                </ul>
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/cos/course_info_list.jsp">COS 온라인 강의</a></li>
+                  <li><a class="gnb-sub-link" href="/mos_use/cos_teacher.jsp">COS 공인 강사</a></li>
+                  <li><a class="gnb-sub-link is-multiline" href="/cos/institute_COSinfo_list.jsp">지역별 COS <br>학원 정보</a></li>
+                  <li><a class="gnb-sub-link is-multiline" href="/cos/cos_best_ins.jsp">COS 우수 <br>교육기관</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="/cos_pro/cos_pro_info.jsp">COS Pro</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/cos_pro/cos_pro_info.jsp">COS Pro 소개</a></li>
+                  <li><a class="gnb-sub-link" href="/cos_pro/cos_pro_r_test.jsp">COS Pro 샘플문제</a></li>
+                  <li><a class="gnb-sub-link" href="/cos_pro/cos_pro_use_ex.jsp">COS Pro 활용사례</a></li>
+                </ul>
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/cos_pro/course_info_list.jsp">COS Pro 온라인 강의</a></li>
+                  <li><a class="gnb-sub-link is-multiline" href="/cos_pro/institute_PROinfo_list.jsp">지역별 COS&nbsp;Pro <br>학원 정보</a></li>
+                  <li><a class="gnb-sub-link is-multiline is-tight" href="https://verify-certificate.sotatek.edu.vn" target="_blank" rel="noopener noreferrer">Global COS&nbsp;Pro <br>Certificate&nbsp;Verification</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="/data/data_info.jsp">DATA</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/data/data_info.jsp">DATA 소개</a></li>
+                  <li><a class="gnb-sub-link" href="/data/data_test.jsp">DATA 샘플문제</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="gnb-item">
+              <a class="gnb-link" href="/mos_use/mos_news_list.jsp">시험활용</a>
+              <div class="gnb-sub">
+                <ul class="gnb-sub-group">
+                  <li><a class="gnb-sub-link" href="/mos_use/mos_news_list.jsp">채용정보</a></li>
+                  <li><a class="gnb-sub-link" href="/mos_use/mos_use_ex.jsp">활용사례</a></li>
+                  <li><a class="gnb-sub-link" href="/mos_use/press_list.jsp">보도자료</a></li>
+                  <li><a class="gnb-sub-link" href="/mos_use/mos_movie.jsp">홍보영상</a></li>
+                  <li><a class="gnb-sub-link" href="/mos_use/book_list.jsp">시험교재</a></li>
+                  <li><a class="gnb-sub-link" href="/mos_use/mos_can_do/page.jsp">MOS Can do List</a></li>
+                  <li><a class="gnb-sub-link is-multiline is-tight" href="https://my.incruit.com/service/trustmarkcenter.asp" target="_blank" rel="noopener noreferrer">인크루트 이력서 인증 <br>MOS·COS·COS&nbsp;Pro</a></li>
+                </ul>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+
+        <!-- 메가메뉴 하단 YBM 로고 -->
+        <div class="gnb-footer">
+          <img class="logo-ybm" src="https://dbdmsdk3.github.io/ybmit-main-renewal/images/logo-ybm.svg" alt="YBM">
+        </div>
+
+        <!-- 모바일 전용: 상단 유틸 (메뉴 목록 위에 표시) -->
+        <ul class="gnb-util">
+          <li><a href="https://www.ybmnet.co.kr/common/login.asp?url=/&amp;what=www.ybmit.com">로그인</a></li>
+          <li><a href="/mytest/mytest_app.jsp">마이페이지</a></li>
+          <li><a href="/cs/event_list.jsp">이벤트</a></li>
+          <li><a href="/cs/notice_list.jsp">고객센터</a></li>
+        </ul>
+
+        <!-- 모바일 전용: 하단 고정 바 (외부 바로가기) -->
+        <ul class="gnb-bottom">
+          <li><a href="http://www.ybmit.com/ybmsisacom.jsp?SiteURL=exam.ybmnet.co.kr" target="_blank" rel="noopener noreferrer">어학시험</a></li>
+          <li><a href="https://www.ybmcc.com/v2/index.asp?utm_source=IT_Main&amp;utm_medium=IT_Main&amp;utm_campaign=MOS_Util" target="_blank" rel="noopener noreferrer">온라인 강의</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- 메가메뉴가 열릴 때 본문을 덮는 배경 딤 -->
+  <div class="dim" aria-hidden="true"></div>
+
+<script>
+(function () {
+  const header = document.getElementById('header');
+  const headerWrap = header.querySelector('.header-wrap');
+  const gnb = document.getElementById('gnb');
+  const gnbItems = gnb.querySelectorAll('.gnb-item');
+  const related = header.querySelector('.util-related');
+  const relatedBtn = header.querySelector('.util-related-btn');
+  const menuBtn = header.querySelector('.menu-btn');
+
+  // 반응형 구간 / 터치 기기 판별
+  const mobileQuery = window.matchMedia('(max-width: 768px)');
+  const touchQuery = window.matchMedia('(hover: none)');
+
+  // 하위 메뉴가 있는 항목 표시 (모바일 화살표용)
+  gnbItems.forEach(function (item) {
+    if (item.querySelector('.gnb-sub')) item.classList.add('has-sub');
+  });
+
+  /* ---------- 메가메뉴 (데스크톱 · 태블릿) ----------
+     열 때 소메뉴까지 포함한 실제 높이로 늘리고, 닫을 때 CSS 기본 높이로 되돌림
+     (높이 전환 자체는 style.css 의 .header-wrap transition) */
+  function openMega() {
+    if (mobileQuery.matches) return;
+    closeRelated();
+    header.classList.add('is-open');
+    headerWrap.style.height = headerWrap.scrollHeight + 'px';
+  }
+
+  function closeMega() {
+    header.classList.remove('is-open');
+    headerWrap.style.height = '';
+  }
+
+  gnb.addEventListener('mouseenter', openMega);
+  gnb.addEventListener('mouseleave', closeMega);
+
+  // 키보드 탐색: GNB 안으로 포커스가 들어오면 열고, 밖으로 나가면 닫음
+  gnb.addEventListener('focusin', openMega);
+  gnb.addEventListener('focusout', function (e) {
+    if (!gnb.contains(e.relatedTarget)) closeMega();
+  });
+
+  gnbItems.forEach(function (item) {
+    const link = item.querySelector('.gnb-link');
+
+    link.addEventListener('click', function (e) {
+      if (!item.classList.contains('has-sub')) return;
+
+      // 모바일: 상위 메뉴를 누르면 아코디언 토글
+      if (mobileQuery.matches) {
+        e.preventDefault();
+        toggleAccordion(item);
+        return;
+      }
+
+      // 터치 태블릿: 첫 탭은 메뉴 열기, 열린 뒤 탭하면 이동
+      if (touchQuery.matches && !header.classList.contains('is-open')) {
+        e.preventDefault();
+        openMega();
+      }
+    });
+  });
+
+  /* ---------- 관련사이트 드롭다운 ---------- */
+  function closeRelated() {
+    related.classList.remove('is-open');
+    relatedBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  relatedBtn.addEventListener('click', function () {
+    const willOpen = !related.classList.contains('is-open');
+    related.classList.toggle('is-open', willOpen);
+    relatedBtn.setAttribute('aria-expanded', String(willOpen));
+  });
+
+  /* ---------- 모바일 전체 메뉴 ---------- */
+  function setMenuOpen(open) {
+    header.classList.toggle('is-menu-open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? '전체 메뉴 닫기' : '전체 메뉴 열기');
+  }
+
+  function toggleAccordion(target) {
+    const willExpand = !target.classList.contains('is-expanded');
+    // 한 번에 하나의 하위 메뉴만 열림
+    gnbItems.forEach(function (item) {
+      item.classList.remove('is-expanded');
+    });
+    target.classList.toggle('is-expanded', willExpand);
+  }
+
+  menuBtn.addEventListener('click', function () {
+    setMenuOpen(!header.classList.contains('is-menu-open'));
+  });
+
+  // 모바일 → 태블릿/데스크톱 전환 시 모바일 상태 초기화
+  mobileQuery.addEventListener('change', function () {
+    setMenuOpen(false);
+    closeMega();
+    gnbItems.forEach(function (item) {
+      item.classList.remove('is-expanded');
+    });
+  });
+
+  /* ---------- 공통 닫기 ---------- */
+  // 바깥 영역 클릭 시 드롭다운 / 터치로 연 메가메뉴 닫기
+  document.addEventListener('click', function (e) {
+    if (!related.contains(e.target)) closeRelated();
+    if (!gnb.contains(e.target)) closeMega();
+  });
+
+  // ESC 키로 열린 메뉴 모두 닫기
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    closeRelated();
+    closeMega();
+  });
+})();
+
+/* ---------- 채용정보 배너 ---------- */
+(function () {
+  const banner = document.getElementById('recruit-banner');
+  if (!banner) return;
+
+  const toggleBtn = banner.querySelector('.recruit-banner-toggle');
+  const toggleText = banner.querySelector('.recruit-banner-badge-text');
+  const body = banner.querySelector('.recruit-banner-body');
+  const viewport = banner.querySelector('.recruit-slider-viewport');
+  const track = banner.querySelector('.recruit-slider-track');
+  const cards = track.children;
+  const prevBtn = banner.querySelector('.recruit-slider-prev');
+  const nextBtn = banner.querySelector('.recruit-slider-next');
+  const closeBtn = banner.querySelector('.recruit-banner-close');
+  const todayCheck = banner.querySelector('.recruit-banner-today-check');
+  const HIDDEN_KEY = 'ybm_banner_hidden_until';
+
+  // 오늘 하루 닫기를 선택한 경우 자정까지 숨김
+  try {
+    const hiddenUntil = Number(localStorage.getItem(HIDDEN_KEY));
+    if (hiddenUntil && Date.now() < hiddenUntil) banner.classList.add('is-hidden');
+  } catch (e) {
+    // 저장소를 쓸 수 없는 환경이면 항상 표시
+  }
+
+  /* 펼치기 / 접기 */
+  body.classList.add('is-settled');
+
+  toggleBtn.addEventListener('click', function () {
+    const willOpen = !body.classList.contains('is-open');
+    body.classList.remove('is-settled');
+    body.classList.toggle('is-open', willOpen);
+    banner.classList.toggle('is-collapsed', !willOpen);
+    toggleBtn.setAttribute('aria-expanded', String(willOpen));
+    toggleText.textContent = willOpen ? '닫기' : '열기';
+
+    // 움직임 줄이기 설정 등으로 전환이 없으면 transitionend 가 오지 않으므로 바로 처리
+    if (willOpen && parseFloat(getComputedStyle(body).transitionDuration) === 0) {
+      body.classList.add('is-settled');
+    }
+  });
+
+  // 펼침 전환이 끝나면 바깥 화살표가 보이도록 overflow 해제
+  body.addEventListener('transitionend', function (e) {
+    if (e.propertyName === 'max-height' && body.classList.contains('is-open')) {
+      body.classList.add('is-settled');
+    }
+  });
+
+  /* 슬라이더: 한 번에 한 기업씩 이동, 끝에 닿으면 반대쪽 끝으로 순환
+     한 화면 카드 수는 CSS(반응형)에서 정한 카드 폭으로 계산 */
+  let index = 0;
+
+  function getStep() {
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    return cards[0].offsetWidth + gap;
+  }
+
+  function getMaxIndex() {
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const visible = Math.round((viewport.clientWidth + gap) / getStep());
+    return Math.max(cards.length - visible, 0);
+  }
+
+  function render() {
+    track.style.transform = 'translateX(' + (-index * getStep()) + 'px)';
+  }
+
+  function move(dir) {
+    const maxIndex = getMaxIndex();
+    index += dir;
+    if (index > maxIndex) index = 0;
+    if (index < 0) index = maxIndex;
+    render();
+  }
+
+  prevBtn.addEventListener('click', function () { move(-1); });
+  nextBtn.addEventListener('click', function () { move(1); });
+
+  // 화면 폭이 바뀌면 카드 폭이 달라지므로 위치 다시 계산
+  window.addEventListener('resize', function () {
+    index = Math.min(index, getMaxIndex());
+    render();
+  });
+
+  /* 배너 닫기 */
+  closeBtn.addEventListener('click', function () {
+    if (todayCheck.checked) {
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      try {
+        localStorage.setItem(HIDDEN_KEY, String(midnight.getTime()));
+      } catch (e) {
+        // 저장 실패 시 이번 화면에서만 닫힘
+      }
+    }
+    banner.classList.add('is-hidden');
+  });
+})();
+
+</script>
+</body>
+</html>

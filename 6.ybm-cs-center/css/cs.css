@@ -1,0 +1,153 @@
+/* YBM Family 고객센터 - 서비스 CSS (YDS 다음에 불러온다)
+   값은 모두 --ds-* 토큰. 브랜드는 YDS 기본값을 그대로 쓴다(덮어쓰지 않음).
+   모바일 먼저, 768px / 1280px 에서 배치를 바꾼다. */
+
+:root {
+  --cs-gutter: var(--ds-space-x4);
+  --cs-page: 1200px;
+}
+@media (min-width: 768px) { :root { --cs-gutter: var(--ds-space-x6); } }
+
+body {
+  margin: 0;
+  background: var(--ds-color-bg-layer-default);
+  color: var(--ds-color-fg-neutral);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ---------- 머리글 (Top Navigation) ---------- */
+.cs-topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--ds-z-sticky);
+  background: var(--ds-color-bg-layer-default);
+  box-shadow: inset 0 -1px 0 var(--ds-color-stroke-neutral-muted);
+}
+.cs-topbar__in {
+  box-sizing: border-box;
+  width: min(100%, calc(var(--cs-page) + 2 * var(--cs-gutter)));
+  margin-inline: auto;
+  padding-inline: calc(var(--cs-gutter) - var(--ds-space-x2)); /* Top Navigation 안쪽 여백 x2 만큼 빼서 본문과 좌우선을 맞춘다 */
+}
+.cs-logo { display: flex; align-items: center; margin: 0; }
+.cs-logo img { display: block; height: 28px; width: auto; }
+.cs-logo .logo_my { height: 20px; }
+
+/* 모바일: 로고와 로그인 버튼이 첫 줄, 메뉴가 둘째 줄 */
+@media (max-width: 767px) {
+  .cs-topbar .ds-topnav { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; row-gap: var(--ds-space-x1); }
+  .cs-topbar .ds-topnav__left { display: contents; }
+  .cs-topbar .cs-logo { grid-column: 1; grid-row: 1; }
+  .cs-topbar .ds-topnav__end { grid-column: 2; grid-row: 1; justify-content: flex-end; flex-wrap: wrap; }
+  .cs-topbar .ds-topnav__menu { grid-column: 1 / -1; grid-row: 2; margin-inline: calc(-1 * var(--ds-space-x3)); }
+  .cs-logo .logo_family { display: none; }
+}
+
+/* ---------- 본문 틀 ---------- */
+.cs-page {
+  box-sizing: border-box;
+  width: min(100%, calc(var(--cs-page) + 2 * var(--cs-gutter)));
+  margin-inline: auto;
+  padding: var(--ds-space-x6) var(--cs-gutter) var(--ds-space-x10);
+}
+.cs-contents { display: flex; flex-direction: column; gap: var(--ds-space-x6); }
+
+/* 제목 묶음 */
+.cs-head { display: flex; flex-direction: column; gap: var(--ds-space-x3); }
+.cs-head__texts { display: flex; flex-direction: column; gap: var(--ds-space-x2); min-width: 0; }
+.cs-head__loc { order: -1; }
+.cs-h1 {
+  margin: 0;
+  font-size: var(--ds-font-size-t09);
+  line-height: var(--ds-line-height-t09);
+  font-weight: var(--ds-font-weight-bold);
+  letter-spacing: -0.02em;
+}
+.cs-sub {
+  margin: 0;
+  font-size: var(--ds-font-size-t04);
+  line-height: var(--ds-line-height-t04);
+  font-weight: var(--ds-font-weight-regular);
+  color: var(--ds-color-fg-neutral-muted);
+}
+
+/* 배너 이미지 */
+.cs-banner { overflow: hidden; border-radius: var(--ds-shape-lg); }
+.cs-banner img { display: block; width: 100%; height: auto; }
+
+/* ---------- 카드 묶음 ---------- */
+.cs-main { display: flex; flex-direction: column; gap: var(--ds-space-x4); }
+.cs-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-x4); }
+.cs-card { min-width: 0; --ds-card-padding: var(--ds-space-x4); }
+.cs-card__title { display: flex; align-items: center; gap: var(--ds-space-x2); }
+.cs-card__title .ds-icon { --ds-icon-size: 20px; color: var(--ds-color-fg-brand); }
+.cs-groups { display: flex; flex-direction: column; gap: var(--ds-space-x6); }
+.cs-group { display: flex; flex-direction: column; gap: var(--ds-space-x1); }
+.cs-h4 {
+  margin: 0;
+  font-size: var(--ds-font-size-t04);
+  line-height: var(--ds-line-height-t04);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-color-fg-neutral);
+}
+
+/* 번호 목록 (List Item): 이름 ... 번호 고객문의. 카드 안이라 좌우 여백은 카드 여백만 쓴다 */
+.cs-tel { margin: 0; padding: 0; list-style: none; }
+.cs-tel .ds-list-item { --ds-list-item-px: 0; --ds-list-item-min-h: 48px; }
+.cs-tel__row { flex-wrap: wrap; justify-content: flex-end; column-gap: var(--ds-space-x3); text-align: end; }
+.cs-tel__row > :first-child { color: var(--ds-color-fg-neutral); }
+.cs-tel__row strong { color: var(--ds-color-fg-brand); font-weight: var(--ds-font-weight-semibold); }
+.cs-tel__gap { visibility: hidden; font-size: var(--ds-font-size-t03); } /* 고객문의 링크가 없는 줄도 번호 위치를 맞춘다 */
+.cs-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.cs-family { display: grid; grid-template-columns: minmax(0, 1fr); }
+/* 모바일에서 두 목록이 이어질 때 사이 선 */
+.cs-family__col + .cs-family__col { border-top: 1px solid var(--ds-color-stroke-neutral-muted); }
+
+/* ---------- ARS 안내 창 (Dialog + List) ---------- */
+.wrap_pop_ars { display: flex; flex-direction: column; gap: var(--ds-space-x4); }
+.cs-ars { margin: 0; padding: 0; list-style: none; }
+.cs-ars .ds-list-item { --ds-list-item-px: 0; align-items: flex-start; }
+.cs-ars__no { min-width: 32px; font-size: var(--ds-font-size-t04); line-height: var(--ds-line-height-t04); font-weight: var(--ds-font-weight-semibold); color: var(--ds-color-fg-brand); font-variant-numeric: tabular-nums; }
+.cs-ars__sub { display: flex; gap: var(--ds-space-x2); padding-top: var(--ds-space-x1); }
+.cs-ars__sub .cs-ars__no { min-width: 28px; font-size: inherit; line-height: inherit; font-weight: var(--ds-font-weight-medium); color: var(--ds-color-fg-neutral-muted); }
+
+/* ---------- 바닥글 ---------- */
+.cs-footer {
+  padding: var(--ds-space-x8) var(--cs-gutter);
+  box-shadow: inset 0 1px 0 var(--ds-color-stroke-neutral-muted);
+  text-align: center;
+}
+.cs-footer .footer_txt {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--ds-space-x1) var(--ds-space-x6);
+  margin: 0;
+  font-size: var(--ds-font-size-t03);
+  line-height: var(--ds-line-height-t03);
+}
+.cs-footer .footer_copyright {
+  margin: var(--ds-space-x3) 0 0;
+  font-size: var(--ds-font-size-t03);
+  line-height: var(--ds-line-height-t03);
+  color: var(--ds-color-fg-neutral-subtle);
+}
+
+/* ---------- 768px ---------- */
+@media (min-width: 768px) {
+  .cs-page { padding-top: var(--ds-space-x8); }
+  .cs-contents { gap: var(--ds-space-x8); }
+  .cs-head { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: var(--ds-space-x6); }
+  .cs-head__loc { order: 0; flex: none; padding-top: var(--ds-space-x2); }
+  .cs-card { --ds-card-padding: var(--ds-space-x6); }
+  .cs-family { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--ds-space-x8); }
+  .cs-family__col + .cs-family__col { border-top: 0; }
+}
+
+/* ---------- 1280px: 두 칸 (어학시험문의 | YBM고객센터) ---------- */
+@media (min-width: 1280px) {
+  .cs-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ds-space-x6); }
+  .cs-main { gap: var(--ds-space-x6); }
+}

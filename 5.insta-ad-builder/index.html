@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>교원연수 광고 빌더</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.css">
+<script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.js" defer></script>
+<link rel="stylesheet" href="builder.css">
+<script src="templates.js" defer></script>
+<script src="builder.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <header class="app-head">
+    <h1 class="app-title">교원연수 인스타그램 광고 빌더</h1>
+    <p class="app-desc">유형을 고르고 문구와 이미지만 넣으면 가이드 규격의 PNG가 만들어져요.</p>
+  </header>
+
+  <main class="workspace">
+    <section class="panel panel--pick" aria-labelledby="pick-title">
+      <h2 class="panel-title" id="pick-title">유형 고르기</h2>
+      <div class="ds-chiptabs" role="tablist" aria-label="광고 유형" data-variant="neutralOutline" data-inset="none" id="group-tabs"></div>
+      <div class="ds-selectbox-group" id="template-list"></div>
+    </section>
+
+    <section class="panel panel--stage" aria-labelledby="stage-title">
+      <div class="stage-head">
+        <h2 class="panel-title" id="stage-title">미리보기</h2>
+        <div class="ds-segmented" role="group" aria-label="이미지 규격" id="size-switch"></div>
+      </div>
+      <div class="stage-frame">
+        <canvas id="preview" width="1080" height="1350" role="img" aria-label="광고 이미지 미리보기"></canvas>
+      </div>
+      <p class="stage-help" id="stage-size"></p>
+      <button type="button" class="ds-btn" data-variant="brandSolid" data-size="large" data-width="fill" id="save-png">
+        <i class="ds-icon ds-icon--download" aria-hidden="true"></i>PNG로 저장
+      </button>
+    </section>
+
+    <section class="panel panel--form" aria-labelledby="form-title">
+      <div class="stage-head">
+        <h2 class="panel-title" id="form-title">내용 입력</h2>
+        <button type="button" class="ds-btn" data-variant="ghost" data-size="xsmall" id="reset-form">
+          <i class="ds-icon ds-icon--refresh-cw" aria-hidden="true"></i>예시 문구로 되돌리기
+        </button>
+      </div>
+      <form class="fields" id="fields" novalidate></form>
+    </section>
+  </main>
+</div>
+</body>
+</html>

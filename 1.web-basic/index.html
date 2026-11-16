@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>새벽 햇살</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.css">
+<script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night-top: #141a33;
+    --night-bottom: #2b2f52;
+    --dawn-top: #f6d8b8;
+    --dawn-bottom: #fbeee0;
+    --ink-night: #e9e6f2;
+    --ink-dawn: #4a3a33;
+    --sun: rgba(255, 214, 150, 0.55);
+    --dur: 7s;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Gowun Batang", "Nanum Myeongjo", serif;
+    background: var(--night-top);
+    color: var(--ink-night);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  /* 하늘: 밤 → 새벽 */
+  .sky, .sky::after {
+    position: fixed; inset: 0;
+  }
+  .sky {
+    background: linear-gradient(to bottom, var(--night-top), var(--night-bottom));
+  }
+  .sky::after {
+    content: "";
+    background: linear-gradient(to bottom, var(--dawn-top), var(--dawn-bottom));
+    opacity: 0;
+    animation: dawn var(--dur) ease-in-out 1s forwards;
+  }
+
+  /* 창틀 */
+  .window {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: min(560px, 82vw);
+    height: min(640px, 78vh);
+    transform: translate(-50%, -50%);
+    border: 10px solid rgba(255, 255, 255, 0.08);
+    border-radius: 280px 280px 6px 6px;
+    animation: frame var(--dur) ease-in-out 1s forwards;
+  }
+  .window::before, .window::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-color: inherit;
+  }
+  .window::before { /* 세로 창살 */
+    top: 0; bottom: 0; left: 50%;
+    border-left: 6px solid;
+    border-color: inherit;
+    transform: translateX(-3px);
+  }
+  .window::after { /* 가로 창살 */
+    left: 0; right: 0; top: 42%;
+    border-top: 6px solid;
+    border-color: inherit;
+  }
+
+  /* 햇살 줄기 */
+  .rays {
+    position: fixed;
+    top: -20vh; right: -20vw;
+    width: 140vw; height: 140vh;
+    background:
+      repeating-conic-gradient(from 200deg at 85% 10%,
+        var(--sun) 0deg 3deg, transparent 3deg 11deg);
+    mask-image: radial-gradient(ellipse at 85% 10%, #000 0%, transparent 65%);
+    -webkit-mask-image: radial-gradient(ellipse at 85% 10%, #000 0%, transparent 65%);
+    opacity: 0;
+    animation: rays var(--dur) ease-in 2.5s forwards, sway 18s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  /* 떠다니는 먼지 */
+  .dust span {
+    position: fixed;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: #fff6dd;
+    opacity: 0;
+    animation: float 9s linear infinite;
+  }
+
+  /* 시 */
+  main {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 0 16px;
+    text-align: center;
+  }
+  .poem {
+    font-size: clamp(1.35rem, 4.2vw, 2.4rem);
+    line-height: 2.1;
+    letter-spacing: 0.04em;
+    word-break: keep-all;
+    animation: ink var(--dur) ease-in-out 1s forwards;
+  }
+  .poem .line { display: block; }
+  .poem .w {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(8px);
+    animation: appear 1.6s ease-out forwards;
+  }
+  .poem .sorrow {
+    position: relative;
+  }
+  /* '슬픔'이 햇살에 지워짐 */
+  .poem .sorrow .fade {
+    display: inline-block;
+    animation: erase 3.5s ease-in-out forwards;
+    animation-delay: 7.2s;
+  }
+
+  .caption {
+    position: fixed;
+    bottom: 28px; left: 0; right: 0;
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    opacity: 0;
+    animation: appear 2s ease-out 9.5s forwards;
+    z-index: 1;
+    color: var(--ink-dawn);
+  }
+
+  @keyframes dawn   { to { opacity: 1; } }
+  @keyframes frame  { to { border-color: rgba(120, 80, 50, 0.18); } }
+  @keyframes rays   { to { opacity: 1; } }
+  @keyframes sway   { from { transform: rotate(-1.5deg); } to { transform: rotate(1.5deg); } }
+  @keyframes ink    { to { color: var(--ink-dawn); } }
+  @keyframes appear { to { opacity: 1; filter: blur(0); transform: none; } }
+  @keyframes erase  {
+    0%   { opacity: 1; filter: blur(0); color: inherit; }
+    50%  { color: #e8b673; text-shadow: 0 0 18px rgba(255, 210, 140, 0.9); }
+    100% { opacity: 0.22; filter: blur(1.5px); color: #c9a07a; text-shadow: none; }
+  }
+  @keyframes float {
+    0%   { opacity: 0; transform: translate(0, 0); }
+    20%  { opacity: 0.7; }
+    100% { opacity: 0; transform: translate(-60px, 120px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01s !important;
+      animation-delay: 0s !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="sky"></div>
+  <div class="rays"></div>
+  <div class="window"></div>
+  <div class="dust" aria-hidden="true"></div>
+
+  <main>
+    <p class="poem" aria-label="새벽 창가에 내려앉은 햇살이 어제의 슬픔을 조용히 지워준다.">
+      <span class="line">
+        <span class="w">새벽</span>
+        <span class="w">창가에</span>
+        <span class="w">내려앉은</span>
+        <span class="w">햇살이</span>
+      </span>
+      <span class="line">
+        <span class="w">어제의</span>
+        <span class="w sorrow"><span class="fade">슬픔</span>을</span>
+        <span class="w">조용히</span>
+        <span class="w">지워준다.</span>
+      </span>
+    </p>
+  </main>
+
+  <p class="caption">— 새벽 햇살 —</p>
+
+  <script>
+    // 단어가 차례로 떠오르도록 지연 시간 지정
+    document.querySelectorAll('.poem .w').forEach((el, i) => {
+      el.style.animationDelay = (0.6 + i * 0.55 + (i >= 4 ? 0.6 : 0)) + 's';
+    });
+
+    // 햇살 속 먼지
+    const dust = document.querySelector('.dust');
+    for (let i = 0; i < 28; i++) {
+      const s = document.createElement('span');
+      s.style.left = (40 + Math.random() * 60) + 'vw';
+      s.style.top = (Math.random() * 70) + 'vh';
+      s.style.animationDelay = (4 + Math.random() * 9) + 's';
+      s.style.animationDuration = (7 + Math.random() * 6) + 's';
+      const size = 1 + Math.random() * 3;
+      s.style.width = s.style.height = size + 'px';
+      dust.appendChild(s);
+    }
+
+    // 클릭하면 처음부터 다시
+    document.body.addEventListener('click', () => {
+      document.getAnimations().forEach(a => { a.cancel(); a.play(); });
+    });
+  </script>
+</body>
+</html>

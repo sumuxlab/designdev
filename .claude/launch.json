@@ -1,0 +1,41 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "yds-site-redesign",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5180",
+        "--directory",
+        "4.yds-site-redesign"
+      ],
+      "port": 5180
+    },
+    {
+      "name": "insta-ad-builder",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5181",
+        "--directory",
+        "5.insta-ad-builder"
+      ],
+      "port": 5181
+    },
+    {
+      "name": "ybm-cs-center",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5182",
+        "--directory",
+        "6.ybm-cs-center"
+      ],
+      "port": 5182
+    }
+  ]
+}

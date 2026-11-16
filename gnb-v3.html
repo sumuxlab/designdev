@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YBM IT 메뉴 패널안</title>
+<!-- Mega Menu 는 v1.1.0 에 없어 최신 주소 사용. 운영 전에 Mega Menu 가 들어간 버전 주소로 고정 -->
+<link rel="stylesheet" href="https://luvms012-rgb.github.io/yds/dist/ybm-ds.css">
+<script src="https://luvms012-rgb.github.io/yds/dist/ybm-ds.js" defer></script>
+<style>
+/* =========================================================
+   서비스 CSS — YBM IT 메뉴 패널안
+   - 메뉴 구성(대메뉴 7개, 하위 메뉴 35개)은 그대로
+   - 7개 열을 한꺼번에 펼치는 대신, 누른 메뉴의 하위 메뉴만 패널 전체 폭에 펼침 (yds Mega Menu)
+   - 긴 목록은 기존 구분선 기준으로 묶음을 나눠 옆으로 배치 → 패널 높이가 낮아짐
+   - 빈 자리는 오른쪽 안내 칸(시험접수 바로가기)으로 채움
+   - PC 화면 기준 시안 (반응형 생략)
+   ========================================================= */
+
+/* 브랜드: YBM IT 오렌지 (#ff761e 를 600 단계에 둠) — 브랜드 파일 등록 전 임시 */
+:root {
+  --ds-color-palette-brand-100: #fff3ea;
+  --ds-color-palette-brand-200: #ffe2cc;
+  --ds-color-palette-brand-300: #ffc9a3;
+  --ds-color-palette-brand-400: #ffab70;
+  --ds-color-palette-brand-500: #ff8c40;
+  --ds-color-palette-brand-600: #ff761e;
+  --ds-color-palette-brand-700: #e8600c;
+  --ds-color-palette-brand-800: #c24e08;
+  --ds-color-palette-brand-900: #9a3d06;
+  --ds-color-palette-brand-1000: #6e2b04;
+
+  --site-width: 1100px; /* 본문, 푸터와 같은 폭 */
+}
+
+:root[data-theme="dark"] {
+  --ds-color-palette-brand-100: #6e2b04;
+  --ds-color-palette-brand-200: #9a3d06;
+  --ds-color-palette-brand-300: #c24e08;
+  --ds-color-palette-brand-400: #e8600c;
+  --ds-color-palette-brand-500: #ff761e;
+  --ds-color-palette-brand-600: #ff8c40;
+  --ds-color-palette-brand-700: #ffab70;
+  --ds-color-palette-brand-800: #ffc9a3;
+  --ds-color-palette-brand-900: #ffe2cc;
+  --ds-color-palette-brand-1000: #fff3ea;
+}
+
+body {
+  margin: 0;
+  background: var(--ds-color-bg-layer-default);
+  color: var(--ds-color-fg-neutral);
+  word-break: keep-all;
+}
+
+/* ---------- 헤더 ---------- */
+.site-header {
+  position: relative; /* Mega Menu 패널이 헤더 바로 아래 화면 전체 폭으로 펼쳐지는 기준 */
+  z-index: 10;
+  border-bottom: 1px solid var(--ds-color-stroke-neutral-weak);
+  background: var(--ds-color-bg-layer-default);
+}
+
+.site-header__inner {
+  max-width: calc(var(--site-width) + var(--ds-space-x-global-gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--ds-space-x-global-gutter);
+}
+
+/* 패널 안쪽 폭을 헤더와 같게 */
+.site-header .ds-megamenu {
+  --ds-megamenu-width: calc(var(--site-width) + var(--ds-space-x6) * 2);
+}
+
+/* 패널 오른쪽 안내 칸 */
+.menu-aside__title {
+  margin: 0 0 var(--ds-space-x1);
+  font-size: var(--ds-font-size-t05);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.menu-aside__desc {
+  margin: 0 0 var(--ds-space-x4);
+  color: var(--ds-color-fg-neutral-muted);
+  font-size: var(--ds-font-size-t04);
+}
+
+.menu-aside__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-x4);
+}
+
+/* 새 창 링크: 글자 뒤 작은 아이콘 */
+.menu-ext {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-x1);
+}
+
+/* 관련사이트 목록 */
+.related-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-x2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 본문 자리 (시안 확인용) */
+.demo-body {
+  max-width: var(--site-width);
+  margin: var(--ds-space-x8) auto;
+  padding: var(--ds-space-x16) var(--ds-space-x-global-gutter);
+  border-radius: var(--ds-shape-lg);
+  background: var(--ds-color-bg-neutral-weak-alpha);
+  color: var(--ds-color-fg-neutral-muted);
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <div class="ds-topnav">
+      <div class="ds-topnav__left">
+        <a class="ds-topnav__heading" href="/"><img src="https://dbdmsdk3.github.io/ybmit-main-renewal/images/logo-ybmit.svg" alt="YBM IT"></a>
+        <nav class="ds-topnav__menu" aria-label="주 메뉴">
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-apply" data-ds-megamenu="mm-apply">시험접수</button>
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-genai" data-ds-megamenu="mm-genai">Generative AI</button>
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-mos" data-ds-megamenu="mm-mos">MOS</button>
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-cos" data-ds-megamenu="mm-cos">COS</button>
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-cospro" data-ds-megamenu="mm-cospro">COS Pro</button>
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-data" data-ds-megamenu="mm-data">DATA</button>
+          <button type="button" class="ds-topnav__item" aria-expanded="false" aria-controls="mm-use" data-ds-megamenu="mm-use">시험활용</button>
+        </nav>
+      </div>
+      <div class="ds-topnav__end">
+        <a class="ds-btn" data-variant="ghost" data-size="xsmall" href="/mytest/mytest_app.jsp">마이페이지</a>
+        <a class="ds-btn" data-variant="ghost" data-size="xsmall" href="/cs/event_list.jsp">이벤트</a>
+        <a class="ds-btn" data-variant="ghost" data-size="xsmall" href="/cs/notice_list.jsp">고객센터</a>
+        <span class="ds-popover-anchor">
+          <button type="button" class="ds-btn" data-variant="ghost" data-size="xsmall" data-ds-popover="pop-related" aria-expanded="false" aria-controls="pop-related">관련사이트<i class="ds-icon ds-icon--chevron-down" aria-hidden="true"></i></button>
+          <div class="ds-popover" id="pop-related" role="dialog" aria-labelledby="pop-related-t" hidden data-placement="bottom-end">
+            <div class="ds-popover__header">
+              <div class="ds-popover__texts"><strong class="ds-popover__title" id="pop-related-t">관련사이트</strong></div>
+              <button type="button" class="ds-popover__close" data-ds-close aria-label="닫기"><i class="ds-icon ds-icon--x" aria-hidden="true"></i></button>
+            </div>
+            <div class="ds-popover__body">
+              <ul class="related-list">
+                <li><a class="ds-link" href="http://www.ybmit.com/ybmsisacom.jsp?SiteURL=exam.ybmnet.co.kr" target="_blank" rel="noopener noreferrer">어학시험</a></li>
+                <li><a class="ds-link" href="https://www.ybmcc.com/v2/index.asp?utm_source=IT_Main&amp;utm_medium=IT_Main&amp;utm_campaign=MOS_Util" target="_blank" rel="noopener noreferrer">온라인 강의</a></li>
+              </ul>
+            </div>
+          </div>
+        </span>
+        <a class="ds-btn" data-variant="neutralWeak" data-size="xsmall" href="https://www.ybmnet.co.kr/common/login.asp?url=/&amp;what=www.ybmit.com">로그인</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 시험접수 -->
+  <div class="ds-megamenu" id="mm-apply" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-apply-a"><p class="ds-megamenu__title" id="mm-apply-a">접수</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/test_rec/gen_rec.jsp">시험접수</a></li>
+          <li><a class="ds-megamenu__link" href="/mytest/mytest_app.jsp">접수확인 / 수험표출력</a></li>
+          <li><a class="ds-megamenu__link" href="/mytest/mytest_app_change.jsp">접수변경 / 취소</a></li>
+        </ul></section>
+      <section class="ds-megamenu__group" aria-labelledby="mm-apply-b"><p class="ds-megamenu__title" id="mm-apply-b">시험센터</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/test_rec/search_schedule.jsp">시험센터 / 시험일정조회</a></li>
+          <li><a class="ds-megamenu__link" href="/test_rec/test_s_center.jsp">시험센터 안내</a></li>
+          <li><a class="ds-megamenu__link" href="/test_rec/test_guide.jsp">수험자 가이드</a></li>
+        </ul></section>
+      <aside class="ds-megamenu__aside">
+        <p class="menu-aside__title">처음 응시하시나요?</p>
+        <p class="menu-aside__desc">시험 당일 준비물과 입실 시간, 유의 사항을 미리 확인하세요.</p>
+        <a class="ds-btn" data-variant="neutralSolid" data-size="small" href="/test_rec/test_guide.jsp">수험자 가이드</a>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Generative AI -->
+  <div class="ds-megamenu" id="mm-genai" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-genai-a"><p class="ds-megamenu__title" id="mm-genai-a">시험 안내</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="#">Generative AI 소개</a></li>
+        </ul></section>
+      <aside class="ds-megamenu__aside">
+        <p class="menu-aside__title">Generative AI 시험 접수</p>
+        <p class="menu-aside__desc">시험센터와 일정을 고르고 바로 접수하세요.</p>
+        <div class="menu-aside__actions">
+          <a class="ds-btn" data-variant="neutralSolid" data-size="small" href="/test_rec/gen_rec.jsp">시험접수</a>
+          <a class="ds-link" data-size="small" href="/test_rec/search_schedule.jsp">시험일정 보기<i class="ds-icon ds-icon--chevron-right" aria-hidden="true"></i></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- MOS -->
+  <div class="ds-megamenu" id="mm-mos" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-mos-a"><p class="ds-megamenu__title" id="mm-mos-a">시험 안내</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/mos/int_test.jsp">MOS 소개</a></li>
+          <li><a class="ds-megamenu__link" href="/mos/mos_use_ex.jsp">MOS 활용사례</a></li>
+        </ul></section>
+      <section class="ds-megamenu__group" aria-labelledby="mm-mos-b"><p class="ds-megamenu__title" id="mm-mos-b">학습</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/mos/course_info_list.jsp">MOS 온라인 강의</a></li>
+          <li><a class="ds-megamenu__link" href="/mos/skill_pds_list.jsp">오피스 스킬 자료실</a></li>
+          <li><a class="ds-megamenu__link" href="/mos/institute_info_list.jsp">지역별 MOS 학원 정보</a></li>
+        </ul></section>
+      <aside class="ds-megamenu__aside">
+        <p class="menu-aside__title">MOS 시험 접수</p>
+        <p class="menu-aside__desc">시험센터와 일정을 고르고 바로 접수하세요.</p>
+        <div class="menu-aside__actions">
+          <a class="ds-btn" data-variant="neutralSolid" data-size="small" href="/test_rec/gen_rec.jsp">시험접수</a>
+          <a class="ds-link" data-size="small" href="/test_rec/search_schedule.jsp">시험일정 보기<i class="ds-icon ds-icon--chevron-right" aria-hidden="true"></i></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- COS -->
+  <div class="ds-megamenu" id="mm-cos" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-cos-a"><p class="ds-megamenu__title" id="mm-cos-a">시험 안내</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/cos/cos_info.jsp">COS 소개</a></li>
+          <li><a class="ds-megamenu__link" href="/cos/cos_ex_test.jsp">COS 시험 체험하기</a></li>
+          <li><a class="ds-megamenu__link" href="/cos/cos_sam.jsp">COS 샘플문제</a></li>
+          <li><a class="ds-megamenu__link" href="/cos/cos_use_ex.jsp">COS 활용사례</a></li>
+        </ul></section>
+      <section class="ds-megamenu__group" aria-labelledby="mm-cos-b"><p class="ds-megamenu__title" id="mm-cos-b">학습과 교육기관</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/cos/course_info_list.jsp">COS 온라인 강의</a></li>
+          <li><a class="ds-megamenu__link" href="/mos_use/cos_teacher.jsp">COS 공인 강사</a></li>
+          <li><a class="ds-megamenu__link" href="/cos/institute_COSinfo_list.jsp">지역별 COS 학원 정보</a></li>
+          <li><a class="ds-megamenu__link" href="/cos/cos_best_ins.jsp">COS 우수 교육기관</a></li>
+        </ul></section>
+      <aside class="ds-megamenu__aside">
+        <p class="menu-aside__title">COS 시험 접수</p>
+        <p class="menu-aside__desc">시험센터와 일정을 고르고 바로 접수하세요.</p>
+        <div class="menu-aside__actions">
+          <a class="ds-btn" data-variant="neutralSolid" data-size="small" href="/test_rec/gen_rec.jsp">시험접수</a>
+          <a class="ds-link" data-size="small" href="/test_rec/search_schedule.jsp">시험일정 보기<i class="ds-icon ds-icon--chevron-right" aria-hidden="true"></i></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- COS Pro -->
+  <div class="ds-megamenu" id="mm-cospro" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-cospro-a"><p class="ds-megamenu__title" id="mm-cospro-a">시험 안내</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/cos_pro/cos_pro_info.jsp">COS Pro 소개</a></li>
+          <li><a class="ds-megamenu__link" href="/cos_pro/cos_pro_r_test.jsp">COS Pro 샘플문제</a></li>
+          <li><a class="ds-megamenu__link" href="/cos_pro/cos_pro_use_ex.jsp">COS Pro 활용사례</a></li>
+        </ul></section>
+      <section class="ds-megamenu__group" aria-labelledby="mm-cospro-b"><p class="ds-megamenu__title" id="mm-cospro-b">학습과 인증</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/cos_pro/course_info_list.jsp">COS Pro 온라인 강의</a></li>
+          <li><a class="ds-megamenu__link" href="/cos_pro/institute_PROinfo_list.jsp">지역별 COS Pro 학원 정보</a></li>
+          <li><a class="ds-megamenu__link" href="https://verify-certificate.sotatek.edu.vn" target="_blank" rel="noopener noreferrer"><span class="menu-ext">Global COS Pro Certificate Verification<i class="ds-icon ds-icon--external-link" aria-hidden="true"></i></span></a></li>
+        </ul></section>
+      <aside class="ds-megamenu__aside">
+        <p class="menu-aside__title">COS Pro 시험 접수</p>
+        <p class="menu-aside__desc">시험센터와 일정을 고르고 바로 접수하세요.</p>
+        <div class="menu-aside__actions">
+          <a class="ds-btn" data-variant="neutralSolid" data-size="small" href="/test_rec/gen_rec.jsp">시험접수</a>
+          <a class="ds-link" data-size="small" href="/test_rec/search_schedule.jsp">시험일정 보기<i class="ds-icon ds-icon--chevron-right" aria-hidden="true"></i></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- DATA -->
+  <div class="ds-megamenu" id="mm-data" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-data-a"><p class="ds-megamenu__title" id="mm-data-a">시험 안내</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/data/data_info.jsp">DATA 소개</a></li>
+          <li><a class="ds-megamenu__link" href="/data/data_test.jsp">DATA 샘플문제</a></li>
+        </ul></section>
+      <aside class="ds-megamenu__aside">
+        <p class="menu-aside__title">DATA 시험 접수</p>
+        <p class="menu-aside__desc">시험센터와 일정을 고르고 바로 접수하세요.</p>
+        <div class="menu-aside__actions">
+          <a class="ds-btn" data-variant="neutralSolid" data-size="small" href="/test_rec/gen_rec.jsp">시험접수</a>
+          <a class="ds-link" data-size="small" href="/test_rec/search_schedule.jsp">시험일정 보기<i class="ds-icon ds-icon--chevron-right" aria-hidden="true"></i></a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- 시험활용 -->
+  <div class="ds-megamenu" id="mm-use" hidden>
+    <div class="ds-megamenu__inner">
+      <section class="ds-megamenu__group" aria-labelledby="mm-use-a"><p class="ds-megamenu__title" id="mm-use-a">채용과 인증</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/mos_use/mos_news_list.jsp">채용정보</a></li>
+          <li><a class="ds-megamenu__link" href="https://my.incruit.com/service/trustmarkcenter.asp" target="_blank" rel="noopener noreferrer"><span class="menu-ext">인크루트 이력서 인증 MOS, COS, COS Pro<i class="ds-icon ds-icon--external-link" aria-hidden="true"></i></span></a></li>
+        </ul></section>
+      <section class="ds-megamenu__group" aria-labelledby="mm-use-b"><p class="ds-megamenu__title" id="mm-use-b">소식</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/mos_use/mos_use_ex.jsp">활용사례</a></li>
+          <li><a class="ds-megamenu__link" href="/mos_use/press_list.jsp">보도자료</a></li>
+          <li><a class="ds-megamenu__link" href="/mos_use/mos_movie.jsp">홍보영상</a></li>
+        </ul></section>
+      <section class="ds-megamenu__group" aria-labelledby="mm-use-c"><p class="ds-megamenu__title" id="mm-use-c">교재와 자료</p>
+        <ul class="ds-megamenu__list">
+          <li><a class="ds-megamenu__link" href="/mos_use/book_list.jsp">시험교재</a></li>
+          <li><a class="ds-megamenu__link" href="/mos_use/mos_can_do/page.jsp">MOS Can do List</a></li>
+        </ul></section>
+    </div>
+  </div>
+</header>
+
+<main class="demo-body">본문 자리</main>
+
+</body>
+</html>

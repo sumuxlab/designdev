@@ -1,0 +1,115 @@
+/* 광고 이미지에 쓰는 글꼴 (가이드 기준) */
+@font-face { font-family: "A2Z-500"; font-display: swap; src: url("fonts/A2Z-Medium.woff2") format("woff2"); }
+@font-face { font-family: "A2Z-600"; font-display: swap; src: url("fonts/A2Z-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "A2Z-700"; font-display: swap; src: url("fonts/A2Z-Bold.woff2") format("woff2"); }
+@font-face { font-family: "AdPretendard-500"; font-display: swap; src: url("fonts/Pretendard-Medium.woff2") format("woff2"); }
+@font-face { font-family: "AdPretendard-600"; font-display: swap; src: url("fonts/Pretendard-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "AdPretendard-700"; font-display: swap; src: url("fonts/Pretendard-Bold.woff2") format("woff2"); }
+@font-face { font-family: "AdPoppins-500"; font-display: swap; src: url("fonts/Poppins-500.woff2") format("woff2"); }
+@font-face { font-family: "AdPoppins-600"; font-display: swap; src: url("fonts/Poppins-600.woff2") format("woff2"); }
+@font-face { font-family: "AdPoppins-700"; font-display: swap; src: url("fonts/Poppins-700.woff2") format("woff2"); }
+@font-face { font-family: "Jalnan-400"; font-display: swap; src: url("fonts/Jalnan.woff") format("woff"); }
+@font-face { font-family: "Maplestory-300"; font-display: swap; src: url("fonts/MaplestoryLight.woff") format("woff"); }
+@font-face { font-family: "KyoboHand-400"; font-display: swap; src: url("fonts/KyoboHand.woff") format("woff"); }
+
+body {
+  background: var(--ds-color-bg-neutral);
+  color: var(--ds-color-fg-neutral);
+  word-break: keep-all;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-x5);
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-block: var(--ds-space-x5);
+  padding-left: max(var(--ds-space-x4), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--ds-space-x4), env(safe-area-inset-right, 0px));
+}
+
+.app-head { display: flex; flex-direction: column; gap: var(--ds-space-x1); }
+.app-title { margin: 0; font-size: var(--ds-font-size-t08, var(--ds-font-size-t07)); line-height: var(--ds-line-height-t08, var(--ds-line-height-t07)); font-weight: var(--ds-font-weight-bold); }
+.app-desc { margin: 0; color: var(--ds-color-fg-neutral-subtle); font-size: var(--ds-font-size-t04); line-height: var(--ds-line-height-t04); font-weight: var(--ds-font-weight-regular); }
+
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-x4); align-items: start; }
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-x4);
+  min-width: 0;
+  padding: var(--ds-space-x4);
+  background: var(--ds-color-bg-layer-default);
+  border-radius: var(--ds-shape-lg);
+}
+.panel-title { margin: 0; font-size: var(--ds-font-size-t05); line-height: var(--ds-line-height-t05); font-weight: var(--ds-font-weight-semibold); }
+
+/* 좁은 칸에서도 탭이 잘리지 않도록 스크롤 대신 줄바꿈 */
+#group-tabs { flex-wrap: wrap; overflow: visible; }
+
+.stage-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--ds-space-x2); }
+.stage-frame {
+  display: flex;
+  justify-content: center;
+  padding: var(--ds-space-x3);
+  background: var(--ds-color-bg-neutral);
+  border-radius: var(--ds-shape-md);
+}
+#preview {
+  display: block;
+  max-width: 100%;
+  max-height: 62vh;
+  width: auto;
+  height: auto;
+  border-radius: var(--ds-shape-xs);
+  box-shadow: var(--ds-elevation-raised);
+  touch-action: none;
+}
+#preview[data-draggable="true"] { cursor: grab; }
+.stage-help { margin: 0; text-align: center; color: var(--ds-color-fg-neutral-subtle); font-size: var(--ds-font-size-t03); line-height: var(--ds-line-height-t03); font-weight: var(--ds-font-weight-regular); }
+
+.fields { display: flex; flex-direction: column; gap: var(--ds-space-x4); }
+
+/* 색상 견본: YDS에 해당 부품이 없어 토큰으로 만든 서비스 전용 요소 */
+.tone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--ds-space-x12, 48px), 1fr)); gap: var(--ds-space-x3) var(--ds-space-x2); }
+.tone { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--ds-space-x1); cursor: pointer; }
+.tone__control { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.tone__chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ds-space-x9, 36px);
+  height: var(--ds-space-x9, 36px);
+  border-radius: var(--ds-shape-pill);
+  background: linear-gradient(135deg, var(--tone-from), var(--tone-to));
+  box-shadow: inset 0 0 0 1px var(--ds-color-stroke-neutral-subtle);
+  outline-offset: 2px;
+}
+.tone__icon { color: var(--ds-color-fg-on-neutral-solid); }
+.tone__name { color: var(--ds-color-fg-neutral-subtle); font-size: var(--ds-font-size-t02); line-height: var(--ds-line-height-t02); font-weight: var(--ds-font-weight-regular); }
+.tone:has(.tone__control:checked) .tone__chip,
+.tone[data-selected="true"] .tone__chip { outline: 2px solid var(--ds-color-stroke-neutral-solid); }
+.tone:has(.tone__control:checked) .tone__name,
+.tone[data-selected="true"] .tone__name { color: var(--ds-color-fg-neutral); font-weight: var(--ds-font-weight-semibold); }
+.tone__control:focus-visible + .tone__chip { outline: 2px solid var(--ds-color-stroke-focus-ring); }
+
+.image-tools { display: flex; align-items: center; gap: var(--ds-space-x3); }
+.image-tools .ds-slider { flex: 1; min-width: 0; }
+
+@media (min-width: 768px) {
+  .workspace { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .panel--stage { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: var(--ds-space-x4); }
+  .panel--pick { grid-column: 2; }
+  .panel--form { grid-column: 2; }
+  #preview { max-height: 70vh; }
+}
+
+@media (min-width: 1280px) {
+  .workspace { grid-template-columns: minmax(0, 392px) minmax(0, 1fr) minmax(0, 400px); }
+  .panel--pick { grid-column: 1; grid-row: 1; position: sticky; top: var(--ds-space-x4); }
+  .panel--stage { grid-column: 2; grid-row: 1; }
+  .panel--form { grid-column: 3; grid-row: 1; }
+  #preview { max-height: 76vh; }
+}

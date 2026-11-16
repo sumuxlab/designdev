@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YBM IT 전체 메뉴안</title>
+<link rel="stylesheet" href="https://luvms012-rgb.github.io/yds/dist/ybm-ds.css">
+<script src="https://luvms012-rgb.github.io/yds/dist/ybm-ds.js" defer></script>
+<style>
+/* =========================================================
+   서비스 CSS — YBM IT 전체 메뉴안
+   - 메뉴 구성(대메뉴 7개, 하위 메뉴 35개) 그대로, 펼치면 전체 하위 메뉴가 한 번에 보임
+   - 하위 메뉴 수에 맞춰 칸 모양을 다르게 배치해 빈 공간을 줄임
+       5칸 격자: 시험접수 | MOS | COS (2칸, 두 묶음 나란히) + 그 아래 Generative AI, DATA | COS Pro
+       아래 띠: 시험활용 (가로로 흐르는 목록)
+   - 대메뉴에 마우스를 올리면 그 메뉴 칸이 강조됨
+   - PC 화면 기준 시안 (반응형 생략)
+   ========================================================= */
+
+/* 브랜드: YBM IT 오렌지 (#ff761e 를 600 단계에 둠) — 브랜드 파일 등록 전 임시 */
+:root {
+  --ds-color-palette-brand-100: #fff3ea;
+  --ds-color-palette-brand-200: #ffe2cc;
+  --ds-color-palette-brand-300: #ffc9a3;
+  --ds-color-palette-brand-400: #ffab70;
+  --ds-color-palette-brand-500: #ff8c40;
+  --ds-color-palette-brand-600: #ff761e;
+  --ds-color-palette-brand-700: #e8600c;
+  --ds-color-palette-brand-800: #c24e08;
+  --ds-color-palette-brand-900: #9a3d06;
+  --ds-color-palette-brand-1000: #6e2b04;
+
+  --site-width: 1100px; /* 본문, 푸터와 같은 폭 */
+}
+
+:root[data-theme="dark"] {
+  --ds-color-palette-brand-100: #6e2b04;
+  --ds-color-palette-brand-200: #9a3d06;
+  --ds-color-palette-brand-300: #c24e08;
+  --ds-color-palette-brand-400: #e8600c;
+  --ds-color-palette-brand-500: #ff761e;
+  --ds-color-palette-brand-600: #ff8c40;
+  --ds-color-palette-brand-700: #ffab70;
+  --ds-color-palette-brand-800: #ffc9a3;
+  --ds-color-palette-brand-900: #ffe2cc;
+  --ds-color-palette-brand-1000: #fff3ea;
+}
+
+body {
+  margin: 0;
+  background: var(--ds-color-bg-layer-default);
+  color: var(--ds-color-fg-neutral);
+  word-break: keep-all;
+}
+
+/* ---------- 헤더 ---------- */
+.site-header {
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--ds-color-stroke-neutral-weak);
+  background: var(--ds-color-bg-layer-default);
+}
+
+.site-header__inner {
+  max-width: calc(var(--site-width) + var(--ds-space-x-global-gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--ds-space-x-global-gutter);
+}
+
+/* 위 줄: 로고 + 유틸 메뉴 (기존과 같은 14px) */
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--ds-space-x3);
+}
+
+.header-logo img {
+  display: block;
+  width: auto;
+  height: 30px;
+}
+
+.util {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-x5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.util-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-x0_5);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ds-color-fg-neutral-muted);
+  font: inherit;
+  font-size: var(--ds-font-size-t04);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.util-link:hover,
+.util-link:focus-visible {
+  color: var(--ds-color-fg-neutral);
+}
+
+/* 아래 줄: 대메뉴 (기존과 같은 18px SemiBold)
+   글자 너비 그대로 두고 space-between → 대메뉴 글자 사이 간격이 모두 같음 */
+.gnb-menu {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gnb-menu__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--ds-space-x15);
+  color: var(--ds-color-fg-neutral);
+  font-size: var(--ds-font-size-t06);
+  font-weight: var(--ds-font-weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.gnb-menu__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--ds-color-fg-neutral);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--ds-duration-normal) var(--ds-easing-standard);
+}
+
+.gnb-menu__link.is-active {
+  font-weight: var(--ds-font-weight-bold);
+}
+
+.gnb-menu__link.is-active::after {
+  transform: scaleX(1);
+}
+
+/* ---------- 전체 메뉴 패널 ---------- */
+.gnb-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--ds-color-stroke-neutral-weak);
+  background: var(--ds-color-bg-layer-floating);
+  box-shadow: var(--ds-elevation-overlay);
+}
+
+.gnb-panel[hidden] {
+  display: none;
+}
+
+.gnb-panel__inner {
+  max-width: var(--site-width);
+  margin-inline: auto;
+  padding: var(--ds-space-x8) var(--ds-space-x-global-gutter) var(--ds-space-x6);
+}
+
+/* 5칸 격자 */
+.gnb-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--ds-space-x6) var(--ds-space-x2);
+  align-items: start;
+}
+
+.gnb-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-x4);
+}
+
+/* 메뉴 칸 하나 */
+.gnb-block {
+  padding: var(--ds-space-x3) var(--ds-space-x3) var(--ds-space-x4);
+  border-radius: var(--ds-shape-lg);
+  transition: background-color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.gnb-block.is-active {
+  background: var(--ds-color-bg-neutral-weak-alpha);
+}
+
+.gnb-block--wide {
+  grid-column: span 2;
+}
+
+.gnb-block__title {
+  margin: 0 0 var(--ds-space-x3);
+  font-size: var(--ds-font-size-t06);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-color-fg-neutral);
+}
+
+.gnb-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-x1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 같은 칸 안 두 묶음: 위아래(구분선) 또는 나란히(COS) */
+.gnb-block hr.ds-divider {
+  margin-block: var(--ds-space-x3);
+}
+
+.gnb-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-space-x4);
+}
+
+.gnb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-x1);
+  padding-block: var(--ds-space-x1);
+  color: var(--ds-color-fg-neutral-muted);
+  font-size: var(--ds-font-size-t05); /* 기존과 같은 16px */
+  line-height: var(--ds-line-height-t05);
+  text-decoration: none;
+}
+
+.gnb-link:hover,
+.gnb-link:focus-visible {
+  color: var(--ds-color-fg-neutral);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+/* 아래 띠: 시험활용 — 제목은 1칸, 목록은 2~5칸에 가로로 흐름 */
+.gnb-strip {
+  grid-column: 1 / -1;
+  padding-top: var(--ds-space-x4);
+  border-top: 1px solid var(--ds-color-stroke-neutral-weak);
+}
+
+.gnb-block--row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  column-gap: var(--ds-space-x2);
+  align-items: baseline;
+}
+
+.gnb-block--row .gnb-block__title {
+  margin: 0;
+}
+
+.gnb-block--row .gnb-flow {
+  grid-column: 2 / -1;
+}
+
+.gnb-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-x1) var(--ds-space-x4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 관련사이트 목록 */
+.related-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-x2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 본문 자리 (시안 확인용) */
+.demo-body {
+  max-width: var(--site-width);
+  margin: var(--ds-space-x8) auto;
+  padding: var(--ds-space-x16) var(--ds-space-x-global-gutter);
+  border-radius: var(--ds-shape-lg);
+  background: var(--ds-color-bg-neutral-weak-alpha);
+  color: var(--ds-color-fg-neutral-muted);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gnb-menu__link::after,
+  .gnb-block {
+    transition: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header" id="site-header">
+  <div class="site-header__inner">
+    <!-- 위 줄: 로고 + 유틸 메뉴 -->
+    <div class="header-top">
+      <a class="header-logo" href="/"><img src="https://dbdmsdk3.github.io/ybmit-main-renewal/images/logo-ybmit.svg" alt="YBM IT"></a>
+      <ul class="util">
+        <li><a class="util-link" href="https://www.ybmnet.co.kr/common/login.asp?url=/&amp;what=www.ybmit.com">로그인</a></li>
+        <li><a class="util-link" href="/mytest/mytest_app.jsp">마이페이지</a></li>
+        <li><a class="util-link" href="/cs/event_list.jsp">이벤트</a></li>
+        <li><a class="util-link" href="/cs/notice_list.jsp">고객센터</a></li>
+        <li>
+          <span class="ds-popover-anchor">
+            <button type="button" class="util-link" data-ds-popover="pop-related" aria-expanded="false" aria-controls="pop-related">관련사이트<i class="ds-icon ds-icon--chevron-down" aria-hidden="true"></i></button>
+            <div class="ds-popover" id="pop-related" role="dialog" aria-labelledby="pop-related-t" hidden data-placement="bottom-end">
+              <div class="ds-popover__header">
+                <div class="ds-popover__texts"><strong class="ds-popover__title" id="pop-related-t">관련사이트</strong></div>
+                <button type="button" class="ds-popover__close" data-ds-close aria-label="닫기"><i class="ds-icon ds-icon--x" aria-hidden="true"></i></button>
+              </div>
+              <div class="ds-popover__body">
+                <ul class="related-list">
+                  <li><a class="ds-link" href="http://www.ybmit.com/ybmsisacom.jsp?SiteURL=exam.ybmnet.co.kr" target="_blank" rel="noopener noreferrer">어학시험</a></li>
+                  <li><a class="ds-link" href="https://www.ybmcc.com/v2/index.asp?utm_source=IT_Main&amp;utm_medium=IT_Main&amp;utm_campaign=MOS_Util" target="_blank" rel="noopener noreferrer">온라인 강의</a></li>
+                </ul>
+              </div>
+            </div>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 아래 줄: 대메뉴 (글자 너비 그대로, 사이 간격은 똑같이) -->
+    <nav id="gnb" aria-label="주 메뉴">
+      <ul class="gnb-menu">
+        <li><a class="gnb-menu__link" href="/test_rec/gen_rec.jsp" data-menu="apply">시험접수</a></li>
+        <li><a class="gnb-menu__link" href="#" data-menu="genai">Generative AI</a></li>
+        <li><a class="gnb-menu__link" href="/mos/int_test.jsp" data-menu="mos">MOS</a></li>
+        <li><a class="gnb-menu__link" href="/cos/cos_info.jsp" data-menu="cos">COS</a></li>
+        <li><a class="gnb-menu__link" href="/cos_pro/cos_pro_info.jsp" data-menu="cospro">COS Pro</a></li>
+        <li><a class="gnb-menu__link" href="/data/data_info.jsp" data-menu="data">DATA</a></li>
+        <li><a class="gnb-menu__link" href="/mos_use/mos_news_list.jsp" data-menu="use">시험활용</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- ===== 전체 메뉴 패널 ===== -->
+  <div class="gnb-panel" id="gnb-panel" hidden>
+    <div class="gnb-panel__inner">
+      <div class="gnb-grid">
+
+        <!-- 1칸: 시험접수 -->
+        <section class="gnb-block" data-menu="apply" aria-labelledby="b-apply">
+          <p class="gnb-block__title" id="b-apply">시험접수</p>
+          <ul class="gnb-list">
+            <li><a class="gnb-link" href="/test_rec/gen_rec.jsp">시험접수</a></li>
+            <li><a class="gnb-link" href="/mytest/mytest_app.jsp">접수확인 / 수험표출력</a></li>
+            <li><a class="gnb-link" href="/mytest/mytest_app_change.jsp">접수변경 / 취소</a></li>
+          </ul>
+          <hr class="ds-divider">
+          <ul class="gnb-list">
+            <li><a class="gnb-link" href="/test_rec/search_schedule.jsp">시험센터 / 시험일정조회</a></li>
+            <li><a class="gnb-link" href="/test_rec/test_s_center.jsp">시험센터 안내</a></li>
+            <li><a class="gnb-link" href="/test_rec/test_guide.jsp">수험자 가이드</a></li>
+          </ul>
+        </section>
+
+        <!-- 2칸: MOS -->
+          <section class="gnb-block" data-menu="mos" aria-labelledby="b-mos">
+            <p class="gnb-block__title" id="b-mos">MOS</p>
+            <ul class="gnb-list">
+              <li><a class="gnb-link" href="/mos/int_test.jsp">MOS 소개</a></li>
+              <li><a class="gnb-link" href="/mos/mos_use_ex.jsp">MOS 활용사례</a></li>
+            </ul>
+            <hr class="ds-divider">
+            <ul class="gnb-list">
+              <li><a class="gnb-link" href="/mos/course_info_list.jsp">MOS 온라인 강의</a></li>
+              <li><a class="gnb-link" href="/mos/skill_pds_list.jsp">오피스 스킬 자료실</a></li>
+              <li><a class="gnb-link" href="/mos/institute_info_list.jsp">지역별 MOS 학원 정보</a></li>
+            </ul>
+          </section>
+
+        <!-- 3~4칸: 위 COS (두 묶음을 나란히), 아래 Generative AI | DATA -->
+        <div class="gnb-stack gnb-block--wide">
+        <section class="gnb-block" data-menu="cos" aria-labelledby="b-cos">
+          <p class="gnb-block__title" id="b-cos">COS</p>
+          <div class="gnb-pair">
+            <ul class="gnb-list">
+              <li><a class="gnb-link" href="/cos/cos_info.jsp">COS 소개</a></li>
+              <li><a class="gnb-link" href="/cos/cos_ex_test.jsp">COS 시험 체험하기</a></li>
+              <li><a class="gnb-link" href="/cos/cos_sam.jsp">COS 샘플문제</a></li>
+              <li><a class="gnb-link" href="/cos/cos_use_ex.jsp">COS 활용사례</a></li>
+            </ul>
+            <ul class="gnb-list">
+              <li><a class="gnb-link" href="/cos/course_info_list.jsp">COS 온라인 강의</a></li>
+              <li><a class="gnb-link" href="/mos_use/cos_teacher.jsp">COS 공인 강사</a></li>
+              <li><a class="gnb-link" href="/cos/institute_COSinfo_list.jsp">지역별 COS 학원 정보</a></li>
+              <li><a class="gnb-link" href="/cos/cos_best_ins.jsp">COS 우수 교육기관</a></li>
+            </ul>
+          </div>
+        </section>
+        <div class="gnb-pair">
+          <section class="gnb-block" data-menu="genai" aria-labelledby="b-genai">
+            <p class="gnb-block__title" id="b-genai">Generative AI</p>
+            <ul class="gnb-list">
+              <li><a class="gnb-link" href="#">Generative AI 소개</a></li>
+            </ul>
+          </section>
+          <section class="gnb-block" data-menu="data" aria-labelledby="b-data">
+            <p class="gnb-block__title" id="b-data">DATA</p>
+            <ul class="gnb-list">
+              <li><a class="gnb-link" href="/data/data_info.jsp">DATA 소개</a></li>
+              <li><a class="gnb-link" href="/data/data_test.jsp">DATA 샘플문제</a></li>
+            </ul>
+          </section>
+        </div>
+        </div>
+
+        <!-- 5칸: COS Pro -->
+        <section class="gnb-block" data-menu="cospro" aria-labelledby="b-cospro">
+          <p class="gnb-block__title" id="b-cospro">COS Pro</p>
+          <ul class="gnb-list">
+            <li><a class="gnb-link" href="/cos_pro/cos_pro_info.jsp">COS Pro 소개</a></li>
+            <li><a class="gnb-link" href="/cos_pro/cos_pro_r_test.jsp">COS Pro 샘플문제</a></li>
+            <li><a class="gnb-link" href="/cos_pro/cos_pro_use_ex.jsp">COS Pro 활용사례</a></li>
+          </ul>
+          <hr class="ds-divider">
+          <ul class="gnb-list">
+            <li><a class="gnb-link" href="/cos_pro/course_info_list.jsp">COS Pro 온라인 강의</a></li>
+            <li><a class="gnb-link" href="/cos_pro/institute_PROinfo_list.jsp">지역별 COS Pro 학원 정보</a></li>
+            <li><a class="gnb-link" href="https://verify-certificate.sotatek.edu.vn" target="_blank" rel="noopener noreferrer">Global COS Pro Certificate Verification<i class="ds-icon ds-icon--external-link" aria-hidden="true"></i></a></li>
+          </ul>
+        </section>
+
+        <!-- 아래 띠: 시험활용 (제목은 1칸, 목록은 2~5칸에 가로로) -->
+        <div class="gnb-strip">
+          <section class="gnb-block gnb-block--row" data-menu="use" aria-labelledby="b-use">
+            <p class="gnb-block__title" id="b-use">시험활용</p>
+            <ul class="gnb-flow">
+              <li><a class="gnb-link" href="/mos_use/mos_news_list.jsp">채용정보</a></li>
+              <li><a class="gnb-link" href="/mos_use/mos_use_ex.jsp">활용사례</a></li>
+              <li><a class="gnb-link" href="/mos_use/press_list.jsp">보도자료</a></li>
+              <li><a class="gnb-link" href="/mos_use/mos_movie.jsp">홍보영상</a></li>
+              <li><a class="gnb-link" href="/mos_use/book_list.jsp">시험교재</a></li>
+              <li><a class="gnb-link" href="/mos_use/mos_can_do/page.jsp">MOS Can do List</a></li>
+              <li><a class="gnb-link" href="https://my.incruit.com/service/trustmarkcenter.asp" target="_blank" rel="noopener noreferrer">인크루트 이력서 인증 MOS, COS, COS Pro<i class="ds-icon ds-icon--external-link" aria-hidden="true"></i></a></li>
+            </ul>
+          </section>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="demo-body">본문 자리</main>
+
+<script>
+/* 대메뉴에 마우스를 올리거나 키보드로 들어오면 전체 메뉴를 펼치고, 그 메뉴 칸을 강조 */
+(function () {
+  var header = document.getElementById('site-header');
+  var gnb = document.getElementById('gnb');
+  var panel = document.getElementById('gnb-panel');
+  var blocks = panel.querySelectorAll('.gnb-block');
+
+  function highlight(key) {
+    blocks.forEach(function (b) { b.classList.toggle('is-active', b.dataset.menu === key); });
+    gnb.querySelectorAll('[data-menu]').forEach(function (a) { a.classList.toggle('is-active', a.dataset.menu === key); });
+  }
+  function open() { panel.hidden = false; }
+  function close() { panel.hidden = true; highlight(null); }
+
+  gnb.addEventListener('mouseenter', open);
+  gnb.addEventListener('focusin', open);
+  header.addEventListener('mouseleave', close);
+  header.addEventListener('focusout', function (e) {
+    if (!header.contains(e.relatedTarget)) close();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+  // 대메뉴 ↔ 칸 강조를 서로 맞춤
+  gnb.querySelectorAll('[data-menu]').forEach(function (item) {
+    item.addEventListener('mouseenter', function () { highlight(item.dataset.menu); });
+    item.addEventListener('focus', function () { highlight(item.dataset.menu); });
+  });
+  blocks.forEach(function (b) {
+    b.addEventListener('mouseenter', function () { highlight(b.dataset.menu); });
+  });
+})();
+</script>
+
+</body>
+</html>

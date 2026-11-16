@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지역별 응시료 지원</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.css">
+<script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.js" defer></script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* =========================================================
+     1) 브랜드 토큰 — 우리 서비스 컬러로 여기만 바꾸면 됩니다
+     ========================================================= */
+  :root {
+    --brand: #4f46e5;          /* 메인 컬러 */
+    --brand-weak: #eef2ff;     /* 메인 컬러 연한 배경 */
+    --brand-ink: #ffffff;      /* 메인 컬러 위 글자색 */
+
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --surface-2: #f9fafb;
+    --line: #e5e7eb;
+    --text: #111827;
+    --text-2: #4b5563;
+    --text-3: #9ca3af;
+
+    --ok: #059669;    --ok-bg: #ecfdf5;
+    --soon: #d97706;  --soon-bg: #fffbeb;
+    --end: #6b7280;   --end-bg: #f3f4f6;
+
+    --map-on: color-mix(in srgb, var(--brand) 22%, var(--surface));     /* 지원사업 있는 지역 */
+    --map-hover: color-mix(in srgb, var(--brand) 45%, var(--surface));
+    --map-off: var(--line);                                              /* 지원사업 없는 지역 */
+
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(17,24,39,.04), 0 4px 16px rgba(17,24,39,.06);
+    --max: 1040px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --brand: #818cf8; --brand-weak: #1e1b4b; --brand-ink: #0b0b14;
+      --bg: #0b0d12; --surface: #141821; --surface-2: #1a1f2a; --line: #262c38;
+      --text: #f3f4f6; --text-2: #b6bcc8; --text-3: #6b7280;
+      --ok: #34d399; --ok-bg: #062e22; --soon: #fbbf24; --soon-bg: #2e2205; --end: #9ca3af; --end-bg: #1f2430;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --brand: #818cf8; --brand-weak: #1e1b4b; --brand-ink: #0b0b14;
+    --bg: #0b0d12; --surface: #141821; --surface-2: #1a1f2a; --line: #262c38;
+    --text: #f3f4f6; --text-2: #b6bcc8; --text-3: #6b7280;
+    --ok: #34d399; --ok-bg: #062e22; --soon: #fbbf24; --soon-bg: #2e2205; --end: #9ca3af; --end-bg: #1f2430;
+    --shadow: none;
+  }
+
+  /* =========================================================
+     2) 기본
+     ========================================================= */
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 132px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+  a { color: inherit; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+  /* 히어로 */
+  .hero { padding: 56px 0 28px; }
+  .eyebrow {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    background: var(--brand-weak); color: var(--brand); font-size: 13px; font-weight: 600;
+  }
+  .hero h1 { margin: 14px 0 10px; font-size: clamp(26px, 4.6vw, 38px); line-height: 1.25; letter-spacing: -.02em; }
+  .hero h1 em { font-style: normal; color: var(--brand); }
+  .hero p { margin: 0; color: var(--text-2); max-width: 560px; }
+  .stats { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .stat {
+    flex: 1 1 140px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 14px 16px;
+  }
+  .stat b { display: block; font-size: 22px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 13px; color: var(--text-2); }
+
+  /* 히어로 2단: 왼쪽 소개, 오른쪽 지도 */
+  .hero-grid { display: grid; grid-template-columns: 1fr minmax(300px, 400px); gap: 32px; align-items: center; }
+  @media (max-width: 820px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-copy .stats { max-width: 520px; }
+
+  /* 지도 */
+  .map-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: calc(var(--radius) + 4px);
+    box-shadow: var(--shadow); padding: 16px 16px 12px;
+  }
+  .map-card .map-title { margin: 0 0 4px; font-size: 14px; font-weight: 700; }
+  .map-card .map-sub { margin: 0; font-size: 13px; color: var(--text-2); }
+  .map-wrap { position: relative; margin-top: 8px; }
+  #map { display: block; width: 100%; height: auto; max-height: 520px; }
+  #map .rg {
+    fill: var(--map-on); stroke: var(--surface); stroke-width: 1; stroke-linejoin: round;
+    cursor: pointer; transition: fill .15s; outline: none;
+  }
+  #map .rg:hover, #map .rg:focus-visible { fill: var(--map-hover); }
+  #map .rg.active { fill: var(--brand); }
+  #map .rg.off { fill: var(--map-off); cursor: default; }
+  #map .lb {
+    font-size: 10px; font-weight: 700; fill: var(--text); text-anchor: middle; dominant-baseline: middle;
+    pointer-events: none; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round;
+  }
+  #map .lb.sm { font-size: 8.5px; }
+  #map .lb.active { fill: var(--brand-ink); stroke: var(--brand); }
+  #map .lb.off { fill: var(--text-3); }
+  .map-tip {
+    position: absolute; pointer-events: none; z-index: 2; transform: translate(-50%, calc(-100% - 10px));
+    background: var(--text); color: var(--bg); font-size: 12px; line-height: 1.4; padding: 6px 10px; border-radius: 8px;
+    white-space: nowrap; opacity: 0; transition: opacity .1s;
+  }
+  .map-tip.show { opacity: 1; }
+  .map-tip b { font-size: 13px; }
+  .map-legend { display: flex; gap: 14px; justify-content: center; margin-top: 6px; font-size: 12px; color: var(--text-2); }
+  .map-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+  /* 스티키 필터 바 */
+  .toolbar {
+    position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .toolbar .wrap { padding-top: 12px; padding-bottom: 12px; display: grid; gap: 10px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .search {
+    flex: 1 1 220px; display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; height: 42px;
+  }
+  .search:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-weak); }
+  .search input { flex: 1; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; min-width: 0; }
+  .search svg { color: var(--text-3); flex: none; }
+  .select {
+    height: 42px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text); font: inherit;
+  }
+  .toggle {
+    height: 42px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; font-size: 14px;
+    user-select: none;
+  }
+  .toggle input { accent-color: var(--brand); }
+  .chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text-2); font: inherit; font-size: 14px; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--brand); color: var(--brand); }
+  .chip.active { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+  .chip small { font-size: 12px; opacity: .7; font-variant-numeric: tabular-nums; }
+
+  /* 섹션 */
+  main { padding: 28px 0 40px; }
+  .section { margin-bottom: 40px; }
+  .section-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 14px; }
+  .section-head h2 { margin: 0; font-size: 21px; letter-spacing: -.02em; }
+  .section-head span { color: var(--text-3); font-size: 14px; }
+
+  /* 카드 (원본의 '표 1열' 하나 = 카드 하나) */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
+  }
+  .card.is-wide { grid-column: span 3; }
+  @media (max-width: 900px) { .card.is-wide { grid-column: span 2; } }
+  @media (max-width: 560px) { .card.is-wide { grid-column: span 1; } }
+  .card-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+    padding: 16px 18px 12px; border-bottom: 1px solid var(--line);
+  }
+  .card-head h3 { margin: 0; font-size: 17px; letter-spacing: -.01em; }
+  .card-head .areas { margin: 4px 0 0; font-size: 13px; color: var(--text-2); }
+  .badge { flex: none; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .badge.ok { color: var(--ok); background: var(--ok-bg); }
+  .badge.soon { color: var(--soon); background: var(--soon-bg); }
+  .badge.end, .badge.prep { color: var(--end); background: var(--end-bg); }
+
+  .card dl { margin: 0; padding: 6px 18px; flex: 1; }
+  .card dl > div { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 9px 0; }
+  .card dl > div + div { border-top: 1px dashed var(--line); }
+  .card dt { color: var(--text-3); font-size: 13px; padding-top: 1px; }
+  .card dd { margin: 0; font-size: 14px; }
+  .amount { font-size: 18px; font-weight: 700; color: var(--brand); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .card .empty { padding: 26px 18px; flex: 1; color: var(--text-3); font-size: 14px; text-align: center; }
+
+  .card-foot { padding: 12px 18px 16px; }
+  .go-btn {
+    display: flex; justify-content: center; align-items: center; gap: 6px; height: 42px; border-radius: 10px;
+    background: var(--surface-2); border: 1px solid var(--line); text-decoration: none; font-weight: 600; font-size: 14px;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .go-btn:hover { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+  .go-btn.disabled { pointer-events: none; color: var(--text-3); }
+
+  .no-result { text-align: center; padding: 60px 16px; color: var(--text-2); }
+
+  /* CTA + 유의사항 */
+  .cta {
+    background: var(--brand); color: var(--brand-ink); border-radius: calc(var(--radius) + 4px);
+    padding: 32px 24px; text-align: center;
+  }
+  .cta p { margin: 0 0 18px; font-size: 18px; font-weight: 600; line-height: 1.45; }
+  .cta .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .cta a {
+    min-width: 160px; height: 46px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 10px; font-weight: 700; text-decoration: none; border: 1px solid currentColor;
+  }
+  .cta a.primary { background: var(--brand-ink); color: var(--brand); border-color: var(--brand-ink); }
+  .notice { margin: 28px 0 60px; padding: 20px 22px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+  .notice h4 { margin: 0 0 8px; font-size: 14px; }
+  .notice ul { margin: 0; padding-left: 18px; color: var(--text-2); font-size: 13px; }
+  .notice li + li { margin-top: 4px; }
+
+  .top-btn {
+    position: fixed; right: 16px; bottom: 16px; width: 48px; height: 48px; border-radius: 50%;
+    background: var(--text); color: var(--bg); border: 0; font-weight: 700; font-size: 12px; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18); opacity: 0; transform: translateY(8px); pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .top-btn.show { opacity: 1; transform: none; pointer-events: auto; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .top-btn { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">2026 지자체 지원사업</span>
+      <h1>우리 동네 <em>응시료 지원</em>,<br>한눈에 확인하세요</h1>
+      <p>전국 지자체에서 청년 취업 활동을 돕기 위해 어학·자격 시험 응시료를 지원하고 있어요. 지도에서 거주 지역을 눌러 받을 수 있는 혜택을 확인해 보세요.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="map-card">
+      <p class="map-title">지도에서 지역 선택</p>
+      <p class="map-sub">시·도를 누르면 해당 지역 지원사업으로 이동해요.</p>
+      <div class="map-wrap">
+        <svg id="map" role="group" aria-label="시·도 선택 지도"></svg>
+        <div class="map-tip" id="mapTip" role="status"></div>
+      </div>
+      <div class="map-legend">
+        <span><i style="background:var(--map-on)"></i>지원사업 있음</span>
+        <span><i style="background:var(--map-off)"></i>정보 없음</span>
+        <span><i style="background:var(--brand)"></i>선택됨</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="row">
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="시·군·구 이름으로 검색 (예: 강남, 수원)" autocomplete="off">
+      </label>
+      <select id="sort" class="select" aria-label="정렬">
+        <option value="default">기본 순</option>
+        <option value="amount">지원금 높은 순</option>
+        <option value="name">가나다 순</option>
+      </select>
+      <label class="toggle"><input id="openOnly" type="checkbox"> 신청 가능만</label>
+    </div>
+    <nav class="chips" id="chips" aria-label="시·도 바로가기"></nav>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div id="list"></div>
+
+    <section class="cta">
+      <p>우리 동네 혜택 확인 완료!<br>이제 목표 점수를 달성하러 가볼까요?</p>
+      <div class="btns">
+        <a class="primary" href="#" target="_blank" rel="noopener">시험 접수하기</a>
+        <a href="#" target="_blank" rel="noopener">시험 일정 확인하기</a>
+      </div>
+    </section>
+
+    <section class="notice">
+      <h4>※ 유의사항</h4>
+      <ul>
+        <li>본 정보는 각 지자체 홈페이지 공고를 바탕으로 수집되었으며, 지자체 사정에 따라 예고 없이 변경될 수 있습니다.</li>
+        <li>정확한 지원 자격 및 신청 방법은 반드시 지자체 공식 공고문에서 최종 확인해 주세요.</li>
+        <li>예산 상황에 따라 선착순 조기 마감될 수 있습니다.</li>
+        <li>준비 중인 지역은 사업이 시작되면 순차적으로 업데이트됩니다.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<button class="top-btn" id="topBtn" aria-label="맨 위로">TOP</button>
+
+<script>
+/* =========================================================
+   3) 데이터 — 서비스에서는 API 응답으로 교체하면 됩니다
+   ---------------------------------------------------------
+   area    : 카드 제목 (시·군·구)
+   areas   : (선택) 같은 사업을 공유하는 지역 목록 → 넓은 카드로 표시
+   period  : 화면에 그대로 노출되는 기간 텍스트
+   start/end: 'YY.MM' 또는 'YY.MM.DD' — 상태 배지 계산용 (end 생략 = 상시)
+   target  : 대상
+   amount  : 1인당 최대 지원금 (만원 단위 숫자)
+   url     : 공고 링크 (없으면 비활성 버튼)
+   status  : 'prep' 지정 시 '준비 중'
+   ========================================================= */
+const DATA = [
+  { id: 'seoul', name: '서울특별시', short: '서울', items: [
+    { area: '강남구', period: '26.02.01 ~ 26.12.10', start: '26.02.01', end: '26.12.10', target: '강남구 거주 만 19~39세 미취업 청년', amount: 20, url: 'https://www.gangnam.go.kr/board/cardnews/1188/view.do?mid=ID01_0306/' },
+    { area: '강동구', status: 'prep' },
+    { area: '강북구', period: '26.04.01 ~ 26.12.10', start: '26.04.01', end: '26.12.10', target: '강북구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.gangbuk.go.kr/portal/bbs/B0000266/list.do?menuNo=200694&nttId=149823' },
+    { area: '강서구', status: 'prep' },
+    { area: '관악구', period: '26.07 ~ 26.10 (예정)', start: '26.07', end: '26.10', target: '관악구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.gwanak.go.kr/site/gwanak/06/10606101800002025013102.jsp' },
+    { area: '광진구', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '광진구 거주 19~39세 미취업자', amount: 15, url: 'https://www.gwangjin.go.kr/portal/bbs/B0000001/view.do?nttId=6561067&menuNo=200190&pSiteId=portal&pageIndex=2' },
+    { area: '구로구', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '구로구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.guro.go.kr/www/selectBbsNttView.do?key=1790&bbsNo=662&nttNo=228017' },
+    { area: '금천구', period: '26.01.22 ~ 26.11.30', start: '26.01.22', end: '26.11.30', target: '금천구 거주 19~39세 미취업 청년', amount: 50, url: 'https://www.geumcheon.go.kr/portal/tblSeolGosiDetailView.do?key=294&notAncmtMgtNo=37528&rep=1' },
+    { area: '노원구', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '노원구 거주 19~39세 미취업 청년', amount: 10, url: '' },
+    { area: '도봉구', period: '26.02.02 ~ 26.02.27', start: '26.02.02', end: '26.02.27', target: '도봉구 거주 미취업 청년 중 전년도 사업 미참여자 (1981.1.1~2007.12.31 출생)', amount: 10, url: 'https://www.dobong.go.kr/bbs.asp?bmode=D&pcode=12740827&code=10008769' },
+    { area: '동대문구', period: '26.02.01 ~ 26.11.30', start: '26.02.01', end: '26.11.30', target: '동대문구 거주 만 19~39세 미취업 청년', amount: 20, url: 'https://www.ddm.go.kr/www/contents.do?key=3920' },
+    { area: '동작구', period: '26.01.26 ~ 26.12.10', start: '26.01.26', end: '26.12.10', target: '동작구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://youthjob.dongjak.go.kr/noryangjin/contents.do?mId=1467' },
+    { area: '마포구', period: '26.02.02 ~ 26.12.11', start: '26.02.02', end: '26.12.11', target: '마포구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.mapo.go.kr/site/main/board/notice/273905' },
+    { area: '서대문구', period: '26.02.02 ~ 26.12.10', start: '26.02.02', end: '26.12.10', target: '서대문구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.sdm.go.kr/news/news/notice.do?mode=view&sdmBoardSeq=308789' },
+    { area: '서초구', period: '26.03.02 ~ 26.11.30', start: '26.03.02', end: '26.11.30', target: '서초구 거주 19~39세 미취업 청년', amount: 20, url: 'https://www.seocho.go.kr/site/seocho/ex/online/OnlineListF.do?ocIdx=testfee' },
+    { area: '성동구', period: '26.01.01 ~ 26.12.31', start: '26.01.01', end: '26.12.31', target: '성동구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.sd.go.kr/main/contents.do?key=5355&' },
+    { area: '성북구', period: '26.02.01 ~ 26.12.10', start: '26.02.01', end: '26.12.10', target: '성북구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.sb.go.kr/yeyak/contents.do?key=6602' },
+    { area: '송파구', period: '26.05.01 ~ 26.10.31', start: '26.05.01', end: '26.10.31', target: '송파구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.songpa.go.kr/www/tsfspStep1.do?key=6242' },
+    { area: '양천구', period: '26.01.01 ~ 26.12.10', start: '26.01.01', end: '26.12.10', target: '양천구 거주 19~39세 미취업 청년', amount: 20, url: 'https://www.yangcheon.go.kr/site/yangcheon/ex/testfee/testFeeInfo.do' },
+    { area: '영등포구', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '영등포구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.ydp.go.kr/www/contents.do?key=5998&' },
+    { area: '용산구', period: '26.02.01 ~ 26.12.10', start: '26.02.01', end: '26.12.10', target: '용산구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.yongsan.go.kr/portal/bbs/B0000095/view.do?nttId=740828&menuNo=200233&dongCd=' },
+    { area: '은평구', period: '26.02 ~ 26.12', start: '26.02', end: '26.12', target: '은평구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.ep.go.kr/www/selectBbsNttView.do?key=864&bbsNo=56&nttNo=311777' },
+    { area: '종로구', status: 'prep' },
+    { area: '중구', period: '26.01.01 ~ 26.12.10', start: '26.01.01', end: '26.12.10', target: '중구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.junggu.seoul.kr/content.do?cmsid=16597' },
+    { area: '중랑구', period: '26.02.02 ~ 26.12.10', start: '26.02.02', end: '26.12.10', target: '중랑구 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://www.jungnang.go.kr/health/bbs/view/B0000117/164097?menuNo=400493' },
+  ]},
+  { id: 'gyeonggi', name: '경기도', short: '경기', items: [
+    { area: '경기도 공통', areas: ['가평','고양','과천','광명','광주','구리','군포','김포','남양주','동두천','부천','수원','시흥','안산','안성','안양','양주','양평','여주','연천','오산','용인','의왕','의정부','이천','파주','평택','하남','화성'], period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '경기도에 주민등록을 둔 19~39세 미취업 청년', amount: 30, url: 'https://apply.jobaba.net/special/GGtestfees/main.do' },
+    { area: '성남', period: '26.03 ~', start: '26.03', target: '성남시 거주 19~34세 미취업 청년', amount: 100, url: 'https://dept.seongnam.go.kr/youth/apply/business/detail/193' },
+    { area: '포천', period: '26.01.02 ~ 26.11.30', start: '26.01.02', end: '26.11.30', target: '경기도에 주민등록을 둔 19~49세 미취업 청년', amount: 30, url: 'https://apply.jobaba.net/special/GGtestfees/main.do' },
+  ]},
+  { id: 'incheon', name: '인천광역시', short: '인천', items: [
+    { area: '인천 전역', period: '26.02.01 ~ 26.11.30', start: '26.02.01', end: '26.11.30', target: '인천시 거주 18~39세 미취업 청년', amount: 10, url: 'https://youth.incheon.go.kr/job/certificate.jsp' },
+  ]},
+  { id: 'gangwon', name: '강원도', short: '강원', items: [
+    { area: '고성', period: '26.02.02 ~ 26.11.30', start: '26.02.02', end: '26.11.30', target: '고성군 거주 19~39세 미취업 청년', amount: 20, url: 'https://www.gwgs.go.kr/prog/bbsArticle/BBSMSTR_000000000412/view.do?bbsId=BBSMSTR_000000000412&nttId=B000000074980Zg6yX6z&kind=' },
+    { area: '삼척', period: '26.01.02 ~ 26.11.30', start: '26.01.02', end: '26.11.30', target: '삼척시 거주 만 18~49세 미취업자', amount: 10, url: 'https://www.samcheok.go.kr/media/00083/00089.web?amode=view&idx=135486&gcode=1002' },
+    { area: '양구', period: '26.01.05 ~', start: '26.01.05', target: '양구군 거주 18~49세 미취업 청년', amount: 80, url: 'https://www.yanggu.go.kr/user_sub?gfnc=www&bcd=announcement&bk=LIFPA260112182731194&mu_idx=226&bt=rd' },
+    { area: '영월', period: '26.02.01 ~', start: '26.02.01', target: '영월군 거주 18~45세 미취업 청년', amount: 50, url: 'https://www.yw.go.kr/www/selectBbsNttView.do?key=273&bbsNo=17&nttNo=150735' },
+    { area: '원주', period: '26.02.02 ~ 26.11.30', start: '26.02.02', end: '26.11.30', target: '원주시 거주 18~39세 미취업 청년', amount: 5, url: 'https://www.wonju.go.kr/wjyouth/viewTnWjyouthProgrmU.do?progrmNo=54&key=5942' },
+  ]},
+  { id: 'gyeongnam', name: '경상남도', short: '경남', items: [
+    { area: '거창', period: '26.01.08 ~ 26.12.25', start: '26.01.08', end: '26.12.25', target: '거창군 거주 19~45세 미취업 청년', amount: 10, url: 'https://www.geochang.go.kr/00445/00450.web?amode=view&gcode=1002&idx=15008945&artiSno=' },
+    { area: '김해', period: '26.03.09 ~ 26.12.18', start: '26.03.09', end: '26.12.18', target: '김해시 거주 19~45세 미취업 청년', amount: 10, url: 'https://www.gimhae.go.kr/population/00002/00013/00041.web?amode=view&infoSno=71&cpage=1' },
+    { area: '사천', period: '26.01.19 ~ 26.11.30', start: '26.01.19', end: '26.11.30', target: '사천시 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.sacheon.go.kr/news/00009/00014.web?gcode=2017&idx=2099335&amode=view' },
+    { area: '산청', period: '26.02 ~ 26.12.18', start: '26.02', end: '26.12.18', target: '산청군 거주 19~49세 미취업 청년', amount: 20, url: 'https://www.sancheong.go.kr/www/selectBbsNttView.do?key=158&bbsNo=118&nttNo=155828' },
+    { area: '양산', period: '26.05 ~ 26.12', start: '26.05', end: '26.12', target: '양산시 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.yangsan.go.kr/youth/board/post/view.do?bcIdx=784&mid=0402000000&idx=1020750' },
+    { area: '의령', period: '26.01.12 ~ 26.12.18', start: '26.01.12', end: '26.12.18', target: '의령군 거주 18~49세 미취업 청년', amount: 20, url: 'https://www.uiryeong.go.kr/board/view.uiryeong?boardId=BBS_0000070&menuCd=DOM_000000203003001002&dataSid=316445&gosiNo=34914' },
+    { area: '진주', period: '26.02.11 ~ 연중', start: '26.02.11', target: '진주시 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.jinju.go.kr/00135/01112/07191.web?amode=view&gcode=2144&idx=39606162&not_ancmt_mgt_no=39606162&gubun=present' },
+    { area: '창녕', period: '26.01 ~', start: '26.01', target: '창녕군 거주 19~49세 미취업 청년', amount: 10, url: 'https://www.cng.go.kr/00596/00776/03935.web' },
+    { area: '창원', period: '26.02.26 ~ 26.11.30', start: '26.02.26', end: '26.11.30', target: '창원시 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.changwon.go.kr/cwportal/10310/10438/10439.web?amode=view&not_ancmt_mgt_no=203840' },
+  ]},
+  { id: 'gyeongbuk', name: '경상북도', short: '경북', items: [
+    { area: '안동', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '안동시 거주 18~39세 청년', amount: 10, url: 'https://www.andong.go.kr/portal/saeol/gosi/view.do?notAncmtMgtNo=61401&isLinkage=Y&mId=0401020000' },
+    { area: '영천', period: '26.03.03 ~ 26.11.30', start: '26.03.03', end: '26.11.30', target: '영천시 거주 19~45세 미취업 청년', amount: 30, url: 'https://www.yc.go.kr/yeyak/anm/master/view.do?idx=60&mId=0901000000' },
+    { area: '청송', period: '26.01.21 ~ 26.12.14', start: '26.01.21', end: '26.12.14', target: '청송군 거주 19~49세 미취업 청년', amount: 20, url: 'https://www.cs.go.kr/news/00002679/00006203.web?amode=view&not_ancmt_mgt_no=28326' },
+    { area: '포항', period: '26.02.03 ~ 26.12.05', start: '26.02.03', end: '26.12.05', target: '포항시 거주 19~34세 미취업 청년', amount: 10, url: 'https://www.pohang.go.kr/portal/saeol/gosi/view.do?notAncmtMgtNo=70216&mid=0202010000' },
+  ]},
+  { id: 'daegu', name: '대구광역시', short: '대구', items: [
+    { area: '남구', period: '26.02.02 ~ 26.11.30', start: '26.02.02', end: '26.11.30', target: '남구 거주 18~39세 미취업 청년', amount: 10, url: 'https://minwon.daegu.go.kr/cvpl/AUTN-020/info' },
+    { area: '달서구', period: '26.01.15 ~ 26.11.30', start: '26.01.15', end: '26.11.30', target: '달서구 거주 18~39세 미취업 청년', amount: 10, url: 'https://dalseo.daegu.kr/index.do?menu_id=00004358' },
+    { area: '달성군', period: '26.01.01 ~ 26.11.30', start: '26.01.01', end: '26.11.30', target: '달성군 거주 미취업 청년 (1987~2007년생)', amount: 10, url: 'https://www.dalseong.daegu.kr/index.do?menu_id=00005451' },
+    { area: '수성구', period: '26.02 ~ 26.11', start: '26.02', end: '26.11', target: '수성구 거주 19~39세 미취업 청년', amount: 10, url: 'http://www.suseongyouth.or.kr/content/11cerFee/01_01.php' },
+  ]},
+  { id: 'daejeon', name: '대전광역시', short: '대전', items: [
+    { area: '대전 전역', areas: ['대덕구','동구','유성구','서구','중구'], period: '26.02.27 ~ 26.12.04', start: '26.02.27', end: '26.12.04', target: '대전광역시 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.daejeonyouthportal.kr/board/BBSMSTR_000000000239/articleView.do?searchSeq=13578&commonMenuNo=' },
+  ]},
+  { id: 'busan', name: '부산광역시', short: '부산', items: [
+    { area: '강서구', period: '26.02.02 ~ 26.12.15', start: '26.02.02', end: '26.12.15', target: '강서구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.bsgangseo.go.kr/portal/contents.do?mid=0305050100' },
+    { area: '기장군', period: '26.02.02 ~ 26.12.10', start: '26.02.02', end: '26.12.10', target: '기장군 거주 19~44세 미취업 청년', amount: 10, url: 'https://www.gijang.go.kr/index.gijang?menuCd=DOM_000000103010001001&cpath=' },
+    { area: '남구', period: '26.01.16 ~ 26.12.25', start: '26.01.16', end: '26.12.25', target: '남구 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.bsnamgu.go.kr/index.namgu?menuCd=DOM_000000102012011000' },
+    { area: '동구', period: '26.01.16 ~ 26.12.15', start: '26.01.16', end: '26.12.15', target: '동구 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.bsdonggu.go.kr/index.donggu?menuCd=DOM_000000102013006000' },
+    { area: '동래구', period: '26.01.26 ~ 26.12.18', start: '26.01.26', end: '26.12.18', target: '동래구 거주 18~39세 미취업 청년', amount: 8, url: 'https://www.dongnae.go.kr/index.dongnae?menuCd=DOM_000000105011002000' },
+    { area: '부산진구', period: '26.03.01 ~ 26.12.15', start: '26.03.01', end: '26.12.15', target: '부산진구 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.busanjin.go.kr/createman/index.busanjin?menuCd=DOM_000001710004000000&cpath=' },
+    { area: '북구', period: '26.01.01 ~ 26.12.15', start: '26.01.01', end: '26.12.15', target: '북구 거주 만 18~39세 미취업 청년', amount: 10, url: 'https://www.bsbukgu.go.kr/index.bsbukgu?menuCd=DOM_000000103007010005' },
+    { area: '사상구', period: '26.01.19 ~ 26.12.11', start: '26.01.19', end: '26.12.11', target: '사상구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.sasang.go.kr/index.sasang?menuCd=DOM_000000103010001002' },
+    { area: '사하구', period: '26.01.26 ~ 26.12.25', start: '26.01.26', end: '26.12.25', target: '사하구 거주 18~39세 미취업 청년', amount: 8, url: 'https://www.saha.go.kr/startup/contents.do?mId=0301000000' },
+    { area: '서구', period: '26.02.01 ~ 26.12.15', start: '26.02.01', end: '26.12.15', target: '서구 거주 19~39세 미취업 청년', amount: 20, url: 'https://www.bsseogu.go.kr/index.bsseogu?menuCd=DOM_000000102001005000' },
+    { area: '수영구', period: '~ 26.12.11', end: '26.12.11', target: '수영구 거주 18~39세 미취업 청년', amount: 20, url: 'https://www.suyeong.go.kr/synap/skin/doc.html?fn=176843589535392.hwp&rs=/upload_data/Synap/BBS_0000086/' },
+    { area: '연제구', period: '26.01.02 ~ 26.12.31', start: '26.01.02', end: '26.12.31', target: '연제구 거주 18~39세 미취업 청년', amount: 7, url: 'https://www.yeonje.go.kr/welfare/license/poster.do?mId=0805040100' },
+    { area: '영도구', period: '26.01.05 ~ 26.12.15', start: '26.01.05', end: '26.12.15', target: '영도구 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.yeongdo.go.kr/00672/04452/04144.web' },
+  ]},
+  { id: 'ulsan', name: '울산광역시', short: '울산', items: [
+    { area: '울산 전역', areas: ['중구','남구','동구','북구','울주군'], period: '26.03.03 ~ 26.11.30', start: '26.03.03', end: '26.11.30', target: '울산광역시 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.ulsan.go.kr/s/ulsanyouth/contents.do?mId=008001008000000000#container' },
+  ]},
+  { id: 'jeonnam', name: '전라남도', short: '전남', items: [
+    { area: '무안', period: '26.01 ~', start: '26.01', target: '무안군 거주 19~45세 미취업자', amount: 10, url: 'https://www.muan.go.kr/www/openmuan/participation/language_license' },
+    { area: '영광', period: '26.01.23 ~ 26.12.11', start: '26.01.23', end: '26.12.11', target: '영광군 거주 18~45세 청년', amount: 20, url: 'https://www.yeonggwang.go.kr/bbs/?b_id=gosigonggo&type=view&site=headquarter_new&mn=9059&bs_idx=28001' },
+    { area: '영암', period: '26.02 ~', start: '26.02', target: '영암군 거주 19~49세 미취업자', amount: 10, url: 'https://www.yeongam.go.kr/home/moonlight/notice/notice_01/show/vjd2g1p963xiy4zftvwnb' },
+    { area: '완도', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '완도군 거주 19~49세 미취업 청년', amount: 10, url: 'https://www.wando.go.kr/wando/sub.cs?m=1031&nttId=29826' },
+    { area: '해남', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '해남군 거주 18~49세 청년', amount: 10, url: 'https://blog.naver.com/haenamgunpr/224161436171' },
+    { area: '화순', period: '26.01.02 ~ 26.12.18', start: '26.01.02', end: '26.12.18', target: '화순군 거주 18~49세 시험 응시자', amount: 10, url: 'https://www.hwasun.go.kr/gallery.do?S=S01&M=020118000000&b_code=0000000083&list_no=1843&act=view' },
+  ]},
+  { id: 'jeonbuk', name: '전북특별자치도', short: '전북', items: [
+    { area: '전북 전체', status: 'prep', note: '전북 청년 취업 지원 패키지 사업 예정 (25년 사업 기준, 26년 사업은 추후 오픈)', target: '전북특별자치도 거주 18~39세 청년', amount: 10 },
+    { area: '김제', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '김제시 거주 18~39세 미취업 청년', amount: 10, url: 'https://www.gimje.go.kr/town/board/view.gimje?menuCd=DOM_000002218004001000&boardId=BBS_0000027&dataSid=308142' },
+    { area: '정읍', period: '26.01.01 ~ 26.12.31', start: '26.01.01', end: '26.12.31', target: '정읍시 거주 만 46~64세 미취업자', amount: 10, url: 'https://www.jeongeup.go.kr/buseo/board/view.jeongeup?menuCd=DOM_000001039001000000&boardId=BBS_0000012&dataSid=1399944' },
+  ]},
+  { id: 'jeju', name: '제주특별자치도', short: '제주', items: [
+    { area: '서귀포', period: '26.02.09 ~', start: '26.02.09', target: '서귀포시 거주 만 19~39세 미취업 청년', amount: 10, url: 'https://seogwipo.go.kr/group/selfgoverning/planning/application/intro.htm' },
+    { area: '제주', period: '26.02.09 ~', start: '26.02.09', target: '제주시 거주 19~39세 미취업 청년', amount: 10, url: 'https://www.jejusi.go.kr/participation/examfeeApply/receipt.do' },
+  ]},
+  { id: 'chungnam', name: '충청남도', short: '충남', items: [
+    { area: '보령', period: '26.03.03 ~ 26.11.30', start: '26.03.03', end: '26.11.30', target: '보령시 거주 만 19~64세 미취업자', amount: 10, url: 'https://eminwon.brcn.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?subCheck=Y&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_se_code=01,02,04&not_ancmt_mgt_no=54509' },
+  ]},
+  { id: 'chungbuk', name: '충청북도', short: '충북', items: [
+    { area: '영동', period: '26.01 ~ 26.12', start: '26.01', end: '26.12', target: '영동군 거주 19~45세 미취업 청년', amount: 10, url: 'https://www.yd21.go.kr/kr/html/sub02/020103.html?GotoPage=1&mode=V&no=5e36ac8440fae8ff9f246d0e89bd3eb4' },
+    { area: '진천', period: '26.02.02 ~ 26.12.10', start: '26.02.02', end: '26.12.10', target: '진천군 거주 19~39세 청년', amount: 10, url: 'https://www.jcy.kr/news/73' },
+    { area: '보은', period: '26.02.26 ~', start: '26.02.26', target: '보은군 거주 18~45세 미취업 청년', amount: 10, url: 'https://www.boeun.go.kr/www/selectBbsNttView.do?key=134&bbsNo=4&nttNo=216545' },
+  ]},
+];
+
+/* =========================================================
+   4) 로직
+   ========================================================= */
+const TODAY = new Date();           // 테스트 시 new Date('2026-03-01') 등으로 고정
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+// 'YY.MM' | 'YY.MM.DD' → Date. isEnd면 그 달/그 날의 끝으로.
+function parseDate(str, isEnd) {
+  if (!str) return null;
+  const [y, m, d] = str.split('.').map(Number);
+  const year = 2000 + y;
+  if (d) return isEnd ? new Date(year, m - 1, d, 23, 59, 59) : new Date(year, m - 1, d);
+  return isEnd ? new Date(year, m, 0, 23, 59, 59) : new Date(year, m - 1, 1);
+}
+
+function getStatus(it) {
+  if (it.status === 'prep') return { key: 'prep', label: '준비 중' };
+  const s = parseDate(it.start, false), e = parseDate(it.end, true);
+  if (s && TODAY < s) return { key: 'soon', label: '오픈 예정' };
+  if (e && TODAY > e) return { key: 'end', label: '마감' };
+  return { key: 'ok', label: '신청 가능' };
+}
+
+const state = { q: '', sort: 'default', openOnly: false, region: 'all' };
+
+function matches(it) {
+  if (state.openOnly && getStatus(it).key !== 'ok') return false;
+  if (!state.q) return true;
+  const hay = [it.area, ...(it.areas || []), it.target].join(' ');
+  return hay.includes(state.q);
+}
+
+function sortItems(items) {
+  const arr = [...items];
+  if (state.sort === 'amount') arr.sort((a, b) => (b.amount || 0) - (a.amount || 0));
+  if (state.sort === 'name') arr.sort((a, b) => a.area.localeCompare(b.area, 'ko'));
+  return arr;
+}
+
+function cardHTML(it) {
+  const st = getStatus(it);
+  const wide = it.areas && it.areas.length > 3;
+  const head = `
+    <div class="card-head">
+      <div>
+        <h3>${esc(it.area)}</h3>
+        ${it.areas ? `<p class="areas">${it.areas.map(esc).join(' · ')}</p>` : ''}
+      </div>
+      <span class="badge ${st.key}">${st.label}</span>
+    </div>`;
+
+  if (it.status === 'prep' && !it.target) {
+    return `<article class="card">${head}<div class="empty">사업 공고를 준비 중이에요.<br>오픈되면 바로 알려드릴게요.</div>
+      <div class="card-foot"><a class="go-btn disabled" aria-disabled="true">공고 준비 중</a></div></article>`;
+  }
+
+  const link = it.url
+    ? `<a class="go-btn" href="${esc(it.url)}" target="_blank" rel="noopener">공고 바로가기 <span aria-hidden="true">→</span></a>`
+    : `<a class="go-btn disabled" aria-disabled="true">링크 준비 중</a>`;
+
+  return `
+    <article class="card${wide ? ' is-wide' : ''}">
+      ${head}
+      <dl>
+        <div><dt>기간</dt><dd>${esc(it.period || it.note || '-')}</dd></div>
+        <div><dt>대상</dt><dd>${esc(it.target)}</dd></div>
+        <div><dt>지원금</dt><dd>1인당 최대 <span class="amount">${it.amount}만원</span></dd></div>
+      </dl>
+      <div class="card-foot">${link}</div>
+    </article>`;
+}
+
+function render() {
+  let total = 0;
+  const html = DATA
+    .filter(r => state.region === 'all' || r.id === state.region)
+    .map(r => {
+      const items = sortItems(r.items.filter(matches));
+      total += items.length;
+      if (!items.length) return '';
+      return `
+        <section class="section" id="${r.id}">
+          <div class="section-head"><h2>${esc(r.name)}</h2><span>${items.length}곳</span></div>
+          <div class="grid">${items.map(cardHTML).join('')}</div>
+        </section>`;
+    }).join('');
+
+  $('#list').innerHTML = total ? html
+    : `<div class="no-result"><b>검색 결과가 없어요</b><br>다른 지역명으로 검색하거나 필터를 해제해 보세요.</div>`;
+  renderChips();
+}
+
+function renderChips() {
+  const count = r => r.items.filter(matches).length;
+  const all = DATA.reduce((n, r) => n + count(r), 0);
+  $('#chips').innerHTML =
+    `<button class="chip${state.region === 'all' ? ' active' : ''}" data-region="all">전체 <small>${all}</small></button>` +
+    DATA.map(r => `<button class="chip${state.region === r.id ? ' active' : ''}" data-region="${r.id}">${esc(r.short)} <small>${count(r)}</small></button>`).join('');
+  if (MAP) syncMap();
+}
+
+function renderStats() {
+  const items = DATA.flatMap(r => r.items);
+  const open = items.filter(it => getStatus(it).key === 'ok').length;
+  const max = Math.max(...items.map(it => it.amount || 0));
+  $('#stats').innerHTML = `
+    <div class="stat"><b>${DATA.length}개</b><span>참여 시·도</span></div>
+    <div class="stat"><b>${open}곳</b><span>지금 신청 가능</span></div>
+    <div class="stat"><b>최대 ${max}만원</b><span>1인당 지원금</span></div>`;
+}
+
+/* =========================================================
+   5) 지도 — 시·도 경계(통계청 2013, southkorea-maps)를 SVG 경로로 변환해 내장
+   code → DATA의 id 연결. null이면 '정보 없음'(회색, 클릭 불가)
+   ========================================================= */
+const MAP = {"W":400,"H":424,"regions":[{"code":"11","name":"서울특별시","cx":153,"cy":87.9,"d":"M139.3,87.7L140.9,85.7L141.6,84L142.5,85L144.3,86.1L145.9,85.8L147.4,84.7L147.4,83.3L148.1,81L150.2,79.9L151.9,81.9L152.5,81.5L152.2,80.2L153,78.4L153.9,77.9L154.4,76.7L156.5,77.7L158.4,77L159.2,77.6L159,80.5L160,80.9L160.6,83.9L159.6,85.5L159.6,87.3L164,85.8L164.5,87.2L164.3,88.3L163.4,88.4L161.9,91.2L163.2,91.8L162.3,93.6L160.6,94.7L159.4,94.9L157.4,97.2L156.6,97.2L155.6,96.2L155.7,95.1L154.1,95.2L153.6,94.3L151.2,96.2L149.7,96.6L148.9,95.7L147.5,96.8L145.4,92.3L143.6,93.6L142.6,93.6L142.1,92.3L143,89.8L142.6,88.8L139.5,88.1Z"},{"code":"21","name":"부산광역시","cx":278.8,"cy":265,"d":"M293.7,255.2L291.3,255.9L291,258.8L290,260.1L290.6,261.4L289.4,263.8L288.9,265.9L287.3,266.5L287,267.8L283.5,268.4L282.5,269.9L283,271.7L282.6,272.4L280.9,272.5L279.3,271.9L279.2,270.7L278.2,270.7L277.7,271.8L279.4,272.7L280.1,274.6L281,275.4L280.3,276.2L277.3,273.6L276.5,275.3L275.3,276.3L274.1,276.4L273.2,277.5L272.2,274.1L270.4,273.4L269.8,274L265.1,273.9L266.1,276.1L266,277.4L265.2,279L263.4,278.4L263.7,276.9L262.8,275.9L264.3,275.4L264.9,274.5L264.4,272.5L265.6,271.9L265,270.2L263.1,269.3L262.6,268.1L265.6,268.1L267,267.4L268,266.3L267.3,264.8L268.1,263.9L270.5,263.7L275,262.3L276,259.4L278.2,258.9L278.8,257.7L279.7,258.1L280.6,257.1L282,256.7L282.9,254L284.2,252.5L285.8,253.5L287,252.8L287.5,250.8L288.4,251.5L291.3,250.9L292.4,252.7L292.2,254.3L293.7,255.2Z"},{"code":"22","name":"대구광역시","cx":248.7,"cy":217.5,"d":"M246.4,228.6L245.3,229.2L245.1,231.9L243.8,232.1L241.5,231.9L240.6,233.1L237.5,234.3L236.9,234L237.8,233.9L238.8,231.6L237.5,230.6L236,228.7L235.7,227.1L236.2,226.7L239.7,227.8L240.7,227L240.6,225.4L238.2,223.8L237.8,222.5L239.1,220L239.9,219L242.9,219.1L243.4,217.7L242.3,216.6L240,215.9L238.1,216L237.8,214.8L238.9,213L239.8,210.6L241.2,209.6L243.3,209.5L242.8,211.7L243.2,212.6L244.3,212.5L246.2,210.9L246.9,209.2L246.4,206.5L248.2,206.9L250.2,206.3L251.9,204.2L256.4,203.6L258.5,204.3L258.8,205.8L259.7,206.9L259.3,208L259.7,208.9L259.3,210.1L260.4,211.1L260.8,213.4L260.1,215.5L257.5,217.7L257.9,219.3L255.9,220.5L256.7,222.9L256.4,224.8L255.9,225.6L254.7,225.7L253.1,226.8L252.2,227L251.5,225.4L251.8,224.5L249.6,224.3L247.4,225.8L246.4,228.6Z"},{"code":"23","name":"인천광역시","cx":133.7,"cy":92.5,"d":"M127.8,91.7L128.2,92.6L127.1,93.3L125.6,93.5L123.4,94.4L122.7,95.7L119.4,97.8L118.1,97.7L117.8,96.9L116.6,95.9L115.2,95.8L114.2,94.3L115.3,93.9L118.9,91.5L120.8,91.9L121.9,91.5L122.9,89.4L124.6,89.8L127,90.7L127.8,91.7ZM140.9,85.7L139.3,87.7L138.8,90.6L137.9,90.8L137.7,92.8L139.3,93.9L139.9,95.5L139.4,97.3L138.4,97.6L137.4,99.7L136.9,100.3L132.8,103.6L130.1,103.6L129.8,101.3L128.9,100.5L128.9,97.2L128.7,94.5L129.3,92.1L129.2,89.7L129.4,87.7L128.7,87.3L127.4,85.2L129.6,84L130.8,83.8L131.3,82.2L132.5,81.4L135.1,83L136.7,84.9L137.8,84.8L140.9,85.7ZM112.6,73L112.1,75.5L113.6,76.8L115.2,77.1L115.5,79.2L113.4,81L112.3,81.2L112.4,79.6L111.9,78.1L109.9,77L109,76.1L109.9,75.4L110.1,73.4L112.6,73ZM108.7,68L110.4,68.9L112.5,68.9L113,69.3L111.8,71.2L110.3,71.9L109.1,71.5L107.6,71.8L106.3,72.8L105.1,71.6L106.1,69.9L106.1,68.8L107,68L108.7,68ZM124.6,73.9L124.1,75.8L124.6,76.5L124.4,78.5L125.1,79.3L124.7,80.3L124.8,81.4L125.9,83.9L124.4,84.6L124,85.8L123,85L121.8,85.5L121.4,84.5L119.1,84.8L117.1,84.7L115.5,83.6L115.2,81.8L117.2,80.5L116.1,77.5L114,76.3L113.4,75.2L113.3,73.1L114.1,72.4L113.8,69.8L115.2,68.8L116.5,67.3L119.1,66.9L120.8,68.9L123.5,70.5L123.7,72L124.6,73.9ZM12.5,55.6L13.7,55.4L15.2,55.8L15.3,57.7L13.9,58.4L13.1,60.5L9.6,59.9L8,57.1L8.2,55.9L9.6,56.5L12.5,55.6Z"},{"code":"24","name":"광주광역시","cx":143.5,"cy":268.2,"d":"M147.8,260.5L149.2,261L149.3,261.9L151.9,265.9L153.5,265.8L154.7,267.4L153.9,268.3L154,270.6L152.7,272.9L151.4,273.2L150.5,274.5L149.3,274.4L148.7,273.2L145.6,274.4L144.6,274.1L142.4,276L141,275.4L139.9,276L138.9,273.1L137.6,271.9L134.4,271.5L133.8,272L132.2,270.9L132.4,267.6L133.4,267.2L132.7,265.5L133.8,265.4L134.4,263.8L135.3,264.3L136.2,264L136.4,262.9L137.4,261L139,260.8L138.5,262.3L141.6,263.5L143.6,262.6L145.8,261.1L146.7,261.4L147.8,260.5Z"},{"code":"25","name":"대전광역시","cx":177.4,"cy":179.1,"d":"M183.4,186.8L181.9,187.9L180.4,190.1L178.3,188.7L177.8,187.2L176.9,185.8L177.1,184.8L176.1,184.2L175.4,184.8L175.6,188.1L174.9,188.8L174.2,190.5L173.1,189.4L172.6,188L170.6,187L170.5,184.7L168.6,183.4L169.2,182.4L169.2,180.1L170.3,178.4L169.9,177.5L170.5,176.5L170.6,173.5L171.3,172.9L173.3,172.9L174.9,171L175.4,169.3L175.3,168.2L176.6,167.1L177.5,167.7L178,168.3L177.9,170.4L180,170.3L181,170.8L182.6,170.2L184,170.9L183.2,172.1L184,174L184.8,172.9L186.4,173L187.2,174.7L185.4,175.6L185.5,176.9L183.9,179.6L183.7,183.1L183,185.2L183.4,186.8Z"},{"code":"26","name":"울산광역시","cx":289.8,"cy":238.3,"d":"M302.6,231L302.1,232.5L303.4,234.5L303.5,235.9L302.8,236.9L303.1,237.9L302.3,240.6L301.9,243.4L298.6,244.2L296.5,246.2L297.4,246.7L297.3,249L296.2,251.6L297,253.2L294.8,253.9L293.7,255.2L292.2,254.3L292.4,252.7L291.3,250.9L288.4,251.5L287.5,250.8L288.6,249.2L287.1,246.9L286,247.4L285,247.2L283.7,246.2L281.9,243.9L281.7,242.7L276.6,240.4L274.9,240.1L273.4,237.8L274.9,237.1L276.4,236L276.8,234.7L276.5,233.7L275.4,233.3L278.1,231L279.7,231.8L279.3,230.3L279.4,228.7L280.6,227.1L283.4,226.4L284.1,225.4L285,226.2L287.8,225.7L289.4,227L290.7,227.2L291.2,227.9L290.7,229.8L291,230.7L293.6,231.2L296.7,228.8L300.3,230L302.6,231Z"},{"code":"29","name":"세종특별자치시","cx":169.2,"cy":162.5,"d":"M170.8,152.7L172.2,153.4L171.7,155.1L170.9,155.5L170.4,156.9L171.7,158.4L172.2,160.8L173.2,161L173.9,162.3L176.1,162.5L176.8,163.9L177.9,164L178.3,165.3L178.2,167.5L177.5,167.7L176.6,167.1L175.3,168.2L175.4,169.3L174.9,171L173.3,172.9L171.3,172.9L170.6,173.5L169.1,174L167.2,172.9L165.7,171.4L165.9,170.1L163.8,166.2L164.5,165.4L163.9,164.3L165.2,162.2L165.2,161L164.5,159.9L162.9,159.1L163,156.9L162.8,154.7L163.4,153.6L163.2,152.6L162.1,152.7L161.6,151.5L163.4,149.5L165.9,150.1L168.5,152.4L170.8,152.7Z"},{"code":"31","name":"경기도","cx":164.3,"cy":88.2,"d":"M129.6,106.2L128.1,107.2L127.3,108.4L128.9,109.7L129.6,109.6L130.4,111.6L132.1,112.5L131.9,113.6L129.8,113L129.2,113.8L128.2,112.8L127.2,114.1L125.7,113.9L125.5,112.5L126.7,111.2L126.8,110.2L125.9,108.4L127.1,108.3L127.8,107.2L129.6,106.2ZM199,113.1L198.3,113.6L197.7,115.7L197.1,115.6L195.2,119.3L192.3,118.8L191.8,122.2L190,123L187.9,124.7L187.9,125.9L187.1,126.1L184.8,125.1L183.8,125.8L183,125.4L181.3,126.2L181.3,127.9L179.6,129.3L177.4,129.6L176.9,130.6L177.9,131.9L176.5,133.1L174.7,133L174.3,133.6L172.2,134.8L171.1,137.4L169.9,136L168.3,135.7L166.8,134.7L165.7,133L165,133L162.2,131.6L161.4,132.1L160.3,131.5L157.9,134.1L157.1,134L155.4,134.8L153.1,134.3L147.9,136.6L147.6,135L146.5,134.3L145.2,134.5L145,133.3L144.1,132.5L142.8,130.4L142.7,129.7L141.1,128.8L140.6,127.2L138.3,127.2L138.1,125.8L138.9,124.3L139.4,121.7L138.7,121.1L139.3,119.8L140.9,119.7L141.5,118L140.7,116.2L139.9,117L138,117L136.9,119L134.5,120.7L133.5,119.1L134.1,118.2L132.8,117.2L133.1,113.7L133.8,112.6L133,111.6L134.4,109.7L137.2,110.6L138.6,110.2L140.6,111.1L140.6,109.3L142.8,107.7L141.5,107.1L139.6,107.7L136.7,106.7L136.5,105.9L134.7,104.3L134.5,103.2L135.2,102.7L137.4,99.7L138.4,97.6L139.4,97.3L139.9,95.5L139.3,93.9L137.7,92.8L137.9,90.8L138.8,90.6L139.3,87.7L142.6,88.8L143,89.8L142.1,92.3L142.6,93.6L143.6,93.6L145.4,92.3L147.5,96.8L148.9,95.7L149.7,96.6L151.2,96.2L153.6,94.3L154.1,95.2L155.7,95.1L155.6,96.2L156.6,97.2L157.4,97.2L159.4,94.9L160.6,94.7L162.3,93.6L163.2,91.8L161.9,91.2L163.4,88.4L164.3,88.3L164.5,87.2L164,85.8L159.6,87.3L159.6,85.5L160.6,83.9L160,80.9L159,80.5L159.2,77.6L158.4,77L156.5,77.7L154.4,76.7L153.9,77.9L153,78.4L152.2,80.2L152.5,81.5L151.9,81.9L150.2,79.9L148.1,81L147.4,83.3L147.4,84.7L145.9,85.8L144.3,86.1L142.5,85L141.6,84L140.9,85.7L137.8,84.8L136.7,84.9L135.1,83L132.5,81.4L131.3,82.2L130.8,83.8L129.6,84L127.4,85.2L126.3,83.6L126,82.2L124.7,80.3L125.1,79.3L124.4,78.5L124.6,76.5L124.1,75.8L124.6,73.9L124.7,73.1L123.9,71.7L125.2,71.4L126.3,71.6L127,72.5L129.6,72.8L131.4,70.9L132.9,70L133.6,66.9L132.7,66.3L134.6,64.2L133.4,62.7L133.8,61.9L133.1,60.1L133.5,57.5L134.6,58.4L136,58.7L137.9,57.8L137.6,56.2L139,55.3L140,55.5L141,54.7L143,54.7L142.7,53.3L143.2,51.6L144.5,51.8L145.7,52.8L146.1,51.2L146.9,50.3L146.9,48.6L145.3,48.1L144.3,47L142.9,48.3L142.6,47.5L141,48L140.3,46.7L138.1,44.6L139.4,42.5L142.8,39.3L145.7,37.4L147.1,38.8L148.9,38.9L150.5,38.3L151.3,39.3L152.4,38.2L151.9,36.6L152.9,36.4L155,34.8L157.7,33.8L160.1,32.2L160.4,34.2L160.1,36L161.4,36.7L162.5,35.9L163.3,36.7L163.7,38.1L163.6,39.2L164.3,40.3L165,42.1L167,43.1L169,41.9L169.9,40.5L171,40.9L170.9,42.7L170.2,43.9L170.7,45.4L172.4,45.5L173,47L176.8,45.6L178,45.7L178.6,46.5L179.7,45.5L180.3,46L180.6,48.8L180.4,49.7L181.3,53L182.2,53.7L184,54.2L186.3,54.1L186.8,55.8L186.6,56.6L190.1,57.6L190.8,58.7L191,61.2L190,63.6L189,63.5L187.7,65.1L185.8,66.1L185.4,67.5L186,68.6L185.2,69.9L186.6,72.2L184.3,74.5L186.3,75.3L187.7,75.2L186.9,77.9L187.1,79.7L186.1,81.1L187.5,82.1L188.7,81.8L190.1,80.4L191.6,81.1L193.2,82.6L195.8,84.3L196.5,85.3L199.3,84.9L200.1,85.6L201.7,85.4L202.9,86.9L205.1,87.8L204.7,88.9L202.5,89.2L200.5,91.4L200.6,92.4L201.9,94.6L202.4,97.1L201.8,97.5L200.8,100.2L200.8,101.5L199.7,101.8L199.7,104.6L200.2,106.3L199.4,107L199.6,110L199,110.8L199,113.1Z"},{"code":"32","name":"강원도","cx":232.3,"cy":74.5,"d":"M297.4,118.4L295.9,118.5L293.7,119.8L293.1,120.8L291.7,120.6L291.4,121.7L290.4,122.2L288.9,123.9L289.4,126.1L287.1,126.4L283.8,123.3L281,121.9L279.8,122.4L279.1,124.3L274.2,123.1L272.8,123.6L271.8,122.3L270.5,122.5L268.9,126.1L267.6,126.1L265.9,125.5L264.7,123.6L263.5,123.6L262.1,122.8L260.9,124.6L260.1,125.1L260.7,126.8L260.1,127.3L259,126.4L256.9,126.3L256.2,125.4L254,124.5L252.5,123.8L250.3,123.6L248.5,122.6L247.1,122.7L245.6,121.7L245.5,120.9L243.9,120.4L243,121.2L240.1,121L238.5,119.8L238.7,118.4L234.8,117.6L234.4,118.1L232.2,119L231,118.4L230.4,117.4L231.1,116.5L234.1,114.6L234.6,113.2L233.5,112.6L230.7,113.8L229.7,112.3L228.2,112.3L227.7,111.4L226.5,110.7L224.9,111.9L224.8,113L223.7,113.2L221.9,112.8L221.1,113.8L219.1,114.8L216.7,115.2L216.1,114.2L216.7,113.2L215.5,111.9L215.5,111L213.4,110L211.1,110.9L209.5,112.5L210.5,115.3L209.5,117L208.3,118L206.5,117.1L205.9,117.7L203,118.4L201.5,118.6L200.2,117.6L199.3,116.2L198.7,113.6L199,110.8L199.6,110L199.4,107L200.2,106.3L199.7,104.6L199.7,101.8L200.8,101.5L200.8,100.2L201.8,97.5L202.4,97.1L201.9,94.6L200.6,92.4L200.5,91.4L202.5,89.2L204.7,88.9L205.1,87.8L202.9,86.9L201.7,85.4L200.1,85.6L199.3,84.9L196.5,85.3L195.8,84.3L193.2,82.6L191.6,81.1L190.1,80.4L188.7,81.8L187.5,82.1L186.1,81.1L187.1,79.7L186.9,77.9L187.7,75.2L186.3,75.3L184.3,74.5L186.6,72.2L185.2,69.9L186,68.6L185.4,67.5L185.8,66.1L187.7,65.1L189,63.5L190,63.6L191,61.2L190.8,58.7L190.1,57.6L186.6,56.6L186.8,55.8L186.3,54.1L184,54.2L182.2,53.7L181.3,53L180.4,49.7L180.6,48.8L180.3,46L179.7,45.5L178.6,46.5L178,45.7L176.8,45.6L173,47L172.4,45.5L170.7,45.4L170.2,43.9L170.9,42.7L171,40.9L169.9,40.5L169,41.9L167,43.1L165,42.1L164.3,40.3L163.6,39.2L163.7,38.1L163.3,36.7L162.5,35.9L161.4,36.7L160.1,36L160.4,34.2L160.1,32.2L161.8,30.9L162.1,29.4L163.1,29L164.5,30.3L165.4,30.2L168.3,28.7L169.2,29.2L171.3,29.5L172.3,30.3L174,29.2L174.6,29.4L177,28.6L179.3,29L180.8,30.3L182.4,30.2L183.1,31.3L184.4,31.3L186.4,29.7L189.2,28.6L190.4,28.5L192.3,29.4L195.4,29.1L196,28.3L197.9,28.8L198.9,28L200.8,27.6L202.3,29.7L204.8,29.4L207.3,28.3L209.8,28.8L212.9,30.1L218.2,30.6L223.5,27.7L227.4,25.4L229.1,23.9L229.5,23.1L231.5,21.4L232.7,18.7L233.5,11.7L233.2,9.6L233.9,8.3L235.7,8L238.5,11.5L239,13.4L240.1,14.9L240.1,16.1L241.1,18.2L242.8,20.2L242.1,20.6L242.2,21.8L243,23.3L245.7,26.2L246.4,28.7L247.9,30.5L248.9,34L250.2,36L250,36.9L250.7,39.3L251.4,40.4L251.4,42.8L253,45.4L254.9,47.3L255.6,49.2L257.1,51.1L258.5,52.4L259.1,53.8L261.4,57.6L262.4,58.3L262.4,59.1L265.1,61.9L264.9,62.9L267.7,66.3L267.8,67L274.4,73.8L276,76.1L278.6,78.6L278.7,79.7L277.9,81L278.5,82.7L282.3,86.1L282.6,87.5L282.1,88.8L282.6,90.2L284.9,93.6L286.6,95.1L287.2,98.1L288.7,99.6L290.4,100.8L290.5,102.1L291.5,103.6L291.6,105.2L293.6,106.6L293.5,107.4L295.2,108.3L295.1,109.4L296.9,111.7L296,112.5L296.4,113.5L295.9,114.8L296,116.1L297.4,118.4Z"},{"code":"33","name":"충청북도","cx":204,"cy":149.1,"d":"M254,124.5L252.7,126.5L249.9,126.1L248.7,127.1L249.1,128.2L247.5,130L245.6,130.4L245.6,131.2L242.5,133.4L242.3,134.4L241.2,134.9L241.1,136.8L240.1,138.7L241.6,139.6L241.6,140.8L239.9,143.6L237.6,143.4L236.6,144.5L234.7,143.2L233.9,143.3L232.4,141.9L231.5,140.2L229,139L228.5,140.9L227.3,140.8L227.6,143.4L224.4,143L222.8,141.9L221.1,143.1L220.8,144.1L219.4,144.2L217.9,143.3L217.7,145L216.3,148.4L218.5,150.4L218.6,151.5L217.2,151.4L215.7,150.1L214.5,150.8L213.5,150.7L211.9,149.2L211.2,150.6L210.1,151.5L210.1,152.5L207.4,152.7L210.2,154.6L210.6,155.7L210.1,158.2L207.6,157.3L206.6,155.4L205.9,156.9L205.1,157L205.1,158.6L203.6,158.6L202,160.2L203.6,161.7L205.9,161.9L206.6,162.9L206.6,164.2L208.3,165.2L208.6,166.5L207,168.5L207.1,170L206.6,171.8L207.2,173L206.6,174.2L207.7,177.8L207.1,178.7L205.3,179.8L204.6,181.4L205.3,183.9L207,184L207.7,182.7L210.1,183.8L211.2,185.4L212.3,185.8L213.2,184.8L214.9,184.2L217.2,185.4L216.1,186.6L217.4,188.5L217.5,189.6L216.6,190.1L215.1,189L213.5,189.6L212.8,190.5L214,193.2L213.5,195L212.3,195.8L211.7,197.6L212,199.6L210.4,200.9L209.2,200.6L208.4,201.8L206.8,203L205.4,201.8L202.2,202.7L201.4,203.6L197.9,202.3L196.4,202.2L195.8,200.5L195.1,200.1L193.6,201.7L193.3,200.5L192.3,199.6L191.1,197.6L191,196.8L189.4,194.6L190.1,192.5L189.5,190L189.8,188.3L188.7,187.2L186.9,186.7L185.8,186L185,186.6L183.4,186.8L183,185.2L183.7,183.1L183.9,179.6L185.5,176.9L185.4,175.6L187.2,174.7L186.4,173L184.8,172.9L184,174L183.2,172.1L184,170.9L182.6,170.2L181,170.8L180,170.3L177.9,170.4L178,168.3L177.5,167.7L178.2,167.5L178.3,165.3L177.9,164L176.8,163.9L176.1,162.5L173.9,162.3L173.2,161L172.2,160.8L171.7,158.4L170.4,156.9L170.9,155.5L171.7,155.1L172.2,153.4L170.8,152.7L172.2,151.6L172.2,150.4L173.2,149.6L174.2,149.6L173.9,148.1L177,147.6L177.6,148.5L178.5,147.7L178.5,146.6L177.5,145.7L177.9,144.8L176.6,143.5L175.1,142.3L173.7,142.2L173.9,140.4L172.1,139.7L172.2,138.1L171.1,137.4L172.2,134.8L174.3,133.6L174.7,133L176.5,133.1L177.9,131.9L176.9,130.6L177.4,129.6L179.6,129.3L181.3,127.9L181.3,126.2L183,125.4L183.8,125.8L184.8,125.1L187.1,126.1L187.9,125.9L187.9,124.7L190,123L191.8,122.2L192.3,118.8L195.2,119.3L197.1,115.6L197.7,115.7L198.3,113.6L199,113.1L199.3,116.2L200.2,117.6L201.5,118.6L203,118.4L205.9,117.7L206.5,117.1L208.3,118L209.5,117L210.5,115.3L209.5,112.5L211.1,110.9L213.4,110L215.5,111L215.5,111.9L216.7,113.2L216.1,114.2L216.7,115.2L219.1,114.8L221.1,113.8L221.9,112.8L223.7,113.2L224.8,113L224.9,111.9L226.5,110.7L227.7,111.4L228.2,112.3L229.7,112.3L230.7,113.8L233.5,112.6L234.6,113.2L234.1,114.6L231.1,116.5L230.4,117.4L231,118.4L232.2,119L234.4,118.1L234.8,117.6L238.7,118.4L238.5,119.8L240.1,121L243,121.2L243.9,120.4L245.5,120.9L245.6,121.7L247.1,122.7L248.5,122.6L250.3,123.6L252.5,123.8L254,124.5Z"},{"code":"34","name":"충청남도","cx":144.6,"cy":164.7,"d":"M114.5,158.6L116,159.1L116.8,160.9L116.3,163.3L116.7,165.6L118.6,169.9L119,173.2L118,174.2L117.3,173.6L115.8,173.2L115.1,173.8L113.1,171.7L112.4,169.5L112.9,167.7L112.1,162.7L111.4,161.9L111.4,160.7L113.2,158.9L114.5,158.6ZM147.9,136.6L153.1,134.3L155.4,134.8L157.1,134L157.9,134.1L160.3,131.5L161.4,132.1L162.2,131.6L165,133L165.7,133L166.8,134.7L168.3,135.7L169.9,136L171.1,137.4L172.2,138.1L172.1,139.7L173.9,140.4L173.7,142.2L175.1,142.3L176.6,143.5L177.9,144.8L177.5,145.7L178.5,146.6L178.5,147.7L177.6,148.5L177,147.6L173.9,148.1L174.2,149.6L173.2,149.6L172.2,150.4L172.2,151.6L170.8,152.7L168.5,152.4L165.9,150.1L163.4,149.5L161.6,151.5L162.1,152.7L163.2,152.6L163.4,153.6L162.8,154.7L163,156.9L162.9,159.1L164.5,159.9L165.2,161L165.2,162.2L163.9,164.3L164.5,165.4L163.8,166.2L165.9,170.1L165.7,171.4L167.2,172.9L169.1,174L170.6,173.5L170.5,176.5L169.9,177.5L170.3,178.4L169.2,180.1L169.2,182.4L168.6,183.4L170.5,184.7L170.6,187L172.6,188L173.1,189.4L174.2,190.5L174.9,188.8L175.6,188.1L175.4,184.8L176.1,184.2L177.1,184.8L176.9,185.8L177.8,187.2L178.3,188.7L180.4,190.1L181.9,188.5L183.4,186.8L185,186.6L185.8,186L186.9,186.7L188.7,187.2L189.8,188.3L189.5,190L190.1,192.5L189.4,194.6L191,196.8L191.1,197.6L192.3,199.6L191.4,199.7L191.1,201.6L191.8,201.6L191.1,204.1L190,203.8L189.4,202.8L186.2,202.2L186.3,203.8L185.9,205.3L184.2,206.2L183.1,206.4L181.9,205.6L181.2,205.9L180.5,204.2L179.4,202.7L177.8,204.1L176.2,202.1L175.4,200.7L175.3,198L175,196.5L174,194.9L172.1,195.2L171.4,196.2L170.1,196.6L168.7,196.2L168.4,197.6L165.9,197.1L165.6,198.2L164.3,197.6L163.7,198.4L161.8,198.2L161.6,199.5L158.4,198.8L157.2,197.7L156.5,194L154.9,194.4L153.6,193.5L152.8,193.8L150.8,192.9L148.8,194.2L146.9,194.1L145.7,196.2L145.8,197.8L145.1,200.1L143.1,201.2L141.9,202.1L139.7,202.3L138.1,202.9L137.3,204.6L132.8,203.9L133.2,202.3L131.8,200.5L131,200.5L131.1,197.7L129.4,196.5L127.6,194.3L126.6,194.9L125.3,193.6L123.7,193.3L124.4,190.7L125.6,189.9L124.8,188L124.8,186.7L125.8,184.9L124.7,182.4L124,182.1L123.2,180.3L126.1,178.5L123.5,176.1L121.8,175.9L122.2,173.7L122.8,172.6L121.9,170.6L121.4,166.8L122,165.9L120.7,164.2L119.7,160.6L120,159.8L121.5,159.1L121.4,158.2L120.3,157.6L121,155.5L120.6,154.7L119.4,154.5L119.6,156.2L118.3,159.5L117.5,159.4L116.6,158.2L114.7,157.5L114.5,154.3L113.3,154.4L113.7,156.6L114.2,157.6L112,159.8L110.3,160.8L109.7,159.9L109.9,158.2L110.6,157.3L109.9,154.8L108.6,154L108.5,152.3L109.1,151.6L109,150.1L108,150.7L106.5,152.6L105.4,152.6L104.6,153.9L103.1,153.7L100.5,154.4L100.4,152.9L101.5,153L101.4,151.7L103,150.6L105.2,151.6L106,150.4L104.9,150L103.8,148L102.6,147.7L101.5,148.2L101.8,149.7L100.8,150.6L100,150L100.7,149L98.7,146.5L100.4,146.4L101.2,145.3L102.2,142.5L101.4,141.5L102.5,140.9L103.2,141.8L104.3,140.8L104,139.4L105.2,136.9L107.7,136.1L107.3,137.8L106,138.4L107.3,139.7L107.9,138.5L109,138.2L109.8,136.7L110.4,134.7L109.8,132.1L111.3,131.4L111.6,132.8L111,133.6L110.9,135.3L112,136.5L112.1,137.6L110.5,141.3L111.8,141.6L109.6,143.1L110.6,143.8L113.1,143.2L112.1,141.7L112.3,140.2L113.4,140.8L114.7,140.7L115.1,139.6L114.7,138.7L116.6,137.5L117.5,136.4L115.7,133.7L112.9,132.5L113.1,131.3L112.4,129.9L115.4,128.5L118.5,128.3L120,129L121.6,131.8L122.2,130.7L120.2,127.5L122.9,124.5L124.2,125L124.8,126.2L129,128.2L131.5,129.6L135.4,129.5L136.3,130L140.1,131.2L140,131.9L141.4,135.1L142.3,137.2L142.9,138L143.2,139.8L144.2,138.7L146.2,137.9L148.1,137.7L147.9,136.6Z"},{"code":"35","name":"전라북도","cx":162.5,"cy":226.1,"d":"M192.3,199.6L193.3,200.5L193.6,201.7L195.1,200.1L195.8,200.5L196.4,202.2L197.9,202.3L201.4,203.6L202.2,202.7L205.4,201.8L206.8,203L206.7,204.9L207.9,205.8L208.7,209.1L207.1,210.1L207.5,211.1L205.3,213L204.6,214.7L204,214.5L202.7,215.7L201.4,215.9L200.4,216.8L198.8,216.5L197.2,219.9L196.1,220.6L193.7,222.9L193.7,226.5L192.7,227.4L192.3,229.5L191.7,230.1L191.2,231.6L191.7,233.4L190.7,234.3L190.6,235.9L189.2,237.4L189.4,238.3L191.4,239.8L191.6,240.5L193.2,243.4L192.2,243.9L192.1,245.2L192.7,246.1L194,246.2L193.7,248.6L192.4,249.5L190.6,252.4L191.3,254.1L191.2,254.9L189.5,256.5L188.6,256.7L185.7,254.6L183.9,253L182.1,252.4L179.7,252.9L176.8,257.1L175.1,255.8L172,257.1L171,256.3L169.3,256.5L167,254.6L166.5,256.2L165.7,256.2L163.7,255L162.3,256.2L160.5,257.4L157.2,256.1L156.3,256L156.6,254.4L157.4,254.6L157.7,252.4L156.9,251L156.2,251.6L155.3,250.6L156,249.9L156.4,247.5L155.7,247.1L155.5,244.9L154.2,245.5L151.6,247.8L152,249.6L151.2,250.2L149.3,250.2L149.2,249.4L147.9,248.6L147.2,247.4L147.6,246.8L145.4,245.2L144.3,244.9L142.8,243.4L142.1,244.7L139.1,244.9L138.1,246.1L138.3,248.1L137,250.3L137,251.6L136.3,252.5L135.4,252.5L135.1,253.6L133.1,253.5L131.8,255.9L130.6,255.8L129.3,254.7L127.9,255.5L128.6,257L126.1,256.4L124.9,256.8L124.1,255.4L124.2,253.6L121.9,250.9L122.3,249L121.7,248L119.8,247.6L118.7,247L119.5,245.8L122,240.9L124.2,239.8L125.5,240.3L126.8,239.2L129.3,239.1L130.1,238L130.1,237.1L132,237.1L133,238.2L133.4,236.3L131.3,235.3L130.1,235.9L127.6,235.5L125.5,235.7L124.7,236.4L122.5,235.9L121,234.5L120.9,232.2L122,230.6L123,230.5L125,228.2L126.7,227.4L127.3,227.6L129.2,225.8L130.7,223.6L130.4,220.6L131.7,219.9L135.1,219.8L136.9,220.2L139.4,221.4L139.8,219.6L137.2,218.3L135.1,216.7L134.7,215.9L137,214.7L140.5,214.9L141.2,214.2L141.3,212.7L140.3,212L139.4,213.1L137.4,212.9L136.7,213.3L135.1,212.7L133.7,212.6L133.2,213.5L130,213.3L129.7,211L130,209L128.8,208.6L124.7,209.2L124.3,206.9L127.2,206.5L131.7,206.3L133.1,205.9L133.9,204.8L136.7,205.1L137.3,204.6L138.1,202.9L139.7,202.3L141.9,202.1L143.1,201.2L145.1,200.1L145.8,197.8L145.7,196.2L146.9,194.1L148.8,194.2L150.8,192.9L152.8,193.8L153.6,193.5L154.9,194.4L156.5,194L157.2,197.7L158.4,198.8L161.6,199.5L161.8,198.2L163.7,198.4L164.3,197.6L165.6,198.2L165.9,197.1L168.4,197.6L168.7,196.2L170.1,196.6L171.4,196.2L172.1,195.2L174,194.9L175,196.5L175.3,198L175.4,200.7L176.2,202.1L177.8,204.1L179.4,202.7L180.5,204.2L181.2,205.9L181.9,205.6L183.1,206.4L184.2,206.2L185.9,205.3L186.3,203.8L186.2,202.2L189.4,202.8L190,203.8L191.1,204.1L191.8,201.6L191.1,201.6L191.4,199.7L192.3,199.6Z"},{"code":"36","name":"전라남도","cx":150.8,"cy":284.4,"d":"M134.2,324.9L135.2,325.2L137.1,326.9L136.9,327.9L138.1,331L139.5,331.7L138.8,333.2L137.1,333.6L136.2,332.9L134.8,333.2L133.8,331.5L132.1,330.1L131.4,326.5L132,325.6L134.2,324.9ZM143.4,321.9L144,322.9L145.3,325.9L143.4,326.3L140.7,326.6L139.6,328.6L139.1,328.1L139.7,326.5L138.5,326.1L139,324.6L140.5,322.6L141.3,322.7L143.4,321.9ZM167,318.1L167.7,319.5L166.4,322.7L164.9,322.8L163.6,322.5L162.3,322.9L161,322.7L159.4,320.1L161,318.4L161.7,319.6L163,319.2L164.9,318L165.6,318.5L167,318.1ZM107.8,310.9L111,312.2L111.2,313.6L113.1,314.1L115.8,317.2L115.2,320.1L114.3,320.9L114.8,321.9L113.1,323.9L111.7,324.7L110.4,324.4L109.9,325.5L108.7,325.3L108.5,326.7L107.4,326.7L104.8,328.2L103.1,328.7L100.7,328.1L100.7,327L99.5,326.5L99.2,325.5L98,323.7L98.7,322L101.4,319.4L103,318.7L103.4,317.4L104.6,317L106.3,314.9L108.1,314.8L108.4,314L107.2,312.4L107.8,310.9ZM199,300L201.3,301.2L201.6,302.4L200.7,303.9L201.8,305.5L202.2,307.8L201.7,309.2L202.5,310.8L201.2,311.2L199.1,310.6L196.7,308.3L197.5,307.3L197.5,305.9L199,304.8L199.6,303.3L199.6,301.6L199,300ZM90.6,300.3L91.1,300.9L93.4,301.7L93,303.7L91.8,304.2L91.4,305.3L90.5,305.8L87.4,304.2L87.4,301.8L89,301.5L90.2,299.7L90.6,300.3ZM97.5,296.6L98.4,297.2L100.1,296.8L101,298.1L102.5,298.1L104.3,300.1L104.5,301.1L103.1,302.5L101.4,303.6L99.8,303.8L99.2,302.8L97,301.9L96.7,301.2L97,299L97.4,298.5L96.7,297.1L97.5,296.6ZM92.4,294.7L92.5,298L91.1,298.6L89,298.6L89.6,300L89,300.9L87.6,301.4L86.1,300.6L85.8,297.6L87,296.8L88.7,296.8L90.5,295.6L91,294.8L92.4,294.7ZM110.6,285.8L111.5,286.8L113,286.8L113.4,287.9L112.4,288.2L112.3,290.4L114.3,290.2L115.2,291.4L114.3,293.9L112.7,293.6L113.2,292.1L112.9,291.4L109.4,290.8L108.1,292L106.4,291.3L107.3,290.6L108.6,290.5L109.7,289.9L110.9,288L109.6,286.7L110.6,285.8ZM96.4,284.8L98.1,285.7L98.9,287.4L98.4,289.3L97.7,290.2L95.6,291L92.4,290.1L91.9,289.2L93.4,286.5L94.4,286.8L95,286L96.1,286L96.4,284.8ZM100.7,277.9L101.9,278L103,278.9L104,281L103.2,284L102.2,284.6L100.1,283.7L100.8,282.4L100.6,279.8L99.6,280.3L98.5,279.9L99.6,278.5L100.7,277.9ZM102.4,269.1L101.4,269.6L100.3,271.2L99.9,272.7L99.8,275.3L98.1,276L97,275.5L95.5,275.4L95.1,273.5L95.5,272.2L97.7,271.6L99.7,269.2L102.4,269.1ZM188.6,256.7L189.7,259.8L190.6,260.2L191.1,262.1L191.3,265.8L195.7,270.2L195.7,272.2L197.2,273.8L198.3,274.1L198.5,275.3L200.2,276.2L200.4,277.7L201.3,278.7L200.8,280.9L200,281.6L199.7,282.5L197.8,283.5L196.1,285.1L195.5,286.3L192.4,288.5L191,286.3L189.4,286L190.8,288.1L189.3,289.4L190.6,291.3L192.6,292.7L193.7,291.7L194.2,292.2L196,290.5L198.1,290.9L199.8,290.1L200.6,290.5L200.3,294.1L199.4,296.2L198.8,296.8L199.3,297.7L199.1,299.8L196.3,301L194.9,299.5L193.5,298.4L192.3,301.4L191.4,302.4L191.4,303.5L192.4,306.6L191.2,307.1L189.3,306.2L188.1,306.8L187,305.4L186.9,303.3L187.9,300.4L188.7,300L189.3,298.2L188.7,297.9L187.3,294.5L185.3,294.3L186.2,292.6L185.2,291.2L184.7,289.1L184,289.4L182.2,291.6L177.8,293.1L179,294.2L177.5,295.3L177,296.6L177.8,297.4L177.6,298.3L176.1,299.4L177.2,301.7L180.9,302.9L180.8,304.7L182.5,304.6L182.3,305.9L183.1,306.1L184.2,310.7L183.1,311.7L181.2,311.3L180.5,311.8L178.5,310.8L177.4,311.5L178.2,313L179.8,313.7L179.2,315.2L177.8,317.3L176.5,317.4L176.3,318.7L173.5,319.6L174,321.7L173,322L170.9,319.3L169.7,318.9L170.6,317.8L169.1,316.1L166.2,316L165.3,315.1L163.7,315.9L161.7,315.8L160.9,315.4L160.2,314.1L160.3,313.1L162.2,311.3L163.9,310.4L163.9,308L165.6,306.4L166.1,307.9L167.3,306.8L167.6,304.1L168.7,301.8L170.4,301.1L170.9,302.7L170.4,304.6L172.6,305.2L172.8,303.9L173.7,301.9L173.1,298.6L171.9,298.8L171.2,300.2L169.9,299.5L169.3,300.1L167.9,297.5L166.2,299.7L165.5,302.1L164.4,303.1L162,303L161.2,302.3L160,304.3L157.6,305.3L156.7,306.9L153.1,309L154,309.7L153,310.5L152.4,312.3L152.7,314.6L151.7,314.4L150.9,315.3L151.8,316.3L151.1,317.5L152,318.5L150.6,319.8L149.6,321.5L148.9,321.1L145.9,320.8L146.5,323L144.3,321.6L142.4,321.4L140.6,320.1L140.8,318.4L140.4,316.6L140.7,315.2L140.8,312.3L139.5,309.8L139.2,312.8L139.3,313.5L138.8,315.6L138.7,318.1L137.6,318.5L138.1,319.7L136.8,321.7L135,322.1L134,323.1L132.2,323.5L130.2,325L130.3,328.3L129.3,329.1L129.3,330.8L128.2,331.2L126.5,331L125.7,332.4L124,332.8L123.7,331.2L124.6,330.1L124.2,328L121.8,328.2L121.8,326.5L122.7,325.9L122.4,324.8L124,324L123.5,323.1L122.3,322.5L121.5,323.1L120.4,321.4L121,320.4L120.3,319.3L121.2,317.1L120.6,315.2L118.9,314.2L118.7,313.4L117,314.3L115.7,312.9L114.6,313L112.9,312.1L111.7,312.6L111.2,310.8L109.5,310.3L109.9,307.8L109,307.5L108.5,305.6L108.2,303L109.2,301.6L109.2,300.4L110,298.1L110.8,297.9L112.9,299.6L113.9,302.3L113.3,302.9L113.4,304.5L115,307L115.5,308.7L119,310.8L118.6,309L115.3,306.8L114.4,304.3L113.5,303.6L115,302.6L116.2,300.2L114.9,299.7L115.7,298.6L115.6,297.5L119.9,296.3L119.4,295L117,296.3L115,296.4L114.6,295.6L115.1,294L116.2,292.2L117.3,291.1L116.6,289.8L117,289L116.2,288.2L117.2,286.6L116.4,286L116.1,284L116.5,282.8L115.6,282.1L114.9,285.4L113.4,286.4L112.6,286L112.1,284.2L110.5,282.6L111.2,281L112.8,282.2L114.4,281L113.5,279.8L116.2,278.1L115.8,276.4L113.9,277L113.5,274.7L112.5,273.3L110.9,276.4L110.3,275.5L108.4,275.9L109.2,277.1L108.1,279L106.3,278.2L106.9,276.6L106.1,275.6L103.8,275.6L102.3,274.9L102.7,272.1L104.1,271.5L106.7,272.5L107.5,271.7L108.2,269.3L109.1,269L112.3,269.9L113.5,268.6L113.5,271.3L112.9,273.1L114.9,274.6L116.7,274.2L117.3,275.2L116.8,277.5L119.4,275.8L120.1,274.4L119.3,273.6L120.5,273L119.7,272L118.1,271.9L117.1,269.8L114.6,267.4L113.3,265.5L111.2,266.5L110.7,262.8L111.5,260.8L112.3,260.9L112.2,258.3L114.4,258.2L115.5,256.9L115.6,255.2L116.8,252.2L117.2,249.1L118.2,247.7L119.8,247.6L121.7,248L122.3,249L121.9,250.9L124.2,253.6L124.1,255.4L124.9,256.8L126.1,256.4L128.6,257L127.9,255.5L129.3,254.7L130.6,255.8L131.8,255.9L133.1,253.5L135.1,253.6L135.4,252.5L136.3,252.5L137,251.6L137,250.3L138.3,248.1L138.1,246.1L139.1,244.9L142.1,244.7L142.8,243.4L144.3,244.9L145.4,245.2L147.6,246.8L147.2,247.4L147.9,248.6L149.2,249.4L149.3,250.2L151.2,250.2L152,249.6L151.6,247.8L154.2,245.5L155.5,244.9L155.7,247.1L156.4,247.5L156,249.9L155.3,250.6L156.2,251.6L156.9,251L157.7,252.4L157.4,254.6L156.6,254.4L156.3,256L157.2,256.1L160.5,257.4L162.3,256.2L163.7,255L165.7,256.2L166.5,256.2L167,254.6L169.3,256.5L171,256.3L172,257.1L175.1,255.8L176.8,257.1L179.7,252.9L182.1,252.4L183.9,253L185.7,254.6L188.6,256.7ZM147.8,260.5L146.7,261.4L145.8,261.1L143.6,262.6L141.6,263.5L138.5,262.3L139,260.8L137.4,261L136.4,262.9L136.2,264L135.3,264.3L134.4,263.8L133.8,265.4L132.7,265.5L133.4,267.2L132.4,267.6L132.2,270.9L133.8,272L134.4,271.5L137.6,271.9L138.9,273.1L139.9,276L141,275.4L142.4,276L144.6,274.1L145.6,274.4L148.7,273.2L149.3,274.4L150.5,274.5L151.4,273.2L152.7,272.9L154,270.6L153.9,268.3L154.7,267.4L153.5,265.8L151.9,265.9L149.3,261.9L149.2,261L147.8,260.5ZM118.3,299.6L116.8,299.6L116.2,301L120.1,302.1L120,303.5L121.2,305.6L121.7,304L122.6,305.1L125.6,305.9L125.4,303.9L124.7,302L122.9,299.9L121.2,299.6L120.5,300.3L119,300.2L118.3,299.6Z"},{"code":"37","name":"경상북도","cx":259.4,"cy":178.8,"d":"M302.6,231L300.3,230L296.7,228.8L293.6,231.2L291,230.7L290.7,229.8L291.2,227.9L290.7,227.2L289.4,227L287.8,225.7L285,226.2L284.1,225.4L283.4,226.4L280.6,227.1L279.4,228.7L279.3,230.3L279.7,231.8L278.1,231L275.4,233.3L274.1,234.2L271.4,232.2L269.8,231.9L267.4,233.2L266.3,235L265.1,235L263.1,235.7L262.2,237.4L260.6,237.2L258.5,236.3L257.1,236.4L256.4,235.2L254.4,235L251.3,236.3L249.9,235.8L248.3,233.7L247,233L247,230.9L246.4,228.6L247.4,225.8L249.6,224.3L251.8,224.5L251.5,225.4L252.2,227L253.1,226.8L254.7,225.7L255.9,225.6L256.4,224.8L256.7,222.9L255.9,220.5L257.9,219.3L257.5,217.7L260.1,215.5L260.8,213.4L260.4,211.1L259.3,210.1L259.7,208.9L259.3,208L259.7,206.9L258.8,205.8L258.5,204.3L256.4,203.6L251.9,204.2L250.2,206.3L248.2,206.9L246.4,206.5L246.9,209.2L246.2,210.9L244.3,212.5L243.2,212.6L242.8,211.7L243.3,209.5L241.2,209.6L239.8,210.6L238.9,213L237.8,214.8L238.1,216L240,215.9L242.3,216.6L243.4,217.7L242.9,219.1L239.9,219L239.1,220L237.8,222.5L238.2,223.8L240.6,225.4L240.7,227L239.7,227.8L236.2,226.7L235.7,227.1L236,228.7L237.5,230.6L238.8,231.6L237.8,233.9L236.9,234L235.9,231.6L232.9,230.7L231.3,230.9L230.2,231.6L229.1,230.6L228.7,231.7L226.5,231.5L225.6,230.5L224.3,230.8L224.3,229.3L225.2,229.3L226.6,228.5L226.6,225.6L225.7,223.2L224.3,222.6L223.6,220.8L222.1,220.5L221.7,219.5L221.9,218.1L218.6,216.7L217.4,217.5L216.2,217.1L215,217.6L214.1,216.9L213.4,215.4L212.6,215.9L211.3,215.1L210.2,215.6L210.1,213.9L209.2,212.8L207.8,213.2L207.3,212.7L207.5,211.1L207.1,210.1L208.7,209.1L207.9,205.8L206.7,204.9L206.8,203L208.4,201.8L209.2,200.6L210.4,200.9L212,199.6L211.7,197.6L212.3,195.8L213.5,195L214,193.2L212.8,190.5L213.5,189.6L215.1,189L216.6,190.1L217.5,189.6L217.4,188.5L216.1,186.6L217.2,185.4L214.9,184.2L213.2,184.8L212.3,185.8L211.2,185.4L210.1,183.8L207.7,182.7L207,184L205.3,183.9L204.6,181.4L205.3,179.8L207.1,178.7L207.7,177.8L206.6,174.2L207.2,173L206.6,171.8L207.1,170L207,168.5L208.6,166.5L208.3,165.2L206.6,164.2L206.6,162.9L205.9,161.9L203.6,161.7L202,160.2L203.6,158.6L205.1,158.6L205.1,157L205.9,156.9L206.6,155.4L207.6,157.3L210.1,158.2L210.6,155.7L210.2,154.6L207.4,152.7L210.1,152.5L210.1,151.5L211.2,150.6L211.9,149.2L213.5,150.7L214.5,150.8L215.7,150.1L217.2,151.4L218.6,151.5L218.5,150.4L216.3,148.4L217.7,145L217.9,143.3L219.4,144.2L220.8,144.1L221.1,143.1L222.8,141.9L224.4,143L227.6,143.4L227.3,140.8L228.5,140.9L229,139L231.5,140.2L232.4,141.9L233.9,143.3L234.7,143.2L236.6,144.5L237.6,143.4L239.9,143.6L241.6,140.8L241.6,139.6L240.1,138.7L241.1,136.8L241.2,134.9L242.3,134.4L242.5,133.4L245.6,131.2L245.6,130.4L247.5,130L249.1,128.2L248.7,127.1L249.9,126.1L252.7,126.5L254,124.5L256.2,125.4L256.9,126.3L259,126.4L260.1,127.3L260.7,126.8L260.1,125.1L260.9,124.6L262.1,122.8L263.5,123.6L264.7,123.6L265.9,125.5L267.6,126.1L268.9,126.1L270.5,122.5L271.8,122.3L272.8,123.6L274.2,123.1L279.1,124.3L279.8,122.4L281,121.9L283.8,123.3L287.1,126.4L289.4,126.1L288.9,123.9L290.4,122.2L291.4,121.7L291.7,120.6L293.1,120.8L293.7,119.8L295.9,118.5L297.4,118.4L298.4,120.4L298.3,121.9L299.8,123.6L301.2,124.6L300.4,125.5L300.2,127.6L300.7,129L300.1,130.9L300.8,133.1L300.8,137.2L300.5,137.8L301.3,140.9L303.1,143.3L303.4,145.4L304.3,146.9L303.7,147.7L304.3,149.6L304,150.2L304.2,152.1L303.5,153.1L301.8,154.3L300.3,157.9L300.2,159.9L300.9,161.9L302,163.2L302.4,166.8L301.6,168.3L301.9,169.9L301.8,172.4L301.1,174.2L299.3,177.2L298.3,179.6L298.5,180.4L298,183L298.4,184L297.9,185.5L298.6,186.6L298.6,188.7L297.9,189.1L298.1,190.4L299.1,191.2L299.5,192.3L299.4,194.5L302,197.2L300.7,198L300.8,198.9L298.4,200.2L298.1,200.9L298.6,202.5L300.6,203.8L301.3,204.9L302.7,205.3L304,203.7L305.8,202.8L305.9,201.9L307.7,200.4L308.5,198.3L309.9,198.9L310.7,203.2L310.4,204.1L309.1,205.4L308.9,207.1L307.7,209.5L306.8,210.2L307.3,211.8L306.8,214.3L307.3,215L306.2,218L306.5,218.6L305.1,220.8L305.5,221.9L304.8,225.1L304,227L304.1,228.3L302.6,231ZM391.2,88.1L391.4,89.7L392,90.8L391.7,93.2L388.6,94.8L386.7,94.4L384.8,93L385,91.6L384.2,90.8L387.6,89.1L390.4,88.7L391.2,88.1Z"},{"code":"38","name":"경상남도","cx":230,"cy":252.4,"d":"M216.3,286L216.6,287.6L218.4,289.7L218,291.5L218.2,292.7L215.8,291.5L215.7,292.1L213.5,292.3L212.4,291.7L212,289.8L213,289L214.1,286.7L214.7,286L216.3,286ZM207.9,284L209.3,284.5L210.1,286.4L209.6,287.5L208.1,289.5L209.7,292.7L210.8,293L211.5,294.6L213.7,292.5L216.3,292.7L218,293.4L218.1,295L217.4,295.4L217.8,299.1L215.9,301.1L215.2,300.7L213.4,301.7L211.6,301.8L211,300.1L211.2,296.7L210,296.8L208.5,297.6L209,299.8L207.4,300.9L206.2,300.6L205.5,299.3L204.3,298.7L205.3,297.3L204.2,294.8L202.9,292.4L202.5,290.7L203.8,289.4L204,287.7L205.2,287.3L205.5,285.5L206.4,284.3L207.9,284ZM255.7,276.9L256.6,277.7L257.7,277.5L258.3,278.6L257.1,279.5L256.6,281.5L258.6,283.9L258.1,284.8L258.4,286.4L258,287.5L256.7,288.3L257.8,289.4L259,288.2L259.6,289.9L257,292L259.4,295.6L257.5,295.4L257.5,294.1L256.4,294.4L255.3,294L254.9,295.5L255.4,296.1L253.2,297.8L254.1,299.3L255,299.1L255.9,299.7L252.3,300.1L252.9,301.1L251.5,302.4L249.6,301.3L251,300.5L251.2,299.9L249.4,299.4L248.6,297.6L247.4,296.9L247.1,295.9L249.6,295.4L250,292.6L249.5,291L247.5,292.4L245.7,294.4L244.8,292.5L243.6,292L243,289.2L244.5,287.1L245.7,286.7L246.4,285.7L247.7,286.8L249.8,286.4L250.7,287.4L251.6,287.4L250.7,284.7L250,284L252,282.8L253.7,282.8L253.9,281.5L252.1,281L252.7,279.3L253.7,278.6L254.1,280.9L254.9,279.5L255.7,276.9ZM236.9,234L237.5,234.3L240.6,233.1L241.5,231.9L243.8,232.1L245.1,231.9L245.3,229.2L246.4,228.6L247,230.9L247,233L248.3,233.7L249.9,235.8L251.3,236.3L254.4,235L256.4,235.2L257.1,236.4L258.5,236.3L260.6,237.2L262.2,237.4L263.1,235.7L265.1,235L266.3,235L267.4,233.2L269.8,231.9L271.4,232.2L274.1,234.2L275.4,233.3L276.5,233.7L276.8,234.7L276.4,236L274.9,237.1L273.4,237.8L274.9,240.1L276.6,240.4L281.7,242.7L281.9,243.9L283.7,246.2L285,247.2L286,247.4L287.1,246.9L288.6,249.2L287.5,250.8L287,252.8L285.8,253.5L284.2,252.5L282.9,254L282,256.7L280.6,257.1L279.7,258.1L278.8,257.7L278.2,258.9L276,259.4L275,262.3L270.5,263.7L268.1,263.9L267.3,264.8L268,266.3L267,267.4L265.6,268.1L262.6,268.1L263.1,269.3L265,270.2L265.6,271.9L264.4,272.5L263.1,273.2L261.7,272.2L258.9,273.1L257.1,272.1L256.2,268.7L254.7,270.1L253,268.7L251.7,269L250.5,267L250,264.2L248.7,266.1L250.9,269.9L251,272.1L252.2,273.1L253.1,274.9L251.1,275.8L249.5,276.1L248.4,274.7L248.5,273.7L246.8,271.5L245.9,272.7L244,271.9L242.8,272.6L242.4,274.6L241.1,274.5L240.3,275.8L239.4,275.3L237.5,276.3L238,277.3L241.4,276.1L241.6,274.7L243.7,275.1L243,276.9L244.9,278.9L243.4,280.5L242.5,280.9L241,280.4L241.1,282.8L240.6,283.2L240.7,285.1L239.9,287.9L240.6,289.2L241.8,286.3L242.8,288.4L242.1,289.2L241.8,291.5L240.1,292.5L241.2,293L241.2,294.8L240.8,296.6L240.2,297.6L239.1,297.8L238,295.8L237.3,295.4L237.4,293.9L235,292.9L236.1,292L237.2,293L237.3,291.1L238.3,290.2L237.1,288.9L236.4,289.8L233.9,288.7L232.5,287.3L233,286.8L236,286.8L235.4,285L234.6,284.1L232.6,284.8L232.6,286.6L231.5,287.2L230.5,286.5L230.7,284.9L229,284.2L226.2,284.7L226.7,285.7L226.3,286.5L226.6,287.9L225.1,287.8L221.7,287.1L219,285.7L217.7,285.3L216.1,283.2L217.4,281.6L216.7,279.9L217.3,278.7L215.9,277.4L214.8,278.2L215.4,279.4L215.2,280.5L213.7,280.8L213.2,281.6L211.9,280.9L211.1,281.7L210.1,280.5L209.9,279L208.4,282.2L208.5,283.1L206.7,284L204.4,283.7L201.2,284.5L200,282L200.8,280.9L201.3,278.7L200.4,277.7L200.2,276.2L198.5,275.3L198.3,274.1L197.2,273.8L195.7,272.2L195.7,270.2L191.3,265.8L191.1,262.1L190.6,260.2L189.7,259.8L188.6,256.7L189.5,256.5L191.2,254.9L191.3,254.1L190.6,252.4L192.4,249.5L193.7,248.6L194,246.2L192.7,246.1L192.1,245.2L192.2,243.9L193.2,243.4L191.6,240.5L191.4,239.8L189.4,238.3L189.2,237.4L190.6,235.9L190.7,234.3L191.7,233.4L191.2,231.6L191.7,230.1L192.3,229.5L192.7,227.4L193.7,226.5L193.7,222.9L196.1,220.6L197.2,219.9L198.8,216.5L200.4,216.8L201.4,215.9L202.7,215.7L204,214.5L204.6,214.7L205.3,213L207.5,211.1L207.3,212.7L207.8,213.2L209.2,212.8L210.1,213.9L210.2,215.6L211.3,215.1L212.6,215.9L213.4,215.4L214.1,216.9L215,217.6L216.2,217.1L217.4,217.5L218.6,216.7L221.9,218.1L221.7,219.5L222.1,220.5L223.6,220.8L224.3,222.6L225.7,223.2L226.6,225.6L226.6,228.5L225.2,229.3L224.3,229.3L224.3,230.8L225.6,230.5L226.5,231.5L228.7,231.7L229.1,230.6L230.2,231.6L231.3,230.9L232.9,230.7L235.9,231.6L236.9,234Z"},{"code":"39","name":"제주특별자치도","cx":126.2,"cy":401.5,"d":"M140.1,387.8L141.2,388.6L142.9,388.3L143.1,389.4L144.7,390.8L145.6,390.5L147.5,390.9L148.3,392.7L147.6,393.8L148.1,394.9L149.5,394.8L149.8,395.7L148.9,396.4L147.8,399.9L147.8,401L146.8,401.4L145.7,402.5L145.4,403.9L144,405.4L144.2,406L143.4,407.2L141.8,407.8L139.9,407.4L137.9,409.5L137.1,409.5L134.7,410.2L132.7,410.1L131.6,410.5L130.2,412.3L129,412.7L128.2,412.1L125.9,412.6L124.2,412.4L123.5,413.2L122.3,413.2L121.2,413.7L120,412.4L118.8,413L117.7,412.1L116,413L112,412.5L110.7,413.7L110.4,414.9L109.1,415.9L107.7,414.4L106.7,412.8L104.7,412L103.6,411L102.2,408.5L102.6,408L102.4,406.1L102.7,404.4L104.1,403L105.5,402.1L106.1,401L106.9,400.7L108.4,399.1L108.4,397.8L111.1,396.5L111.3,395.4L113,395.3L116,393.6L116.6,394L121.8,392.1L122.6,391.2L123.9,391.6L125.4,390.5L126,391.3L127.9,390.8L128.9,390L131.1,389.9L131.7,388.6L132.6,388.9L136.2,388.6L136.7,388.2L138.6,388.4L140.1,387.8Z"}]};
+const MAP_LINK = {
+  '11': 'seoul', '21': 'busan', '22': 'daegu', '23': 'incheon', '24': null, '25': 'daejeon', '26': 'ulsan',
+  '29': null, '31': 'gyeonggi', '32': 'gangwon', '33': 'chungbuk', '34': 'chungnam', '35': 'jeonbuk',
+  '36': 'jeonnam', '37': 'gyeongbuk', '38': 'gyeongnam', '39': 'jeju',
+};
+// 라벨 이름과 위치 보정 (작은 광역시가 겹치지 않게)
+const MAP_LABEL = {
+  '11': { t: '서울', sm: 1 }, '21': { t: '부산', sm: 1, dx: 4 }, '22': { t: '대구', sm: 1 }, '23': { t: '인천', sm: 1, dx: -6, dy: 6 },
+  '24': { t: '광주', sm: 1 }, '25': { t: '대전', sm: 1, dy: 3 }, '26': { t: '울산', sm: 1, dx: 2 }, '29': { t: '세종', sm: 1, dy: -2 },
+  '31': { t: '경기', dx: 14, dy: -22 }, '32': { t: '강원' }, '33': { t: '충북' }, '34': { t: '충남', dx: -8 },
+  '35': { t: '전북' }, '36': { t: '전남', dy: -6 }, '37': { t: '경북' }, '38': { t: '경남', dx: -8 }, '39': { t: '제주' },
+};
+
+function renderMap() {
+  const svg = $('#map');
+  svg.setAttribute('viewBox', `0 0 ${MAP.W} ${MAP.H}`);
+  // 도(code 3x)를 먼저, 광역시를 나중에 그려 작은 지역 클릭이 가려지지 않게
+  const sorted = [...MAP.regions].sort((a, b) => (a.code[0] === '3' ? 0 : 1) - (b.code[0] === '3' ? 0 : 1));
+  svg.innerHTML =
+    sorted.map(r => {
+      const id = MAP_LINK[r.code];
+      return `<path class="rg${id ? '' : ' off'}" d="${r.d}" data-code="${r.code}"
+        ${id ? `tabindex="0" role="button" aria-label="${esc(r.name)} 지원사업 보기"` : `aria-label="${esc(r.name)} 정보 없음"`}></path>`;
+    }).join('') +
+    sorted.map(r => {
+      const lb = MAP_LABEL[r.code] || { t: r.name };
+      return `<text class="lb${lb.sm ? ' sm' : ''}${MAP_LINK[r.code] ? '' : ' off'}" data-code="${r.code}"
+        x="${r.cx + (lb.dx || 0)}" y="${r.cy + (lb.dy || 0)}">${lb.t}</text>`;
+    }).join('');
+  syncMap();
+}
+
+function syncMap() {
+  document.querySelectorAll('#map [data-code]').forEach(el => {
+    el.classList.toggle('active', MAP_LINK[el.dataset.code] === state.region);
+  });
+}
+
+function regionSummary(code) {
+  const id = MAP_LINK[code];
+  const name = MAP.regions.find(r => r.code === code).name;
+  if (!id) return `<b>${esc(name)}</b><br>등록된 지원사업이 없어요`;
+  const r = DATA.find(d => d.id === id);
+  const open = r.items.filter(it => getStatus(it).key === 'ok').length;
+  const max = Math.max(...r.items.map(it => it.amount || 0));
+  return `<b>${esc(name)}</b><br>${r.items.length}곳 · 신청 가능 ${open}곳 · 최대 ${max}만원`;
+}
+
+function selectRegion(id) {
+  state.region = state.region === id ? 'all' : id;   // 같은 지역 다시 누르면 전체 보기
+  render();
+  document.querySelector('main').scrollIntoView();
+}
+
+const tip = $('#mapTip');
+function showTip(el, html) {
+  const wrap = $('.map-wrap').getBoundingClientRect();
+  const b = el.getBoundingClientRect();
+  tip.innerHTML = html;
+  tip.style.left = (b.left + b.width / 2 - wrap.left) + 'px';
+  tip.style.top = (b.top + b.height / 2 - wrap.top) + 'px';
+  tip.classList.add('show');
+}
+$('#map').addEventListener('mouseover', e => { const p = e.target.closest('path'); if (p) showTip(p, regionSummary(p.dataset.code)); });
+$('#map').addEventListener('mouseleave', () => tip.classList.remove('show'));
+$('#map').addEventListener('focusin', e => { const p = e.target.closest('path'); if (p) showTip(p, regionSummary(p.dataset.code)); });
+$('#map').addEventListener('focusout', () => tip.classList.remove('show'));
+$('#map').addEventListener('click', e => {
+  const p = e.target.closest('path'); const id = p && MAP_LINK[p.dataset.code];
+  if (id) selectRegion(id);
+});
+$('#map').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const p = e.target.closest('path'); const id = p && MAP_LINK[p.dataset.code];
+  if (id) { e.preventDefault(); selectRegion(id); }
+});
+
+/* 이벤트 */
+let t;
+$('#q').addEventListener('input', e => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value.trim(); render(); }, 120); });
+$('#sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+$('#openOnly').addEventListener('change', e => { state.openOnly = e.target.checked; render(); });
+$('#chips').addEventListener('click', e => {
+  const b = e.target.closest('[data-region]'); if (!b) return;
+  state.region = b.dataset.region; render();
+  document.querySelector('main').scrollIntoView();
+});
+const topBtn = $('#topBtn');
+addEventListener('scroll', () => topBtn.classList.toggle('show', scrollY > 600), { passive: true });
+topBtn.addEventListener('click', () => scrollTo({ top: 0 }));
+
+renderStats();
+renderMap();
+render();
+</script>
+</body>
+</html>
