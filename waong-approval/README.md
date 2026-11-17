@@ -2,7 +2,7 @@
 
 회사 캐릭터 와옹이를 디자인에 쓸 때 메일로 주고받던 사용 허가를 한 페이지에서 신청하고 승인하는 도구입니다.
 
-- 외부 배포 주소: https://sumuxlab.github.io/designdev/7.waong-approval/ (GitHub Pages + Firebase, 설정은 SETUP.md)
+- 외부 배포 주소: https://sumuxlab.github.io/designdev/waong-approval/ (GitHub Pages + Firebase, 설정은 SETUP.md)
 - 사내 시험용 주소: https://claude.ai/artifact/NrUsjSco1FYXzFi11K2s5f (claude.ai 아티팩트, 데이터는 따로)
 - 디자인 시스템: yds v1.2.0 (`yds/` 폴더에 CSS, JS, Pretendard 글꼴을 함께 넣음)
 
@@ -24,7 +24,7 @@
 `designdev` 폴더에서 아래를 실행하고 http://localhost:5183 을 엽니다. 예시 데이터로 동작하고, 새로 고치면 처음 상태로 돌아갑니다.
 
 ```bash
-python -m http.server 5183 --directory 7.waong-approval
+python -m http.server 5183 --directory waong-approval
 ```
 
 - 승인 담당자 화면: http://localhost:5183/
@@ -34,7 +34,7 @@ python -m http.server 5183 --directory 7.waong-approval
 ## 고친 뒤 점검
 
 ```bash
-node 7.waong-approval/dev/yds-check.mjs 7.waong-approval/index.html
+node waong-approval/dev/yds-check.mjs waong-approval/index.html
 ```
 
 오류와 주의가 0개여야 합니다.
