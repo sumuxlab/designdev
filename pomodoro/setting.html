@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro Setting</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.css">
+  <script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.js" defer></script>
+  <link rel="stylesheet" href="setting.css">
+</head>
+<body>
+  <main class="container">
+    <h3 class="title">setting</h3>
+
+    <div class="field">
+      <label for="timer-minutes" class="field-label">타이머 시간 (분)</label>
+      <input type="number" id="timer-minutes" class="field-input" value="25" min="1" max="60">
+    </div>
+
+    <button type="button" class="btn-submit">설정 완료</button>
+  </main>
+
+  <script src="setting.js"></script>
+</body>
+</html>
