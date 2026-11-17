@@ -46,9 +46,15 @@
         (kind === 'denied' ? auth.signOut() : Promise.resolve()).then(function () { return auth.signInWithPopup(p); }).catch(function (e) {
           btn.disabled = false;
           if (e && e.code === 'auth/popup-closed-by-user') return;
-          var text = e && e.code === 'auth/popup-blocked' ? '로그인 창이 막혔어요. 브라우저에서 팝업을 허용하고 다시 눌러 주세요.'
-            : e && e.code === 'auth/unauthorized-domain' ? '이 주소는 아직 로그인을 쓸 수 없어요. 담당자에게 알려 주세요. (승인된 도메인 설정 필요)'
+          var c = (e && e.code) || '';
+          var text = c === 'auth/popup-blocked' ? '로그인 창이 막혔어요. 브라우저에서 팝업을 허용하고 다시 눌러 주세요.'
+            : c === 'auth/unauthorized-domain' ? '이 주소는 아직 로그인을 쓸 수 없어요. 관리자는 Firebase Authentication 설정의 승인된 도메인에 ' + location.hostname + '을 추가해 주세요.'
+            : c === 'auth/operation-not-allowed' || c === 'auth/configuration-not-found' ? 'Google 로그인이 아직 켜져 있지 않아요. 관리자는 Firebase Authentication에서 시작하기를 누르고 Google을 사용 설정해 주세요.'
+            : c === 'auth/cancelled-popup-request' ? '로그인 창이 이미 열려 있어요. 열린 창에서 계정을 골라 주세요.'
+            : c === 'auth/network-request-failed' ? '네트워크에 연결하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.'
             : '로그인하지 못했어요. 잠시 후 다시 시도해 주세요.';
+          if (c) text += ' (오류 코드: ' + c + ')';
+          if (window.console) console.warn('[waong] 로그인 오류', c, e && e.message);
           msg.replaceChildren(el('div', { class: 'ds-callout', 'data-tone': 'critical' }, [icon('circle-alert-solid'), el('p', { class: 'ds-callout__content' }, [text])]));
         });
       });
