@@ -36,6 +36,18 @@
         "6.ybm-cs-center"
       ],
       "port": 5182
+    },
+    {
+      "name": "pull-cord",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5183",
+        "--directory",
+        "8.pull-cord"
+      ],
+      "port": 5183
     }
   ]
 }

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YBM 스터디 조명</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.css">
+<script src="https://cdn.jsdelivr.net/gh/luvms012-rgb/yds@v1.1.0/dist/ybm-ds.js" defer></script>
+<link rel="stylesheet" href="cord.css">
+<script>
+  /* 그리기 전에 저장된 화면 밝기를 먼저 맞춘다 (깜빡임 방지) */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('ybm-study-theme'); } catch (e) {}
+    if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    if (t === 'light') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', 'dark');
+  })();
+</script>
+</head>
+<body>
+<main class="cord-scene" id="scene">
+  <!-- 같은 방을 두 번 그린다. 밝은 방은 전구에서 퍼지는 원으로 잘라 보여 준다 -->
+  <section class="cord-room is-dark" aria-labelledby="cord-title">
+    <div class="cord-copy">
+      <span class="ds-badge" data-size="large"><span class="ds-badge__label">YBM 스터디 조명</span></span>
+      <h1 class="cord-title" id="cord-title">끈을 당겨 공부 불을 켜세요</h1>
+      <p class="cord-body">밤에는 어두운 화면으로 눈을 쉬게 하고, 공부할 때는 밝은 화면으로 글자를 또렷하게 보세요. 끈을 당길 때마다 화면 밝기가 바뀌어요.</p>
+      <p class="cord-status" aria-hidden="true">지금은 어두운 화면이에요</p>
+      <p class="cord-hint">끈을 아래로 당기거나 눌러 보세요. 키보드는 Tab으로 끈을 고른 뒤 Enter나 Space를 누르면 돼요.</p>
+    </div>
+  </section>
+  <section class="cord-room is-light" id="lit" aria-hidden="true">
+    <div class="cord-copy">
+      <span class="ds-badge" data-size="large"><span class="ds-badge__label">YBM 스터디 조명</span></span>
+      <p class="cord-title">끈을 당겨 공부 불을 켜세요</p>
+      <p class="cord-body">밤에는 어두운 화면으로 눈을 쉬게 하고, 공부할 때는 밝은 화면으로 글자를 또렷하게 보세요. 끈을 당길 때마다 화면 밝기가 바뀌어요.</p>
+      <p class="cord-status">지금은 밝은 화면이에요</p>
+      <p class="cord-hint">끈을 아래로 당기거나 눌러 보세요. 키보드는 Tab으로 끈을 고른 뒤 Enter나 Space를 누르면 돼요.</p>
+    </div>
+  </section>
+  <button type="button" class="cord-grab" id="grab" role="switch" aria-checked="false" aria-label="밝은 화면"></button>
+</main>
+<script src="cord.js"></script>
+</body>
+</html>

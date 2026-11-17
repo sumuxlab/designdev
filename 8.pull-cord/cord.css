@@ -1,0 +1,184 @@
+/* Pull cord: 끈을 당기면 전구에서 빛이 퍼지며 화면이 밝은 모드로 바뀐다.
+   색은 yds 팔레트 토큰만 쓴다. 두 방(어두운 방, 밝은 방)은 페이지 테마와 상관없이
+   늘 같은 모습이어야 하므로, 페이지 테마마다 팔레트 단계를 뒤집어 골라 둔다. */
+
+/* 밝은 페이지(기본)에서 고른 단계 */
+:root {
+  --cord-light-bg: var(--ds-color-palette-gray-100);
+  --cord-light-fg: var(--ds-color-palette-gray-1000);
+  --cord-light-sub: var(--ds-color-palette-gray-800);
+  --cord-light-object: var(--ds-color-palette-gray-400);
+  --cord-light-line: var(--ds-color-palette-gray-700);
+  --cord-light-bead: var(--ds-color-palette-gray-1000);
+  --cord-light-bulb: var(--ds-color-palette-yellow-300);
+
+  --cord-dark-bg: var(--ds-color-palette-gray-1000);
+  --cord-dark-fg: var(--ds-color-palette-gray-00);
+  --cord-dark-sub: var(--ds-color-palette-gray-600);
+  --cord-dark-object: var(--ds-color-palette-gray-900);
+  --cord-dark-line: var(--ds-color-palette-gray-700);
+  --cord-dark-bead: var(--ds-color-palette-gray-00);
+  --cord-dark-bulb: var(--ds-color-palette-gray-800);
+
+  /* 전구가 걸린 가로 위치(장면 폭에 대한 비율). JS가 읽는다 */
+  --cord-x: 0.5;
+}
+
+/* 어두운 페이지: 팔레트가 뒤집히므로 같은 모습이 나오는 반대 단계를 쓴다 */
+:root[data-theme="dark"] {
+  --cord-light-bg: var(--ds-color-palette-gray-1000);
+  --cord-light-fg: var(--ds-color-palette-gray-100);
+  --cord-light-sub: var(--ds-color-palette-gray-500);
+  --cord-light-object: var(--ds-color-palette-gray-800);
+  --cord-light-line: var(--ds-color-palette-gray-600);
+  --cord-light-bead: var(--ds-color-palette-gray-100);
+  --cord-light-bulb: var(--ds-color-palette-yellow-900);
+
+  --cord-dark-bg: var(--ds-color-palette-gray-100);
+  --cord-dark-fg: var(--ds-color-palette-gray-1000);
+  --cord-dark-sub: var(--ds-color-palette-gray-700);
+  --cord-dark-object: var(--ds-color-palette-gray-300);
+  --cord-dark-line: var(--ds-color-palette-gray-600);
+  --cord-dark-bead: var(--ds-color-palette-gray-1000);
+  --cord-dark-bulb: var(--ds-color-palette-gray-500);
+}
+
+body {
+  margin: 0;
+  background: var(--cord-dark-bg);
+  font-family: var(--ds-font-family-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+.cord-scene {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cord-room {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--room-bg);
+  color: var(--room-fg);
+  /* 방 안의 Badge도 방 색을 따른다 (부품 변수만 덮어쓴다) */
+  --ds-badge-bg: var(--room-object);
+  --ds-badge-fg: var(--room-sub);
+}
+.cord-room.is-dark {
+  --room-bg: var(--cord-dark-bg);
+  --room-fg: var(--cord-dark-fg);
+  --room-sub: var(--cord-dark-sub);
+  --room-object: var(--cord-dark-object);
+  --room-line: var(--cord-dark-line);
+  --room-bead: var(--cord-dark-bead);
+  --room-bulb: var(--cord-dark-bulb);
+}
+.cord-room.is-light {
+  --room-bg: var(--cord-light-bg);
+  --room-fg: var(--cord-light-fg);
+  --room-sub: var(--cord-light-sub);
+  --room-object: var(--cord-light-object);
+  --room-line: var(--cord-light-line);
+  --room-bead: var(--cord-light-bead);
+  --room-bulb: var(--cord-light-bulb);
+  visibility: hidden;
+  will-change: clip-path;
+}
+
+/* 글: 모바일은 아래쪽에 */
+.cord-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: var(--ds-space-x6) var(--ds-space-x4) var(--ds-space-x10);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ds-space-x3);
+  word-break: keep-all;
+}
+.cord-title {
+  margin: 0;
+  font-size: var(--ds-font-size-t10);
+  line-height: var(--ds-line-height-t10);
+  font-weight: var(--ds-font-weight-bold);
+}
+.cord-body {
+  margin: 0;
+  max-width: 30em;
+  font-size: var(--ds-font-size-t06);
+  line-height: var(--ds-line-height-t06);
+  font-weight: var(--ds-font-weight-regular);
+}
+.cord-status {
+  margin: 0;
+  font-size: var(--ds-font-size-t04);
+  line-height: var(--ds-line-height-t04);
+  font-weight: var(--ds-font-weight-semibold);
+}
+.cord-hint {
+  margin: 0;
+  max-width: 30em;
+  color: var(--room-sub);
+  font-size: var(--ds-font-size-t03);
+  line-height: var(--ds-line-height-t03);
+  font-weight: var(--ds-font-weight-regular);
+}
+
+/* 전등: 크기는 원본 그대로 (그림 모양이라 토큰이 아닌 고정 치수) */
+.cord-lamp { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform; }
+.cord-head { position: absolute; left: 0; top: 0; will-change: transform; }
+.cord-cap { position: absolute; left: -9px; top: -10px; width: 18px; height: 14px; border-radius: 5px 5px 0 0; background: var(--room-line); }
+.cord-shade { position: absolute; left: -62px; top: 0; width: 124px; height: 66px; border-radius: 62px 62px 12px 12px / 58px 58px 12px 12px; background: var(--room-object); }
+.cord-bulb { position: absolute; left: -19px; top: 44px; width: 38px; height: 38px; border-radius: var(--ds-shape-pill); background: var(--room-bulb); will-change: transform; }
+
+.cord-rope { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.cord-rope path { fill: none; stroke: var(--room-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cord-bead { position: absolute; left: -8px; top: -3px; width: 16px; height: 30px; border-radius: var(--ds-shape-pill); background: var(--room-bead); transform-origin: 8px 3px; will-change: transform; }
+
+/* 진짜 조작부: 손잡이 위에 놓여 따라다닌다 */
+.cord-grab {
+  position: absolute;
+  left: -22px;
+  top: -12px;
+  z-index: 1;
+  width: 44px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ds-shape-md);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+.cord-grab.is-held { cursor: grabbing; }
+.cord-grab:focus-visible { outline: 2px solid var(--ds-color-stroke-focus-ring); outline-offset: 0; }
+
+/* 태블릿: 글을 왼쪽 가운데로, 전등은 오른쪽으로 */
+@media (min-width: 768px) {
+  :root { --cord-x: 0.7; }
+  .cord-copy {
+    top: 50%;
+    bottom: auto;
+    right: auto;
+    width: 52%;
+    transform: translateY(-50%);
+    padding: 0 0 0 var(--ds-space-x10);
+    gap: var(--ds-space-x4);
+  }
+}
+
+/* PC: 글을 조금 더 크게, 전등은 오른쪽 가운데 쪽으로 */
+@media (min-width: 1280px) {
+  :root { --cord-x: 0.66; }
+  .cord-copy { width: 44%; padding-left: calc(var(--ds-space-x24) + var(--ds-space-x8)); }
+  .cord-title { font-size: var(--ds-font-size-t13); line-height: var(--ds-line-height-t13); }
+}
