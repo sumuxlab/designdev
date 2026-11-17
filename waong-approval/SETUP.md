@@ -2,7 +2,7 @@
 
 외부 사람도 링크로 들어와 신청하고 승인받을 수 있게 하는 설정입니다. 처음 한 번만 하면 되고, 30분 정도 걸립니다.
 
-- 화면: GitHub Pages (`https://sumuxlab.github.io/designdev/7.waong-approval/`)
+- 화면: GitHub Pages (`https://sumuxlab.github.io/designdev/waong-approval/`)
 - 로그인: Google 계정
 - 저장: Firebase Firestore (무료 요금제 Spark로 충분)
 - 권한: 명단(`config/access`)에 있는 이메일, 도메인만 신청. 승인 담당자 명단에 있는 사람만 결재
@@ -18,7 +18,7 @@
 1. 프로젝트 개요 화면에서 웹 아이콘(`</>`)을 누릅니다.
 2. 앱 닉네임에 `waong-approval`을 적고, Firebase 호스팅은 체크하지 않은 채 **앱 등록**을 누릅니다.
 3. 화면에 나온 `const firebaseConfig = { ... }`의 중괄호 부분을 복사합니다.
-4. `7.waong-approval/firebase-config.js`를 열어 맨 아래 줄을 이렇게 바꿉니다.
+4. `waong-approval/firebase-config.js`를 열어 맨 아래 줄을 이렇게 바꿉니다.
 
 ```js
 window.FIREBASE_CONFIG = {
@@ -43,7 +43,7 @@ window.FIREBASE_CONFIG = {
 
 1. 왼쪽 메뉴 **빌드 > Firestore Database > 데이터베이스 만들기**를 누릅니다.
 2. 위치는 `asia-northeast3 (서울)`, 시작 모드는 **프로덕션 모드**를 고릅니다.
-3. **규칙** 탭을 열고, 있던 내용을 지운 뒤 `7.waong-approval/firebase/firestore.rules` 내용을 그대로 붙여 넣고 **게시**를 누릅니다.
+3. **규칙** 탭을 열고, 있던 내용을 지운 뒤 `waong-approval/firebase/firestore.rules` 내용을 그대로 붙여 넣고 **게시**를 누릅니다.
 
 ## 5. 명단 만들기
 
@@ -67,7 +67,7 @@ window.FIREBASE_CONFIG = {
 1. `firebase-config.js`를 고친 내용을 커밋하고 푸시합니다.
 
 ```bash
-git add 7.waong-approval
+git add waong-approval
 git commit -m "와옹이 사용 승인 외부 배포 설정"
 git push
 ```
@@ -78,7 +78,7 @@ git push
 4. 1~3분 뒤 아래 주소가 열립니다. 이 주소를 외부 사람에게 보냅니다.
 
 ```
-https://sumuxlab.github.io/designdev/7.waong-approval/
+https://sumuxlab.github.io/designdev/waong-approval/
 ```
 
 ## 7. 확인
@@ -89,10 +89,10 @@ https://sumuxlab.github.io/designdev/7.waong-approval/
 
 ## 고친 뒤 다시 배포하기
 
-`7.waong-approval` 안의 파일을 고치고 커밋, 푸시하면 1~3분 뒤 같은 주소에 반영됩니다. 고친 뒤에는 yds 검사를 돌립니다.
+`waong-approval` 안의 파일을 고치고 커밋, 푸시하면 1~3분 뒤 같은 주소에 반영됩니다. 고친 뒤에는 yds 검사를 돌립니다.
 
 ```bash
-node 7.waong-approval/dev/yds-check.mjs 7.waong-approval/index.html
+node waong-approval/dev/yds-check.mjs waong-approval/index.html
 ```
 
 ## 자주 생기는 문제
@@ -103,4 +103,4 @@ node 7.waong-approval/dev/yds-check.mjs 7.waong-approval/index.html
 | "이 주소는 아직 로그인을 쓸 수 없어요" | 3단계 승인된 도메인에 `sumuxlab.github.io`가 없음 |
 | 로그인했는데 "사용 권한이 없어요" | 5단계 명단에 그 이메일, 도메인이 없음. 대문자로 적었는지도 확인 |
 | 승인 담당자인데 결재 칸이 안 보임 | `approvers`에 그 이메일이 소문자로 들어 있는지 확인 |
-| 주소가 404 | Pages 설정 후 몇 분 기다리기. 주소 끝 `/7.waong-approval/` 확인 |
+| 주소가 404 | Pages 설정 후 몇 분 기다리기. 주소 끝 `/waong-approval/` 확인 |

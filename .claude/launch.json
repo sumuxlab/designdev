@@ -9,7 +9,7 @@
         "http.server",
         "5180",
         "--directory",
-        "4.yds-site-redesign"
+        "yds-site-redesign"
       ],
       "port": 5180
     },
@@ -21,7 +21,7 @@
         "http.server",
         "5181",
         "--directory",
-        "5.insta-ad-builder"
+        "insta-ad-builder"
       ],
       "port": 5181
     },
@@ -33,9 +33,21 @@
         "http.server",
         "5182",
         "--directory",
-        "6.ybm-cs-center"
+        "ybm-cs-center"
       ],
       "port": 5182
+    },
+    {
+      "name": "pull-cord",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5183",
+        "--directory",
+        "pull-cord"
+      ],
+      "port": 5183
     }
   ]
 }
